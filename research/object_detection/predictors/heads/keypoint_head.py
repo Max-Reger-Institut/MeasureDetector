@@ -25,7 +25,8 @@ objects.
 import tensorflow as tf
 
 from object_detection.predictors.heads import head
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class MaskRCNNKeypointHead(head.Head):

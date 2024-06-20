@@ -110,7 +110,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from object_detection.utils import variables_helper
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 _UNINITIALIZED_FEATURE_EXTRACTOR = '__uninitialized__'
 
@@ -163,7 +164,7 @@ class FasterRCNNFeatureExtractor(object):
       rpn_feature_map: A tensor with shape [batch, height, width, depth]
       activations: A dictionary mapping activation tensor names to tensors.
     """
-    with tf.variable_scope(scope, values=[preprocessed_inputs]):
+    with tf.compat.v1.variable_scope(scope, values=[preprocessed_inputs]):
       return self._extract_proposal_features(preprocessed_inputs, scope)
 
   @abc.abstractmethod
@@ -185,7 +186,7 @@ class FasterRCNNFeatureExtractor(object):
         [batch_size * self.max_num_proposals, height, width, depth]
         representing box classifier features for each proposal.
     """
-    with tf.variable_scope(
+    with tf.compat.v1.variable_scope(
         scope, values=[proposal_feature_maps], reuse=tf.AUTO_REUSE):
       return self._extract_box_classifier_features(proposal_feature_maps, scope)
 
@@ -550,7 +551,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
           first_stage_box_predictor_arg_scope_fn)
       def rpn_box_predictor_feature_extractor(rpn_features_to_crop):
         with slim.arg_scope(self._first_stage_box_predictor_arg_scope_fn()):
-          reuse = tf.get_variable_scope().reuse
+          reuse = tf.compat.v1.get_variable_scope().reuse
           return slim.conv2d(
               rpn_features_to_crop,
               self._first_stage_box_predictor_depth,
@@ -696,7 +697,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
     """
     if inputs.dtype is not tf.float32:
       raise ValueError('`preprocess` expects a tf.float32 tensor')
-    with tf.name_scope('Preprocessor'):
+    with tf.compat.v1.name_scope('Preprocessor'):
       outputs = shape_utils.static_or_dynamic_map_fn(
           self._image_resizer_fn,
           elems=inputs,
@@ -1426,7 +1427,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       ValueError: If `predict` is called before `preprocess`.
     """
 
-    with tf.name_scope('FirstStagePostprocessor'):
+    with tf.compat.v1.name_scope('FirstStagePostprocessor'):
       if self._number_of_stages == 1:
         (proposal_boxes, proposal_scores, proposal_multiclass_scores,
          num_proposals, raw_proposal_boxes,
@@ -1452,7 +1453,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
     # TODO(jrru): Remove mask_predictions from _post_process_box_classifier.
     if (self._number_of_stages == 2 or
         (self._number_of_stages == 3 and self._is_training)):
-      with tf.name_scope('SecondStagePostprocessor'):
+      with tf.compat.v1.name_scope('SecondStagePostprocessor'):
         mask_predictions = prediction_dict.get(box_predictor.MASK_PREDICTIONS)
         detections_dict = self._postprocess_box_classifier(
             prediction_dict['refined_box_encodings'],
@@ -1497,7 +1498,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         [batch size, max_detections, height, width, depth] representing
         cropped image features
     """
-    with tf.name_scope('SecondStageDetectionFeaturesExtract'):
+    with tf.compat.v1.name_scope('SecondStageDetectionFeaturesExtract'):
       flattened_detected_feature_maps = (
           self._compute_second_stage_input_feature_maps(
               rpn_features_to_crop, detection_boxes))
@@ -2068,7 +2069,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         'second_stage_classification_loss') to scalar tensors representing
         corresponding loss values.
     """
-    with tf.name_scope(scope, 'Loss', prediction_dict.values()):
+    with tf.compat.v1.name_scope(scope, 'Loss', prediction_dict.values()):
       (groundtruth_boxlists, groundtruth_classes_with_background_list,
        groundtruth_masks_list, groundtruth_weights_list
       ) = self._format_groundtruth_data(true_image_shapes)
@@ -2127,7 +2128,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         `first_stage_objectness_loss`) to scalar tensors representing
         corresponding loss values.
     """
-    with tf.name_scope('RPNLoss'):
+    with tf.compat.v1.name_scope('RPNLoss'):
       (batch_cls_targets, batch_cls_weights, batch_reg_targets,
        batch_reg_weights, _) = target_assigner.batch_assign_targets(
            target_assigner=self._proposal_target_assigner,
@@ -2255,7 +2256,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         second_stage_mask_rcnn_box_predictor is True and
         `groundtruth_masks_list` is not provided.
     """
-    with tf.name_scope('BoxClassifierLoss'):
+    with tf.compat.v1.name_scope('BoxClassifierLoss'):
       paddings_indicator = self._padded_batched_proposals_indicator(
           num_proposals, proposal_boxes.shape[1])
       proposal_boxlists = [
@@ -2589,7 +2590,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       A list of regularization loss tensors.
     """
     all_losses = []
-    slim_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
+    slim_losses = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.REGULARIZATION_LOSSES)
     # Copy the slim losses to avoid modifying the collection
     if slim_losses:
       all_losses.extend(slim_losses)
@@ -2671,7 +2672,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       A list of update operators.
     """
     update_ops = []
-    slim_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    slim_update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
     # Copy the slim ops to avoid modifying the collection
     if slim_update_ops:
       update_ops.extend(slim_update_ops)

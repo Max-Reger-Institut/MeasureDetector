@@ -336,13 +336,13 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
         if use_tpu:
 
           def tpu_scaffold():
-            tf.train.init_from_checkpoint(train_config.fine_tune_checkpoint,
+            tf.compat.v1.train.init_from_checkpoint(train_config.fine_tune_checkpoint,
                                           available_var_map)
-            return tf.train.Scaffold()
+            return tf.compat.v1.train.Scaffold()
 
           scaffold_fn = tpu_scaffold
         else:
-          tf.train.init_from_checkpoint(train_config.fine_tune_checkpoint,
+          tf.compat.v1.train.init_from_checkpoint(train_config.fine_tune_checkpoint,
                                         available_var_map)
 
     if mode in (tf.estimator.ModeKeys.TRAIN, tf.estimator.ModeKeys.EVAL):
@@ -369,7 +369,7 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
 
       # TODO(rathodv): Stop creating optimizer summary vars in EVAL mode once we
       # can write learning rate summaries on TPU without host calls.
-      global_step = tf.train.get_or_create_global_step()
+      global_step = tf.compat.v1.train.get_or_create_global_step()
       training_optimizer, optimizer_summary_vars = optimizer_builder.build(
           train_config.optimizer)
 
@@ -387,7 +387,7 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
           train_config.freeze_variables
           if train_config.freeze_variables else None)
       trainable_variables = tf.contrib.framework.filter_variables(
-          tf.trainable_variables(),
+          tf.compat.v1.trainable_variables(),
           include_patterns=include_variables,
           exclude_patterns=exclude_variables)
 
@@ -477,14 +477,14 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
       eval_metric_ops = {str(k): v for k, v in eval_metric_ops.items()}
 
       if eval_config.use_moving_averages:
-        variable_averages = tf.train.ExponentialMovingAverage(0.0)
+        variable_averages = tf.compat.v1.train.ExponentialMovingAverage(0.0)
         variables_to_restore = variable_averages.variables_to_restore()
         keep_checkpoint_every_n_hours = (
             train_config.keep_checkpoint_every_n_hours)
-        saver = tf.train.Saver(
+        saver = tf.compat.v1.train.Saver(
             variables_to_restore,
             keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours)
-        scaffold = tf.train.Scaffold(saver=saver)
+        scaffold = tf.compat.v1.train.Scaffold(saver=saver)
 
     # EVAL executes on CPU, so use regular non-TPU EstimatorSpec.
     if use_tpu and mode != tf.estimator.ModeKeys.EVAL:
@@ -500,12 +500,12 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
       if scaffold is None:
         keep_checkpoint_every_n_hours = (
             train_config.keep_checkpoint_every_n_hours)
-        saver = tf.train.Saver(
+        saver = tf.compat.v1.train.Saver(
             sharded=True,
             keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours,
             save_relative_paths=True)
-        tf.add_to_collection(tf.GraphKeys.SAVERS, saver)
-        scaffold = tf.train.Scaffold(saver=saver)
+        tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.SAVERS, saver)
+        scaffold = tf.compat.v1.train.Scaffold(saver=saver)
       return tf.estimator.EstimatorSpec(
           mode=mode,
           predictions=detections,
@@ -613,7 +613,7 @@ def create_estimator_and_inputs(run_config,
     })
   if override_eval_num_epochs:
     kwargs.update({'eval_num_epochs': 1})
-    tf.logging.warning(
+    tf.compat.v1.logging.warning(
         'Forced number of epochs for all eval validations to be 1.')
   configs = merge_external_params_with_configs(
       configs, hparams, kwargs_dict=kwargs)
@@ -626,7 +626,7 @@ def create_estimator_and_inputs(run_config,
   eval_on_train_input_config.sample_1_of_n_examples = (
       sample_1_of_n_eval_on_train_examples)
   if override_eval_num_epochs and eval_on_train_input_config.num_epochs != 1:
-    tf.logging.warning('Expected number of evaluation epochs is 1, but '
+    tf.compat.v1.logging.warning('Expected number of evaluation epochs is 1, but '
                        'instead encountered `eval_on_train_input_config'
                        '.num_epochs` = '
                        '{}. Overwriting `num_epochs` to 1.'.format(
@@ -664,7 +664,7 @@ def create_estimator_and_inputs(run_config,
   # Read export_to_tpu from hparams if not passed.
   if export_to_tpu is None:
     export_to_tpu = hparams.get('export_to_tpu', False)
-  tf.logging.info('create_estimator_and_inputs: use_tpu %s, export_to_tpu %s',
+  tf.compat.v1.logging.info('create_estimator_and_inputs: use_tpu %s, export_to_tpu %s',
                   use_tpu, export_to_tpu)
   model_fn = model_fn_creator(detection_model_fn, configs, hparams, use_tpu,
                               postprocess_on_cpu)
@@ -770,28 +770,28 @@ def continuous_eval(estimator, model_dir, input_fn, train_steps, name):
   """
 
   def terminate_eval():
-    tf.logging.info('Terminating eval after 180 seconds of no checkpoints')
+    tf.compat.v1.logging.info('Terminating eval after 180 seconds of no checkpoints')
     return True
 
   for ckpt in tf.contrib.training.checkpoints_iterator(
       model_dir, min_interval_secs=180, timeout=None,
       timeout_fn=terminate_eval):
 
-    tf.logging.info('Starting Evaluation.')
+    tf.compat.v1.logging.info('Starting Evaluation.')
     try:
       eval_results = estimator.evaluate(
           input_fn=input_fn, steps=None, checkpoint_path=ckpt, name=name)
-      tf.logging.info('Eval results: %s' % eval_results)
+      tf.compat.v1.logging.info('Eval results: %s' % eval_results)
 
       # Terminate eval job when final checkpoint is reached
       current_step = int(os.path.basename(ckpt).split('-')[1])
       if current_step >= train_steps:
-        tf.logging.info(
+        tf.compat.v1.logging.info(
             'Evaluation finished after training step %d' % current_step)
         break
 
     except tf.errors.NotFoundError:
-      tf.logging.info(
+      tf.compat.v1.logging.info(
           'Checkpoint %s no longer exists, skipping checkpoint' % ckpt)
 
 
@@ -831,7 +831,7 @@ def populate_experiment(run_config,
     An `Experiment` that defines all aspects of training, evaluation, and
     export.
   """
-  tf.logging.warning('Experiment is being deprecated. Please use '
+  tf.compat.v1.logging.warning('Experiment is being deprecated. Please use '
                      'tf.estimator.train_and_evaluate(). See model_main.py for '
                      'an example.')
   train_and_eval_dict = create_estimator_and_inputs(

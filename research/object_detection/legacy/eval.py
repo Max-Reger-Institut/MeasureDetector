@@ -53,9 +53,9 @@ from object_detection.legacy import evaluator
 from object_detection.utils import config_util
 from object_detection.utils import label_map_util
 
-tf.logging.set_verbosity(tf.logging.INFO)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 flags.DEFINE_boolean('eval_training_data', False,
                      'If training data should be evaluated for this job.')
 flags.DEFINE_string(
@@ -80,7 +80,7 @@ flags.DEFINE_boolean(
 FLAGS = flags.FLAGS
 
 
-@tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
+#@tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
 def main(unused_argv):
   # Use the following lines to potentially restrict the training process to only 30% of the GPU V-RAM
   #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.3)
@@ -88,11 +88,11 @@ def main(unused_argv):
 
   assert FLAGS.checkpoint_dir, '`checkpoint_dir` is missing.'
   assert FLAGS.eval_dir, '`eval_dir` is missing.'
-  tf.gfile.MakeDirs(FLAGS.eval_dir)
+  tf.compat.v1.gfile.MakeDirs(FLAGS.eval_dir)
   if FLAGS.pipeline_config_path:
     configs = config_util.get_configs_from_pipeline_file(
         FLAGS.pipeline_config_path)
-    tf.gfile.Copy(
+    tf.compat.v1.gfile.Copy(
         FLAGS.pipeline_config_path,
         os.path.join(FLAGS.eval_dir, 'pipeline.config'),
         overwrite=True)
@@ -104,7 +104,7 @@ def main(unused_argv):
     for name, config in [('model.config', FLAGS.model_config_path),
                          ('eval.config', FLAGS.eval_config_path),
                          ('input.config', FLAGS.input_config_path)]:
-      tf.gfile.Copy(config, os.path.join(FLAGS.eval_dir, name), overwrite=True)
+      tf.compat.v1.gfile.Copy(config, os.path.join(FLAGS.eval_dir, name), overwrite=True)
 
   model_config = configs['model']
   eval_config = configs['eval_config']
@@ -143,4 +143,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run()

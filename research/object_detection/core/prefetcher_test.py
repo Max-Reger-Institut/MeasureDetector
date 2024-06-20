@@ -23,7 +23,8 @@ import tensorflow as tf
 
 from object_detection.core import prefetcher
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class PrefetcherTest(tf.test.TestCase):
@@ -39,7 +40,7 @@ class PrefetcherTest(tf.test.TestCase):
                                 image_size, 3],
                                dtype=tf.float32,
                                name='images')
-      label = tf.random_uniform([batch_size, 1], 0, 10,
+      label = tf.compat.v1.random_uniform([batch_size, 1], 0, 10,
                                 dtype=tf.int32, name='labels')
 
       prefetch_queue = prefetcher.prefetch(tensor_dict={'counter': counter,
@@ -76,7 +77,7 @@ class PrefetcherTest(tf.test.TestCase):
                                dtype=tf.float32,
                                name='image')
       image.set_shape([batch_size, None, None, 3])
-      label = tf.random_uniform([batch_size, tf.Variable(1)], 0,
+      label = tf.compat.v1.random_uniform([batch_size, tf.Variable(1)], 0,
                                 10, dtype=tf.int32, name='label')
       label.set_shape([batch_size, None])
 

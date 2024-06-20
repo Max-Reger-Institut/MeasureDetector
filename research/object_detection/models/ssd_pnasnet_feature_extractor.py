@@ -27,7 +27,8 @@ from object_detection.utils import ops
 from object_detection.utils import variables_helper
 from nets.nasnet import pnasnet
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def pnasnet_large_arg_scope_for_detection(is_batch_norm_training=False):
@@ -144,7 +145,7 @@ class SSDPNASNetFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
               num_classes=None,
               is_training=self._is_training,
               final_endpoint='Cell_11')
-    with tf.variable_scope('SSD_feature_maps', reuse=self._reuse_weights):
+    with tf.compat.v1.variable_scope('SSD_feature_maps', reuse=self._reuse_weights):
       with slim.arg_scope(self._conv_hyperparams_fn()):
         feature_maps = feature_map_generators.multi_resolution_feature_maps(
             feature_map_layout=feature_map_layout,

@@ -25,7 +25,8 @@ import tensorflow as tf
 from object_detection.predictors.heads import head
 from object_detection.utils import ops
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class MaskRCNNMaskHead(head.Head):

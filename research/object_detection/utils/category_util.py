@@ -46,7 +46,7 @@ def load_categories_from_csv_file(csv_path):
   """
   categories = []
 
-  with tf.gfile.Open(csv_path, 'r') as csvfile:
+  with tf.compat.v1.gfile.Open(csv_path, 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in reader:
       if not row:
@@ -71,7 +71,7 @@ def save_categories_to_csv_file(categories, csv_path):
     csv_path: Path to the csv file to be parsed into categories.
   """
   categories.sort(key=lambda x: x['id'])
-  with tf.gfile.Open(csv_path, 'w') as csvfile:
+  with tf.compat.v1.gfile.Open(csv_path, 'w') as csvfile:
     writer = csv.writer(csvfile, delimiter=',', quotechar='"')
     for category in categories:
       writer.writerow([category['id'], category['name']])

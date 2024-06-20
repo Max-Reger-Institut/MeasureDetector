@@ -31,13 +31,13 @@ NUMBER_OF_CLASSES = 2
 
 def get_input_function():
   """A function to get test inputs. Returns an image with one box."""
-  image = tf.random_uniform([32, 32, 3], dtype=tf.float32)
+  image = tf.compat.v1.random_uniform([32, 32, 3], dtype=tf.float32)
   key = tf.constant('image_000000')
-  class_label = tf.random_uniform(
+  class_label = tf.compat.v1.random_uniform(
       [1], minval=0, maxval=NUMBER_OF_CLASSES, dtype=tf.int32)
-  box_label = tf.random_uniform(
+  box_label = tf.compat.v1.random_uniform(
       [1, 4], minval=0.4, maxval=0.6, dtype=tf.float32)
-  multiclass_scores = tf.random_uniform(
+  multiclass_scores = tf.compat.v1.random_uniform(
       [1, NUMBER_OF_CLASSES], minval=0.4, maxval=0.6, dtype=tf.float32)
 
   return {
@@ -73,7 +73,7 @@ class FakeDetectionModel(model.DetectionModel):
     """
     true_image_shapes = [inputs.shape[:-1].as_list()
                          for _ in range(inputs.shape[-1])]
-    return tf.image.resize_images(inputs, [28, 28]), true_image_shapes
+    return tf.compat.v1.image.resize_images(inputs, [28, 28]), true_image_shapes
 
   def predict(self, preprocessed_inputs, true_image_shapes):
     """Prediction tensors from inputs tensor.

@@ -27,7 +27,8 @@ import collections
 import functools
 import tensorflow as tf
 from object_detection.utils import ops
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 # Activation bound used for TPU v1. Activations will be clipped to
 # [-ACTIVATION_BOUND, ACTIVATION_BOUND] when training with
@@ -626,7 +627,7 @@ class KerasFpnTopDownFeatureMaps(tf.keras.Model):
     output_feature_maps_list = []
     output_feature_map_keys = []
 
-    with tf.name_scope(self.scope):
+    with tf.compat.v1.name_scope(self.scope):
       top_down = image_features[-1][1]
       for layer in self.top_layers:
         top_down = layer(top_down)
@@ -682,7 +683,7 @@ def fpn_top_down_feature_maps(image_features,
     feature_maps: an OrderedDict mapping keys (feature map names) to
       tensors where each tensor has shape [batch, height_i, width_i, depth_i].
   """
-  with tf.name_scope(scope, 'top_down'):
+  with tf.compat.v1.name_scope(scope, 'top_down'):
     num_levels = len(image_features)
     output_feature_maps_list = []
     output_feature_map_keys = []
@@ -703,7 +704,7 @@ def fpn_top_down_feature_maps(image_features,
 
       for level in reversed(range(num_levels - 1)):
         if use_native_resize_op:
-          with tf.name_scope('nearest_neighbor_upsampling'):
+          with tf.compat.v1.name_scope('nearest_neighbor_upsampling'):
             top_down_shape = top_down.shape.as_list()
             top_down = tf.image.resize_nearest_neighbor(
                 top_down, [top_down_shape[1] * 2, top_down_shape[2] * 2])

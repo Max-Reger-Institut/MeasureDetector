@@ -20,7 +20,7 @@ from __future__ import print_function
 import tensorflow as tf
 from object_detection.tpu_exporters import export_saved_model_tpu_lib
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('pipeline_config_file', None,
@@ -40,7 +40,7 @@ flags.DEFINE_boolean('use_bfloat16', False, 'If true, use tf.bfloat16 on TPU.')
 
 def main(argv):
   if len(argv) > 1:
-    raise tf.app.UsageError('Too many command-line arguments.')
+    raise tf.compat.v1.app.UsageError('Too many command-line arguments.')
   export_saved_model_tpu_lib.export(FLAGS.pipeline_config_file, FLAGS.ckpt_path,
                                     FLAGS.export_dir,
                                     FLAGS.input_placeholder_name,
@@ -48,7 +48,7 @@ def main(argv):
 
 
 if __name__ == '__main__':
-  tf.app.flags.mark_flag_as_required('pipeline_config_file')
-  tf.app.flags.mark_flag_as_required('ckpt_path')
-  tf.app.flags.mark_flag_as_required('export_dir')
-  tf.app.run()
+  tf.compat.v1.app.flags.mark_flag_as_required('pipeline_config_file')
+  tf.compat.v1.app.flags.mark_flag_as_required('ckpt_path')
+  tf.compat.v1.app.flags.mark_flag_as_required('export_dir')
+  tf.compat.v1.app.run()

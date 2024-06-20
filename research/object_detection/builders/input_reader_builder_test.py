@@ -37,7 +37,7 @@ class InputReaderBuilderTest(tf.test.TestCase):
     flat_mask = (4 * 5) * [1.0]
     with self.test_session():
       encoded_jpeg = tf.image.encode_jpeg(tf.constant(image_tensor)).eval()
-    example = tf.train.Example(features=tf.train.Features(feature={
+    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
         'image/encoded': dataset_util.bytes_feature(encoded_jpeg),
         'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
         'image/height': dataset_util.int64_feature(4),
@@ -68,7 +68,7 @@ class InputReaderBuilderTest(tf.test.TestCase):
     text_format.Merge(input_reader_text_proto, input_reader_proto)
     tensor_dict = input_reader_builder.build(input_reader_proto)
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
 
     self.assertTrue(fields.InputDataFields.groundtruth_instance_masks
@@ -98,7 +98,7 @@ class InputReaderBuilderTest(tf.test.TestCase):
     text_format.Merge(input_reader_text_proto, input_reader_proto)
     tensor_dict = input_reader_builder.build(input_reader_proto)
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
 
     self.assertEquals(

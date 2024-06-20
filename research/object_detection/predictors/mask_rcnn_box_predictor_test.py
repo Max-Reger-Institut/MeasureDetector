@@ -128,7 +128,7 @@ class MaskRCNNBoxPredictorTest(test_case.TestCase):
     self.assertAllEqual(mask_predictions.shape, [2, 1, 5, 14, 14])
 
   def test_do_not_return_instance_masks_without_request(self):
-    image_features = tf.random_uniform([2, 7, 7, 3], dtype=tf.float32)
+    image_features = tf.compat.v1.random_uniform([2, 7, 7, 3], dtype=tf.float32)
     mask_box_predictor = box_predictor_builder.build_mask_rcnn_box_predictor(
         is_training=False,
         num_classes=5,

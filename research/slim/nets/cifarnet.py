@@ -20,7 +20,8 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 trunc_normal = lambda stddev: tf.truncated_normal_initializer(stddev=stddev)
 
@@ -60,7 +61,7 @@ def cifarnet(images, num_classes=10, is_training=False,
   """
   end_points = {}
 
-  with tf.variable_scope(scope, 'CifarNet', [images]):
+  with tf.compat.v1.variable_scope(scope, 'CifarNet', [images]):
     net = slim.conv2d(images, 64, [5, 5], scope='conv1')
     end_points['conv1'] = net
     net = slim.max_pool2d(net, [2, 2], 2, scope='pool1')

@@ -24,9 +24,10 @@ from datasets import dataset_factory
 from nets import mobilenet_v1
 from preprocessing import preprocessing_factory
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 
 flags.DEFINE_string('master', '', 'Session master')
 flags.DEFINE_integer('task', 0, 'Task')
@@ -102,7 +103,7 @@ def imagenet_input(is_training):
 
   image = image_preprocessing_fn(image, FLAGS.image_size, FLAGS.image_size)
 
-  images, labels = tf.train.batch(
+  images, labels = tf.compat.v1.train.batch(
       [image, label],
       batch_size=FLAGS.batch_size,
       num_threads=4,
@@ -121,7 +122,7 @@ def build_model():
   """
   g = tf.Graph()
   with g.as_default(), tf.device(
-      tf.train.replica_device_setter(FLAGS.ps_tasks)):
+      tf.compat.v1.train.replica_device_setter(FLAGS.ps_tasks)):
     inputs, labels = imagenet_input(is_training=True)
     with slim.arg_scope(mobilenet_v1.mobilenet_v1_arg_scope(is_training=True)):
       logits, _ = mobilenet_v1.mobilenet_v1(
@@ -144,13 +145,13 @@ def build_model():
     imagenet_size = 1271167
     decay_steps = int(imagenet_size / FLAGS.batch_size * num_epochs_per_decay)
 
-    learning_rate = tf.train.exponential_decay(
+    learning_rate = tf.compat.v1.train.exponential_decay(
         get_learning_rate(),
-        tf.train.get_or_create_global_step(),
+        tf.compat.v1.train.get_or_create_global_step(),
         decay_steps,
         _LEARNING_RATE_DECAY_FACTOR,
         staircase=True)
-    opt = tf.train.GradientDescentOptimizer(learning_rate)
+    opt = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
 
     train_tensor = slim.learning.create_train_op(
         total_loss,
@@ -165,7 +166,7 @@ def get_checkpoint_init_fn():
   """Returns the checkpoint init_fn if the checkpoint is provided."""
   if FLAGS.fine_tune_checkpoint:
     variables_to_restore = slim.get_variables_to_restore()
-    global_step_reset = tf.assign(tf.train.get_or_create_global_step(), 0)
+    global_step_reset = tf.assign(tf.compat.v1.train.get_or_create_global_step(), 0)
     # When restoring from a floating point model, the min/max values for
     # quantized weights and activations are not present.
     # We instruct slim to ignore variables that are missing during restoration
@@ -201,7 +202,7 @@ def train_model():
         save_summaries_secs=FLAGS.save_summaries_secs,
         save_interval_secs=FLAGS.save_interval_secs,
         init_fn=get_checkpoint_init_fn(),
-        global_step=tf.train.get_global_step())
+        global_step=tf.compat.v1.train.get_global_step())
 
 
 def main(unused_arg):
@@ -209,4 +210,4 @@ def main(unused_arg):
 
 
 if __name__ == '__main__':
-  tf.app.run(main)
+  tf.compat.v1.app.run(main)

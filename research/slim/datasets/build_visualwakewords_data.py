@@ -80,7 +80,7 @@ import os
 import tensorflow as tf
 from datasets import build_visualwakewords_data_lib
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 tf.flags.DEFINE_string('train_image_dir', '', 'Training image directory.')
 tf.flags.DEFINE_string('val_image_dir', '', 'Validation image directory.')
 tf.flags.DEFINE_string('train_annotations_file', '',
@@ -99,7 +99,7 @@ tf.flags.DEFINE_string(
 
 FLAGS = flags.FLAGS
 
-tf.logging.set_verbosity(tf.logging.INFO)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
 
 def main(unused_argv):
@@ -117,8 +117,8 @@ def main(unused_argv):
   small_object_area_threshold = FLAGS.small_object_area_threshold
   foreground_class_of_interest = FLAGS.foreground_class_of_interest
   # Create the Visual WakeWords annotations from COCO annotations
-  if not tf.gfile.IsDirectory(FLAGS.output_dir):
-    tf.gfile.MakeDirs(FLAGS.output_dir)
+  if not tf.compat.v1.gfile.IsDirectory(FLAGS.output_dir):
+    tf.compat.v1.gfile.MakeDirs(FLAGS.output_dir)
   build_visualwakewords_data_lib.create_visual_wakeword_annotations(
       FLAGS.train_annotations_file, visualwakewords_annotations_train,
       small_object_area_threshold, foreground_class_of_interest,
@@ -129,8 +129,8 @@ def main(unused_argv):
       visualwakewords_labels_filename)
 
   # Create the TF Records for Visual WakeWords Dataset
-  if not tf.gfile.IsDirectory(FLAGS.output_dir):
-    tf.gfile.MakeDirs(FLAGS.output_dir)
+  if not tf.compat.v1.gfile.IsDirectory(FLAGS.output_dir):
+    tf.compat.v1.gfile.MakeDirs(FLAGS.output_dir)
   train_output_path = os.path.join(FLAGS.output_dir, 'train.record')
   val_output_path = os.path.join(FLAGS.output_dir, 'val.record')
   build_visualwakewords_data_lib.create_tf_record_for_visualwakewords_dataset(
@@ -146,4 +146,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run()

@@ -33,7 +33,7 @@ class FasterRcnnPNASFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_returns_expected_size(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [1, 299, 299, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map, _ = feature_extractor.extract_proposal_features(
         preprocessed_inputs, scope='TestScope')
@@ -48,7 +48,7 @@ class FasterRcnnPNASFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_input_size_224(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [1, 224, 224, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map, _ = feature_extractor.extract_proposal_features(
         preprocessed_inputs, scope='TestScope')
@@ -63,7 +63,7 @@ class FasterRcnnPNASFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_input_size_112(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [1, 112, 112, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map, _ = feature_extractor.extract_proposal_features(
         preprocessed_inputs, scope='TestScope')
@@ -82,7 +82,7 @@ class FasterRcnnPNASFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_dies_with_incorrect_rank_inputs(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [224, 224, 3], maxval=255, dtype=tf.float32)
     with self.assertRaises(ValueError):
       feature_extractor.extract_proposal_features(
@@ -91,7 +91,7 @@ class FasterRcnnPNASFeatureExtractorTest(tf.test.TestCase):
   def test_extract_box_classifier_features_returns_expected_size(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    proposal_feature_maps = tf.random_uniform(
+    proposal_feature_maps = tf.compat.v1.random_uniform(
         [2, 17, 17, 1088], maxval=255, dtype=tf.float32)
     proposal_classifier_features = (
         feature_extractor.extract_box_classifier_features(

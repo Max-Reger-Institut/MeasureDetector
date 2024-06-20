@@ -26,7 +26,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import resnet_v1
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -150,7 +151,7 @@ class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         129, preprocessed_inputs)
 
-    with tf.variable_scope(
+    with tf.compat.v1.variable_scope(
         self._resnet_scope_name, reuse=self._reuse_weights) as scope:
       with slim.arg_scope(resnet_v1.resnet_arg_scope()):
         with (slim.arg_scope(self._conv_hyperparams_fn())
@@ -170,7 +171,7 @@ class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
           image_features = self._filter_features(image_features)
       depth_fn = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
       with slim.arg_scope(self._conv_hyperparams_fn()):
-        with tf.variable_scope(self._fpn_scope_name,
+        with tf.compat.v1.variable_scope(self._fpn_scope_name,
                                reuse=self._reuse_weights):
           base_fpn_max_level = min(self._fpn_max_level, 5)
           feature_block_list = []

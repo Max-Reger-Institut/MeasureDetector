@@ -37,7 +37,8 @@ from nets.nasnet import nasnet
 from nets.nasnet import pnasnet
 
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 networks_map = {'alexnet_v2': alexnet.alexnet_v2,
                 'cifarnet': cifarnet.cifarnet,

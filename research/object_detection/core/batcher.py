@@ -93,7 +93,7 @@ class BatchQueue(object):
 
     all_tensors = tensor_dict
     all_tensors.update(runtime_shapes)
-    batched_tensors = tf.train.batch(
+    batched_tensors = tf.compat.v1.train.batch(
         all_tensors,
         capacity=batch_queue_capacity,
         batch_size=batch_size,

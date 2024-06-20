@@ -27,7 +27,8 @@ import tensorflow as tf
 
 from tensorflow.python.ops import variables as tf_variables
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 # TODO(derekjchow): Consider replacing with tf.contrib.filter_variables in
@@ -136,10 +137,10 @@ def get_variables_available_in_checkpoint(variables,
     variable_names_map = variables
   else:
     raise ValueError('`variables` is expected to be a list or dict.')
-  ckpt_reader = tf.train.NewCheckpointReader(checkpoint_path)
+  ckpt_reader = tf.compat.v1.train.NewCheckpointReader(checkpoint_path)
   ckpt_vars_to_shape_map = ckpt_reader.get_variable_to_shape_map()
   if not include_global_step:
-    ckpt_vars_to_shape_map.pop(tf.GraphKeys.GLOBAL_STEP, None)
+    ckpt_vars_to_shape_map.pop(tf.compat.v1.GraphKeys.GLOBAL_STEP, None)
   vars_in_ckpt = {}
   for variable_name, variable in sorted(variable_names_map.items()):
     if variable_name in ckpt_vars_to_shape_map:

@@ -20,7 +20,8 @@ import tensorflow as tf
 from object_detection.models import ssd_feature_extractor_test
 from object_detection.models import ssd_pnasnet_feature_extractor
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class SsdPnasNetFeatureExtractorTest(

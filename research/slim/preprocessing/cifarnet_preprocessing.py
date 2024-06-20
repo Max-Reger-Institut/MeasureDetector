@@ -24,7 +24,8 @@ import tensorflow as tf
 
 _PADDING = 4
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def preprocess_for_train(image,
@@ -93,7 +94,7 @@ def preprocess_for_eval(image, output_height, output_width,
   image = tf.to_float(image)
 
   # Resize and crop if needed.
-  resized_image = tf.image.resize_image_with_crop_or_pad(image,
+  resized_image = tf.compat.v1.image.resize_image_with_crop_or_pad(image,
                                                          output_width,
                                                          output_height)
   if add_image_summaries:

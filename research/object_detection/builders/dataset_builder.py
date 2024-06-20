@@ -40,8 +40,8 @@ def make_initializable_iterator(dataset):
   Returns:
     A `tf.data.Iterator`.
   """
-  iterator = dataset.make_initializable_iterator()
-  tf.add_to_collection(tf.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
+  iterator = tf.compat.v1.data.make_initializable_iterator(dataset)
+  tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
   return iterator
 
 
@@ -49,7 +49,7 @@ def read_dataset(file_read_func, input_files, config):
   """Reads a dataset, and handles repetition and shuffling.
 
   Args:
-    file_read_func: Function to use in tf.contrib.data.parallel_interleave, to
+    file_read_func: Function to use in tf.data.experimental.parallel_interleave, to
       read every individual file into a tf.data.Dataset.
     input_files: A list of file paths to read.
     config: A input_reader_builder.InputReader object.
@@ -61,25 +61,25 @@ def read_dataset(file_read_func, input_files, config):
     RuntimeError: If no files are found at the supplied path(s).
   """
   # Shard, shuffle, and read files.
-  filenames = tf.gfile.Glob(input_files)
+  filenames = tf.compat.v1.gfile.Glob(input_files)
   if not filenames:
     raise RuntimeError('Did not find any input files matching the glob pattern '
                        '{}'.format(input_files))
   num_readers = config.num_readers
   if num_readers > len(filenames):
     num_readers = len(filenames)
-    tf.logging.warning('num_readers has been reduced to %d to match input file '
+    tf.compat.v1.logging.warning('num_readers has been reduced to %d to match input file '
                        'shards.' % num_readers)
   filename_dataset = tf.data.Dataset.from_tensor_slices(filenames)
   if config.shuffle:
     filename_dataset = filename_dataset.shuffle(
         config.filenames_shuffle_buffer_size)
   elif num_readers > 1:
-    tf.logging.warning('`shuffle` is false, but the input data stream is '
+    tf.compat.v1.logging.warning('`shuffle` is false, but the input data stream is '
                        'still slightly shuffled since `num_readers` > 1.')
   filename_dataset = filename_dataset.repeat(config.num_epochs or None)
   records_dataset = filename_dataset.apply(
-      tf.contrib.data.parallel_interleave(
+      tf.data.experimental.parallel_interleave(
           file_read_func,
           cycle_length=num_readers,
           block_length=config.read_block_length,

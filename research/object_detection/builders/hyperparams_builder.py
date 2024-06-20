@@ -20,7 +20,8 @@ from object_detection.core import freezable_batch_norm
 from object_detection.protos import hyperparams_pb2
 from object_detection.utils import context_manager
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class KerasLayerHyperparams(object):

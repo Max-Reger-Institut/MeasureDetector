@@ -26,7 +26,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import mobilenet_v1
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 # A modified config of mobilenet v1 that makes it more detection friendly,
@@ -130,7 +131,7 @@ class SSDMobileNetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         33, preprocessed_inputs)
 
-    with tf.variable_scope('MobilenetV1',
+    with tf.compat.v1.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(
@@ -149,7 +150,7 @@ class SSDMobileNetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
 
       depth_fn = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
       with slim.arg_scope(self._conv_hyperparams_fn()):
-        with tf.variable_scope('fpn', reuse=self._reuse_weights):
+        with tf.compat.v1.variable_scope('fpn', reuse=self._reuse_weights):
           feature_blocks = [
               'Conv2d_3_pointwise', 'Conv2d_5_pointwise', 'Conv2d_11_pointwise',
               'Conv2d_13_pointwise'

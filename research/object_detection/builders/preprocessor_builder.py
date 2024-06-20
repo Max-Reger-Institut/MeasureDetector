@@ -192,7 +192,7 @@ def build(preprocessor_step_config):
     pad_color = config.pad_color or None
     if pad_color:
       if len(pad_color) != 3:
-        tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
+        tf.compat.v1.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
       pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
     return (preprocessor.random_pad_image,
@@ -211,7 +211,7 @@ def build(preprocessor_step_config):
     pad_color = config.pad_color or None
     if pad_color:
       if len(pad_color) != 3:
-        tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
+        tf.compat.v1.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
       pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
 
@@ -232,7 +232,7 @@ def build(preprocessor_step_config):
     pad_color = config.pad_color or None
     if pad_color:
       if len(pad_color) != 3:
-        tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
+        tf.compat.v1.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
       pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
 

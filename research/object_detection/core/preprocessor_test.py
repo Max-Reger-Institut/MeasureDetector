@@ -707,7 +707,7 @@ class PreprocessorTest(tf.test.TestCase):
     preprocess_options = [(preprocessor.random_horizontal_flip, {})]
     image_height = 3
     image_width = 3
-    images = tf.random_uniform([1, image_height, image_width, 3])
+    images = tf.compat.v1.random_uniform([1, image_height, image_width, 3])
     boxes = self.createTestBoxes()
     masks = self.createTestMasks()
     keypoints = self.createTestKeypoints()
@@ -804,7 +804,7 @@ class PreprocessorTest(tf.test.TestCase):
     preprocess_options = [(preprocessor.random_vertical_flip, {})]
     image_height = 3
     image_width = 3
-    images = tf.random_uniform([1, image_height, image_width, 3])
+    images = tf.compat.v1.random_uniform([1, image_height, image_width, 3])
     boxes = self.createTestBoxes()
     masks = self.createTestMasks()
     keypoints = self.createTestKeypoints()
@@ -898,7 +898,7 @@ class PreprocessorTest(tf.test.TestCase):
     preprocess_options = [(preprocessor.random_rotation90, {})]
     image_height = 3
     image_width = 3
-    images = tf.random_uniform([1, image_height, image_width, 3])
+    images = tf.compat.v1.random_uniform([1, image_height, image_width, 3])
     boxes = self.createTestBoxes()
     masks = self.createTestMasks()
     keypoints = self.createTestKeypoints()
@@ -1588,7 +1588,7 @@ class PreprocessorTest(tf.test.TestCase):
     boxes = self.createTestBoxes()
     labels = self.createTestLabels()
     weights = self.createTestGroundtruthWeights()
-    masks = tf.random_uniform([2, 200, 400], dtype=tf.float32)
+    masks = tf.compat.v1.random_uniform([2, 200, 400], dtype=tf.float32)
     with mock.patch.object(
         tf.image,
         'sample_distorted_bounding_box'
@@ -1654,7 +1654,7 @@ class PreprocessorTest(tf.test.TestCase):
     boxes = self.createTestBoxes()
     labels = self.createTestLabels()
     weights = self.createTestGroundtruthWeights()
-    masks = tf.random_uniform([2, 200, 400], dtype=tf.float32)
+    masks = tf.compat.v1.random_uniform([2, 200, 400], dtype=tf.float32)
 
     tensor_dict = {
         fields.InputDataFields.image: image,
@@ -1939,7 +1939,7 @@ class PreprocessorTest(tf.test.TestCase):
     boxes = self.createTestBoxes()
     labels = self.createTestLabels()
     weights = self.createTestGroundtruthWeights()
-    masks = tf.random_uniform([2, 200, 400], dtype=tf.float32)
+    masks = tf.compat.v1.random_uniform([2, 200, 400], dtype=tf.float32)
 
     tensor_dict = {
         fields.InputDataFields.image: image,
@@ -2074,7 +2074,7 @@ class PreprocessorTest(tf.test.TestCase):
     image = self.createColorfulTestImage()
     boxes = self.createTestBoxes()
     labels = self.createTestLabels()
-    masks = tf.random_uniform([2, 200, 400], dtype=tf.float32)
+    masks = tf.compat.v1.random_uniform([2, 200, 400], dtype=tf.float32)
 
     tensor_dict = {
         fields.InputDataFields.image: image,
@@ -2560,8 +2560,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_image(
           in_image, in_masks, new_height=height, new_width=width)
       out_image_shape = tf.shape(out_image)
@@ -2587,8 +2587,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_image(
           in_image, in_masks, new_height=height, new_width=width)
       out_image_shape = tf.shape(out_image)
@@ -2614,8 +2614,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_image(
           in_image, in_masks, new_height=height, new_width=width)
       out_image_shape = tf.shape(out_image)
@@ -2635,7 +2635,7 @@ class PreprocessorTest(tf.test.TestCase):
     expected_shape_list = [[75, 50, 3], [50, 100, 3], [30, 100, 3]]
 
     for in_shape, expected_shape in zip(in_shape_list, expected_shape_list):
-      in_image = tf.random_uniform(in_shape)
+      in_image = tf.compat.v1.random_uniform(in_shape)
       out_image, _ = preprocessor.resize_to_range(
           in_image, min_dimension=min_dim, max_dimension=max_dim)
       self.assertAllEqual(out_image.get_shape().as_list(), expected_shape)
@@ -2712,8 +2712,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_range(
           in_image, in_masks, min_dimension=min_dim, max_dimension=max_dim)
       self.assertAllEqual(out_masks.get_shape().as_list(), expected_mask_shape)
@@ -2769,7 +2769,7 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_masks_shape_list):
       in_image = tf.placeholder(tf.float32, shape=(None, None, 3))
       in_masks = tf.placeholder(tf.float32, shape=(None, None, None))
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_range(
           in_image, in_masks, min_dimension=min_dim, max_dimension=max_dim)
       out_image_shape = tf.shape(out_image)
@@ -2799,8 +2799,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_range(
           in_image, in_masks, min_dimension=min_dim, max_dimension=max_dim)
       out_image_shape = tf.shape(out_image)
@@ -2813,7 +2813,7 @@ class PreprocessorTest(tf.test.TestCase):
         self.assertAllEqual(out_masks_shape, expected_mask_shape)
 
   def testResizeToRange4DImageTensor(self):
-    image = tf.random_uniform([1, 200, 300, 3])
+    image = tf.compat.v1.random_uniform([1, 200, 300, 3])
     with self.assertRaises(ValueError):
       preprocessor.resize_to_range(image, 500, 600)
 
@@ -2825,7 +2825,7 @@ class PreprocessorTest(tf.test.TestCase):
     expected_shape_list = [[320, 320, 3], [320, 320, 3]]
 
     for in_shape, expected_shape in zip(in_shape_list, expected_shape_list):
-      in_image = tf.random_uniform(in_shape)
+      in_image = tf.compat.v1.random_uniform(in_shape)
       out_image, _ = preprocessor.resize_to_range(
           in_image, min_dimension=min_dim, max_dimension=max_dim)
       out_image_shape = tf.shape(out_image)
@@ -2849,7 +2849,7 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_masks_shape_list):
       in_image = tf.placeholder(tf.float32, shape=(None, None, 3))
       in_masks = tf.placeholder(tf.float32, shape=(None, None, None))
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_max_dimension(
           in_image, in_masks, max_dimension=max_dim)
       out_image_shape = tf.shape(out_image)
@@ -2878,8 +2878,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_max_dimension(
           in_image, in_masks, max_dimension=max_dim)
       out_image_shape = tf.shape(out_image)
@@ -2892,7 +2892,7 @@ class PreprocessorTest(tf.test.TestCase):
         self.assertAllEqual(out_masks_shape, expected_mask_shape)
 
   def testResizeToMaxDimensionRaisesErrorOn4DImage(self):
-    image = tf.random_uniform([1, 200, 300, 3])
+    image = tf.compat.v1.random_uniform([1, 200, 300, 3])
     with self.assertRaises(ValueError):
       preprocessor.resize_to_max_dimension(image, 500)
 
@@ -2910,7 +2910,7 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_masks_shape_list):
       in_image = tf.placeholder(tf.float32, shape=(None, None, 3))
       in_masks = tf.placeholder(tf.float32, shape=(None, None, None))
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_min_dimension(
           in_image, in_masks, min_dimension=min_dim)
       out_image_shape = tf.shape(out_image)
@@ -2939,8 +2939,8 @@ class PreprocessorTest(tf.test.TestCase):
                                      expected_image_shape_list,
                                      in_masks_shape_list,
                                      expected_masks_shape_list):
-      in_image = tf.random_uniform(in_image_shape)
-      in_masks = tf.random_uniform(in_masks_shape)
+      in_image = tf.compat.v1.random_uniform(in_image_shape)
+      in_masks = tf.compat.v1.random_uniform(in_masks_shape)
       out_image, out_masks, _ = preprocessor.resize_to_min_dimension(
           in_image, in_masks, min_dimension=min_dim)
       out_image_shape = tf.shape(out_image)
@@ -2953,7 +2953,7 @@ class PreprocessorTest(tf.test.TestCase):
         self.assertAllEqual(out_masks_shape, expected_mask_shape)
 
   def testResizeToMinDimensionRaisesErrorOn4DImage(self):
-    image = tf.random_uniform([1, 200, 300, 3])
+    image = tf.compat.v1.random_uniform([1, 200, 300, 3])
     with self.assertRaises(ValueError):
       preprocessor.resize_to_min_dimension(image, 500)
 
@@ -2966,7 +2966,7 @@ class PreprocessorTest(tf.test.TestCase):
     expected_boxes = [[6., 8., 24., 24.],
                       [30., 12., 54., 28.]]
 
-    in_image = tf.random_uniform(in_shape)
+    in_image = tf.compat.v1.random_uniform(in_shape)
     in_boxes = tf.constant(in_boxes)
     _, out_boxes = preprocessor.scale_boxes_to_pixel_coordinates(
         in_image, boxes=in_boxes)
@@ -2987,7 +2987,7 @@ class PreprocessorTest(tf.test.TestCase):
         [[24., 16.], [30., 20.], [36., 24.]],
     ]
 
-    in_image = tf.random_uniform(in_shape)
+    in_image = tf.compat.v1.random_uniform(in_shape)
     _, out_boxes, out_keypoints = preprocessor.scale_boxes_to_pixel_coordinates(
         in_image, boxes=in_boxes, keypoints=in_keypoints)
     with self.test_session() as sess:

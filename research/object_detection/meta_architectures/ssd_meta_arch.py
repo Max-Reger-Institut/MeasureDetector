@@ -31,7 +31,8 @@ from object_detection.utils import shape_utils
 from object_detection.utils import variables_helper
 from object_detection.utils import visualization_utils
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class SSDFeatureExtractor(object):
@@ -172,7 +173,7 @@ class SSDKerasFeatureExtractor(tf.keras.Model):
         params.
       inplace_batchnorm_update: Whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False.
@@ -345,7 +346,7 @@ class SSDMetaArch(model.DetectionModel):
         params.
       inplace_batchnorm_update: Whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       add_background_class: Whether to add an implicit background class to
         one-hot encodings of groundtruth labels. Set to false if training a
@@ -477,7 +478,7 @@ class SSDMetaArch(model.DetectionModel):
     """
     if inputs.dtype is not tf.float32:
       raise ValueError('`preprocess` expects a tf.float32 tensor')
-    with tf.name_scope('Preprocessor'):
+    with tf.compat.v1.name_scope('Preprocessor'):
       # TODO(jonathanhuang): revisit whether to always use batch size as
       # the number of parallel iterations vs allow for dynamic batching.
       outputs = shape_utils.static_or_dynamic_map_fn(
@@ -564,7 +565,7 @@ class SSDMetaArch(model.DetectionModel):
     if self._inplace_batchnorm_update:
       batchnorm_updates_collections = None
     else:
-      batchnorm_updates_collections = tf.GraphKeys.UPDATE_OPS
+      batchnorm_updates_collections = tf.compat.v1.GraphKeys.UPDATE_OPS
     if self._feature_extractor.is_keras_model:
       feature_maps = self._feature_extractor(preprocessed_inputs)
     else:
@@ -572,7 +573,7 @@ class SSDMetaArch(model.DetectionModel):
                           is_training=(self._is_training and
                                        not self._freeze_batchnorm),
                           updates_collections=batchnorm_updates_collections):
-        with tf.variable_scope(None, self._extract_features_scope,
+        with tf.compat.v1.variable_scope(None, self._extract_features_scope,
                                [preprocessed_inputs]):
           feature_maps = self._feature_extractor.extract_features(
               preprocessed_inputs)
@@ -687,7 +688,7 @@ class SSDMetaArch(model.DetectionModel):
       raise ValueError('prediction_dict does not contain expected entries.')
     if 'anchors' not in prediction_dict:
       prediction_dict['anchors'] = self.anchors.get()
-    with tf.name_scope('Postprocessor'):
+    with tf.compat.v1.name_scope('Postprocessor'):
       preprocessed_images = prediction_dict['preprocessed_inputs']
       box_encodings = prediction_dict['box_encodings']
       box_encodings = tf.identity(box_encodings, 'raw_box_encodings')
@@ -794,7 +795,7 @@ class SSDMetaArch(model.DetectionModel):
         `classification_loss`) to scalar tensors representing corresponding loss
         values.
     """
-    with tf.name_scope(scope, 'Loss', prediction_dict.values()):
+    with tf.compat.v1.name_scope(scope, 'Loss', prediction_dict.values()):
       keypoints = None
       if self.groundtruth_has_field(fields.BoxListFields.keypoints):
         keypoints = self.groundtruth_lists(fields.BoxListFields.keypoints)
@@ -1198,7 +1199,7 @@ class SSDMetaArch(model.DetectionModel):
       A list of regularization loss tensors.
     """
     losses = []
-    slim_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
+    slim_losses = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.REGULARIZATION_LOSSES)
     # Copy the slim losses to avoid modifying the collection
     if slim_losses:
       losses.extend(slim_losses)
@@ -1273,7 +1274,7 @@ class SSDMetaArch(model.DetectionModel):
       A list of update operators.
     """
     update_ops = []
-    slim_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    slim_update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
     # Copy the slim ops to avoid modifying the collection
     if slim_update_ops:
       update_ops.extend(slim_update_ops)

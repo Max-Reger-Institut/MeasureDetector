@@ -46,7 +46,7 @@ class MaskRCNNKeypointHeadTest(test_case.TestCase):
   def test_prediction_size(self):
     keypoint_prediction_head = keypoint_head.MaskRCNNKeypointHead(
         conv_hyperparams_fn=self._build_arg_scope_with_hyperparams())
-    roi_pooled_features = tf.random_uniform(
+    roi_pooled_features = tf.compat.v1.random_uniform(
         [64, 14, 14, 1024], minval=-2.0, maxval=2.0, dtype=tf.float32)
     prediction = keypoint_prediction_head.predict(
         features=roi_pooled_features, num_predictions_per_location=1)

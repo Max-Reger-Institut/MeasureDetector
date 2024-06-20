@@ -237,7 +237,7 @@ def evaluate(create_input_dict_fn, create_model_fn, eval_config, categories,
       logging.info('Skipping image')
       counters['skipped'] += 1
       return {}, {}
-    global_step = tf.train.global_step(sess, tf.train.get_global_step())
+    global_step = tf.compat.v1.train.global_step(sess, tf.compat.v1.train.get_global_step())
     if batch_index < eval_config.num_visualizations:
       tag = 'image-{}'.format(batch_index)
       eval_util.visualize_detection_results(
@@ -261,16 +261,16 @@ def evaluate(create_input_dict_fn, create_model_fn, eval_config, categories,
   if graph_hook_fn: graph_hook_fn()
 
   variables_to_restore = tf.global_variables()
-  global_step = tf.train.get_or_create_global_step()
+  global_step = tf.compat.v1.train.get_or_create_global_step()
   variables_to_restore.append(global_step)
 
   if eval_config.use_moving_averages:
-    variable_averages = tf.train.ExponentialMovingAverage(0.0)
+    variable_averages = tf.compat.v1.train.ExponentialMovingAverage(0.0)
     variables_to_restore = variable_averages.variables_to_restore()
-  saver = tf.train.Saver(variables_to_restore)
+  saver = tf.compat.v1.train.Saver(variables_to_restore)
 
   def _restore_latest_checkpoint(sess):
-    latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
+    latest_checkpoint = tf.compat.v1.train.latest_checkpoint(checkpoint_dir)
     saver.restore(sess, latest_checkpoint)
 
   if not evaluator_list:

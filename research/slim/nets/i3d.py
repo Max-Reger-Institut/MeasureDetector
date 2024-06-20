@@ -29,7 +29,8 @@ import tensorflow as tf
 from nets import i3d_utils
 from nets import s3dg
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
 conv3d_spatiotemporal = i3d_utils.conv3d_spatiotemporal
 
@@ -148,12 +149,12 @@ def i3d(inputs,
       activation.
   """
   # Final pooling and prediction
-  with tf.variable_scope(
+  with tf.compat.v1.variable_scope(
       scope, 'InceptionV1', [inputs, num_classes], reuse=reuse) as scope:
     with slim.arg_scope(
         [slim.batch_norm, slim.dropout], is_training=is_training):
       net, end_points = i3d_base(inputs, scope=scope)
-      with tf.variable_scope('Logits'):
+      with tf.compat.v1.variable_scope('Logits'):
         kernel_size = i3d_utils.reduced_kernel_size_3d(net, [2, 7, 7])
         net = slim.avg_pool3d(
             net, kernel_size, stride=1, scope='AvgPool_0a_7x7')

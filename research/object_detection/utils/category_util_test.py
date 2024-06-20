@@ -35,7 +35,7 @@ class EvalUtilTest(tf.test.TestCase):
         2,"bird"
     """.strip(' ')
     csv_path = os.path.join(self.get_temp_dir(), 'test.csv')
-    with tf.gfile.Open(csv_path, 'wb') as f:
+    with tf.compat.v1.gfile.Open(csv_path, 'wb') as f:
       f.write(csv_data)
 
     categories = category_util.load_categories_from_csv_file(csv_path)

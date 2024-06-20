@@ -416,7 +416,7 @@ def _replace_empty_string_with_random_number(string_tensor):
   empty_string = tf.constant('', dtype=tf.string, name='EmptyString')
 
   random_source_id = tf.as_string(
-      tf.random_uniform(shape=[], maxval=2**63 - 1, dtype=tf.int64))
+      tf.compat.v1.random_uniform(shape=[], maxval=2**63 - 1, dtype=tf.int64))
 
   out_string = tf.cond(
       tf.equal(string_tensor, empty_string),

@@ -55,7 +55,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         use_depthwise=False,
         mask_height=7,
         mask_width=7)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 20, 7, 7],
@@ -75,7 +75,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         use_depthwise=True,
         mask_height=7,
         mask_width=7)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 20, 7, 7],
@@ -96,7 +96,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         mask_height=7,
         mask_width=7,
         masks_are_class_agnostic=True)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 1, 7, 7],
@@ -117,7 +117,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         mask_height=7,
         mask_width=7,
         masks_are_class_agnostic=True)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 1, 7, 7],
@@ -155,7 +155,7 @@ class MaskRCNNMaskHeadTest(test_case.TestCase):
         mask_prediction_num_conv_layers=2,
         mask_prediction_conv_depth=256,
         masks_are_class_agnostic=False)
-    roi_pooled_features = tf.random_uniform(
+    roi_pooled_features = tf.compat.v1.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = mask_prediction_head(roi_pooled_features)
     self.assertAllEqual([64, 1, 20, 14, 14], prediction.get_shape().as_list())
@@ -172,7 +172,7 @@ class MaskRCNNMaskHeadTest(test_case.TestCase):
         mask_prediction_conv_depth=256,
         masks_are_class_agnostic=True,
         convolve_then_upsample=True)
-    roi_pooled_features = tf.random_uniform(
+    roi_pooled_features = tf.compat.v1.random_uniform(
         [64, 14, 14, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = mask_prediction_head(roi_pooled_features)
     self.assertAllEqual([64, 1, 1, 28, 28], prediction.get_shape().as_list())
@@ -204,7 +204,7 @@ class WeightSharedConvolutionalMaskPredictorTest(test_case.TestCase):
             conv_hyperparams=self._build_conv_hyperparams(),
             mask_height=7,
             mask_width=7))
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 20, 7, 7],
@@ -219,7 +219,7 @@ class WeightSharedConvolutionalMaskPredictorTest(test_case.TestCase):
             mask_height=7,
             mask_width=7,
             masks_are_class_agnostic=True))
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 1, 7, 7],

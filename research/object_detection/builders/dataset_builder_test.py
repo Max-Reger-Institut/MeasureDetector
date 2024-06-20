@@ -58,7 +58,7 @@ class DatasetBuilderTest(tf.test.TestCase):
           additional_channels_key = 'image/additional_channels/encoded'
           features[additional_channels_key] = dataset_util.bytes_list_feature(
               [encoded_additional_channels_jpeg] * 2)
-        example = tf.train.Example(features=tf.train.Features(feature=features))
+        example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
         writer.write(example.SerializeToString())
       writer.close()
 
@@ -79,7 +79,7 @@ class DatasetBuilderTest(tf.test.TestCase):
     tensor_dict = dataset_builder.make_initializable_iterator(
         dataset_builder.build(input_reader_proto, batch_size=1)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
 
     self.assertTrue(
@@ -110,7 +110,7 @@ class DatasetBuilderTest(tf.test.TestCase):
     tensor_dict = dataset_builder.make_initializable_iterator(
         dataset_builder.build(input_reader_proto, batch_size=1)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
     self.assertAllEqual(
         (1, 1, 4, 5),
@@ -140,7 +140,7 @@ class DatasetBuilderTest(tf.test.TestCase):
             transform_input_data_fn=one_hot_class_encoding_fn,
             batch_size=2)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
 
     self.assertAllEqual([2, 4, 5, 3],
@@ -178,7 +178,7 @@ class DatasetBuilderTest(tf.test.TestCase):
             transform_input_data_fn=one_hot_class_encoding_fn,
             batch_size=2)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
 
     self.assertAllEqual(
@@ -212,7 +212,7 @@ class DatasetBuilderTest(tf.test.TestCase):
     tensor_dict = dataset_builder.make_initializable_iterator(
         dataset_builder.build(input_reader_proto, batch_size=1)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
       self.assertAllEqual(['0'], output_dict[fields.InputDataFields.source_id])
       output_dict = sess.run(tensor_dict)
@@ -234,7 +234,7 @@ class DatasetBuilderTest(tf.test.TestCase):
     tensor_dict = dataset_builder.make_initializable_iterator(
         dataset_builder.build(input_reader_proto, batch_size=1)).get_next()
 
-    with tf.train.MonitoredSession() as sess:
+    with tf.compat.v1.train.MonitoredSession() as sess:
       output_dict = sess.run(tensor_dict)
       self.assertAllEqual(['0'], output_dict[fields.InputDataFields.source_id])
       output_dict = sess.run(tensor_dict)
@@ -248,14 +248,14 @@ class ReadDatasetTest(tf.test.TestCase):
 
     for i in range(5):
       path = self._path_template % i
-      with tf.gfile.Open(path, 'wb') as f:
+      with tf.compat.v1.gfile.Open(path, 'wb') as f:
         f.write('\n'.join([str(i + 1), str((i + 1) * 10)]))
 
     self._shuffle_path_template = os.path.join(self.get_temp_dir(),
                                                'shuffle_%s.txt')
     for i in range(2):
       path = self._shuffle_path_template % i
-      with tf.gfile.Open(path, 'wb') as f:
+      with tf.compat.v1.gfile.Open(path, 'wb') as f:
         f.write('\n'.join([str(i)] * 5))
 
   def _get_dataset_next(self, files, config, batch_size):

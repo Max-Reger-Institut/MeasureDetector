@@ -32,7 +32,8 @@ from object_detection.utils import ops as util_ops
 from object_detection.utils import variables_helper
 from deployment import model_deploy
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def create_input_queue(batch_size_per_clone, create_tensor_dict_fn,
@@ -282,7 +283,7 @@ def train(create_tensor_dict_fn,
     # Gather initial summaries.
     # TODO(rathodv): See if summaries can be added/extracted from global tf
     # collections so that they don't have to be passed around.
-    summaries = set(tf.get_collection(tf.GraphKeys.SUMMARIES))
+    summaries = set(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.SUMMARIES))
     global_summaries = set([])
 
     model_fn = functools.partial(_create_losses,
@@ -297,7 +298,7 @@ def train(create_tensor_dict_fn,
 
     # Gather update_ops from the first clone. These contain, for example,
     # the updates for the batch_norm variables created by model_fn.
-    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS, first_clone_scope)
+    update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS, first_clone_scope)
 
     with tf.device(deploy_config.optimizer_device()):
       training_optimizer, optimizer_summary_vars = optimizer_builder.build(
@@ -307,7 +308,7 @@ def train(create_tensor_dict_fn,
 
     sync_optimizer = None
     if train_config.sync_replicas:
-      training_optimizer = tf.train.SyncReplicasOptimizer(
+      training_optimizer = tf.compat.v1.train.SyncReplicasOptimizer(
           training_optimizer,
           replicas_to_aggregate=train_config.replicas_to_aggregate,
           total_num_replicas=worker_replicas)
@@ -336,7 +337,7 @@ def train(create_tensor_dict_fn,
 
       # Optionally clip gradients
       if train_config.gradient_clipping_by_norm > 0:
-        with tf.name_scope('clip_grads'):
+        with tf.compat.v1.name_scope('clip_grads'):
           grads_and_vars = slim.learning.clip_gradient_norms(
               grads_and_vars, train_config.gradient_clipping_by_norm)
 
@@ -360,7 +361,7 @@ def train(create_tensor_dict_fn,
 
     # Add the summaries from the first clone. These contain the summaries
     # created by model_fn and either optimize_clones() or _gather_clone_loss().
-    summaries |= set(tf.get_collection(tf.GraphKeys.SUMMARIES,
+    summaries |= set(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.SUMMARIES,
                                        first_clone_scope))
     summaries |= global_summaries
 
@@ -373,7 +374,7 @@ def train(create_tensor_dict_fn,
 
     # Save checkpoints regularly.
     keep_checkpoint_every_n_hours = train_config.keep_checkpoint_every_n_hours
-    saver = tf.train.Saver(
+    saver = tf.compat.v1.train.Saver(
         keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours)
 
     # Create ops required to initialize the model from a given checkpoint.
@@ -395,7 +396,7 @@ def train(create_tensor_dict_fn,
                            get_variables_available_in_checkpoint(
                                var_map, train_config.fine_tune_checkpoint,
                                include_global_step=False))
-      init_saver = tf.train.Saver(available_var_map)
+      init_saver = tf.compat.v1.train.Saver(available_var_map)
       def initializer_fn(sess):
         init_saver.restore(sess, train_config.fine_tune_checkpoint)
       init_fn = initializer_fn

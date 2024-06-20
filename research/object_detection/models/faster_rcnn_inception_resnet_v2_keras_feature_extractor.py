@@ -94,8 +94,8 @@ class FasterRCNNInceptionResnetV2KerasFeatureExtractor(
       And returns rpn_feature_map:
         A tensor with shape [batch, height, width, depth]
     """
-    with tf.name_scope(name):
-      with tf.name_scope('InceptionResnetV2'):
+    with tf.compat.v1.name_scope(name):
+      with tf.compat.v1.name_scope('InceptionResnetV2'):
         model = inception_resnet_v2.inception_resnet_v2(
               self._train_batch_norm,
               output_stride=self._first_stage_features_stride,
@@ -128,8 +128,8 @@ class FasterRCNNInceptionResnetV2KerasFeatureExtractor(
         [batch_size * self.max_num_proposals, height, width, depth]
         representing box classifier features for each proposal.
     """
-    with tf.name_scope(name):
-      with tf.name_scope('InceptionResnetV2'):
+    with tf.compat.v1.name_scope(name):
+      with tf.compat.v1.name_scope('InceptionResnetV2'):
         model = inception_resnet_v2.inception_resnet_v2(
             self._train_batch_norm,
             output_stride=16,

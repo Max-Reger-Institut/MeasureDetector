@@ -98,7 +98,7 @@ class BoxPredictor(object):
                        format(len(image_features),
                               len(num_predictions_per_location)))
     if scope is not None:
-      with tf.variable_scope(scope):
+      with tf.compat.v1.variable_scope(scope):
         return self._predict(image_features, num_predictions_per_location,
                              **params)
     return self._predict(image_features, num_predictions_per_location,
@@ -153,7 +153,7 @@ class KerasBoxPredictor(tf.keras.Model):
         params.
       inplace_batchnorm_update: Whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       name: A string name scope to assign to the model. If `None`, Keras
         will auto-generate one from the class name.

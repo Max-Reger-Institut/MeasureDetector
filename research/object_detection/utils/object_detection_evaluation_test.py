@@ -1065,7 +1065,7 @@ class ObjectDetectionEvaluatorTest(tf.test.TestCase, parameterized.TestCase):
         batch_size=batch_size,
         max_gt_boxes=max_gt_boxes,
         scale_to_absolute=scale_to_absolute)
-    tf.logging.info('eval_dict: {}'.format(eval_dict))
+    tf.compat.v1.logging.info('eval_dict: {}'.format(eval_dict))
     metric_ops = self.od_eval.get_estimator_eval_metric_ops(eval_dict)
     _, update_op = metric_ops['Precision/mAP@0.5IOU']
 

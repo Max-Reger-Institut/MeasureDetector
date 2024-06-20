@@ -22,7 +22,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import inception_v2
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class SSDInceptionV2FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -119,7 +120,7 @@ class SSDInceptionV2FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     }
 
     with slim.arg_scope(self._conv_hyperparams_fn()):
-      with tf.variable_scope('InceptionV2',
+      with tf.compat.v1.variable_scope('InceptionV2',
                              reuse=self._reuse_weights) as scope:
         _, image_features = inception_v2.inception_v2_base(
             ops.pad_to_multiple(preprocessed_inputs, self._pad_to_multiple),

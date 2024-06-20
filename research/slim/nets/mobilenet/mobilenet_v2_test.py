@@ -24,7 +24,8 @@ from nets.mobilenet import mobilenet
 from nets.mobilenet import mobilenet_v2
 
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def find_ops(optype):

@@ -164,7 +164,7 @@ def pix2pix_generator(net,
   ###########
   # Encoder #
   ###########
-  with tf.variable_scope('encoder'):
+  with tf.compat.v1.variable_scope('encoder'):
     with tf.contrib.framework.arg_scope(
         [layers.conv2d],
         kernel_size=[4, 4],
@@ -193,7 +193,7 @@ def pix2pix_generator(net,
   reversed_blocks = list(blocks)
   reversed_blocks.reverse()
 
-  with tf.variable_scope('decoder'):
+  with tf.compat.v1.variable_scope('decoder'):
     # Dropout is used at both train and test time as per 'Image-to-Image',
     # Section 2.1 (last paragraph).
     with tf.contrib.framework.arg_scope([layers.dropout], is_training=True):
@@ -209,7 +209,7 @@ def pix2pix_generator(net,
           net = layers.dropout(net, keep_prob=block.decoder_keep_prob)
         end_points['decoder%d' % block_id] = net
 
-  with tf.variable_scope('output'):
+  with tf.compat.v1.variable_scope('output'):
     # Explicitly set the normalizer_fn to None to override any default value
     # that may come from an arg_scope, such as pix2pix_arg_scope.
     logits = layers.conv2d(
@@ -248,7 +248,7 @@ def pix2pix_discriminator(net, num_filters, padding=2, pad_mode='REFLECT',
 
   def padded(net, scope):
     if padding:
-      with tf.variable_scope(scope):
+      with tf.compat.v1.variable_scope(scope):
         spatial_pad = tf.constant(
             [[0, 0], [padding, padding], [padding, padding], [0, 0]],
             dtype=tf.int32)

@@ -50,7 +50,7 @@ def expanded_shape(orig_shape, start_dim, num_dims):
   Returns:
     An int32 vector of length tf.size(orig_shape) + num_dims.
   """
-  with tf.name_scope('ExpandedShape'):
+  with tf.compat.v1.name_scope('ExpandedShape'):
     start_dim = tf.expand_dims(start_dim, 0)  # scalar to rank-1
     before = tf.slice(orig_shape, [0], start_dim)
     add_shape = tf.ones(tf.reshape(num_dims, [1]), dtype=tf.int32)
@@ -120,7 +120,7 @@ def meshgrid(x, y):
   Returns:
     A tuple of tensors (xgrid, ygrid).
   """
-  with tf.name_scope('Meshgrid'):
+  with tf.compat.v1.name_scope('Meshgrid'):
     x = tf.convert_to_tensor(x)
     y = tf.convert_to_tensor(y)
     x_exp_shape = expanded_shape(tf.shape(x), 0, tf.rank(y))
@@ -565,7 +565,7 @@ def normalize_to_target(inputs,
     ValueError: If target_norm_value is not a float or a list of floats with
       length equal to the depth along the dimension to be normalized.
   """
-  with tf.variable_scope(scope, 'NormalizeToTarget', [inputs]):
+  with tf.compat.v1.variable_scope(scope, 'NormalizeToTarget', [inputs]):
     if not inputs.get_shape():
       raise ValueError('The input rank must be known.')
     input_shape = inputs.get_shape().as_list()
@@ -594,7 +594,7 @@ def normalize_to_target(inputs,
         trainable=trainable)
     if summarize:
       mean = tf.reduce_mean(target_norm)
-      tf.summary.scalar(tf.get_variable_scope().name, mean)
+      tf.summary.scalar(tf.compat.v1.get_variable_scope().name, mean)
     lengths = epsilon + tf.sqrt(tf.reduce_sum(tf.square(inputs), dim, True))
     mult_shape = input_rank*[1]
     mult_shape[dim] = depth
@@ -962,7 +962,7 @@ def nearest_neighbor_upsampling(input_tensor, scale=None, height_scale=None,
   if not scale and (height_scale is None or width_scale is None):
     raise ValueError('Provide either `scale` or `height_scale` and'
                      ' `width_scale`.')
-  with tf.name_scope('nearest_neighbor_upsampling'):
+  with tf.compat.v1.name_scope('nearest_neighbor_upsampling'):
     h_scale = scale if height_scale is None else height_scale
     w_scale = scale if width_scale is None else width_scale
     (batch_size, height, width,
@@ -990,7 +990,7 @@ def matmul_gather_on_zeroth_axis(params, indices, scope=None):
     A Tensor. Has the same type as params. Values from params gathered
     from indices given by indices, with shape indices.shape + params.shape[1:].
   """
-  with tf.name_scope(scope, 'MatMulGather'):
+  with tf.compat.v1.name_scope(scope, 'MatMulGather'):
     params_shape = shape_utils.combined_static_and_dynamic_shape(params)
     indices_shape = shape_utils.combined_static_and_dynamic_shape(indices)
     params2d = tf.reshape(params, [params_shape[0], -1])

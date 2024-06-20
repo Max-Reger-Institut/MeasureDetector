@@ -52,7 +52,7 @@ class MaskRCNNMaskHeadTest(test_case.TestCase):
         mask_prediction_num_conv_layers=2,
         mask_prediction_conv_depth=256,
         masks_are_class_agnostic=False)
-    roi_pooled_features = tf.random_uniform(
+    roi_pooled_features = tf.compat.v1.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = mask_prediction_head.predict(
         features=roi_pooled_features, num_predictions_per_location=1)
@@ -68,7 +68,7 @@ class MaskRCNNMaskHeadTest(test_case.TestCase):
         mask_prediction_conv_depth=256,
         masks_are_class_agnostic=True,
         convolve_then_upsample=True)
-    roi_pooled_features = tf.random_uniform(
+    roi_pooled_features = tf.compat.v1.random_uniform(
         [64, 14, 14, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = mask_prediction_head.predict(
         features=roi_pooled_features, num_predictions_per_location=1)
@@ -104,7 +104,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         kernel_size=3,
         mask_height=7,
         mask_width=7)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head.predict(
         features=image_feature,
@@ -122,7 +122,7 @@ class ConvolutionalMaskPredictorTest(test_case.TestCase):
         mask_height=7,
         mask_width=7,
         masks_are_class_agnostic=True)
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head.predict(
         features=image_feature,
@@ -157,7 +157,7 @@ class WeightSharedConvolutionalMaskPredictorTest(test_case.TestCase):
             num_classes=20,
             mask_height=7,
             mask_width=7))
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head.predict(
         features=image_feature,
@@ -172,7 +172,7 @@ class WeightSharedConvolutionalMaskPredictorTest(test_case.TestCase):
             mask_height=7,
             mask_width=7,
             masks_are_class_agnostic=True))
-    image_feature = tf.random_uniform(
+    image_feature = tf.compat.v1.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     mask_predictions = mask_prediction_head.predict(
         features=image_feature,

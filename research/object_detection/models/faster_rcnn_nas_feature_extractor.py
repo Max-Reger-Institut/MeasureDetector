@@ -27,8 +27,10 @@ from object_detection.utils import variables_helper
 from nets.nasnet import nasnet
 from nets.nasnet import nasnet_utils
 
-arg_scope = tf.contrib.framework.arg_scope
-slim = tf.contrib.slim
+import tf_slim
+arg_scope = tf_slim.arg_scope
+import tf_slim
+slim = tf_slim
 
 
 def nasnet_large_arg_scope_for_detection(is_batch_norm_training=False):
@@ -104,7 +106,7 @@ def _build_nasnet_base(hidden_previous,
   # Final nonlinearity.
   # Note that we have dropped the final pooling, dropout and softmax layers
   # from the default nasnet version.
-  with tf.variable_scope('final_layer'):
+  with tf.compat.v1.variable_scope('final_layer'):
     net = tf.nn.relu(net)
   return net
 

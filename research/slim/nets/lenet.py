@@ -20,7 +20,8 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def lenet(images, num_classes=10, is_training=False,
@@ -58,7 +59,7 @@ def lenet(images, num_classes=10, is_training=False,
   """
   end_points = {}
 
-  with tf.variable_scope(scope, 'LeNet', [images]):
+  with tf.compat.v1.variable_scope(scope, 'LeNet', [images]):
     net = end_points['conv1'] = slim.conv2d(images, 32, [5, 5], scope='conv1')
     net = end_points['pool1'] = slim.max_pool2d(net, [2, 2], 2, scope='pool1')
     net = end_points['conv2'] = slim.conv2d(net, 64, [5, 5], scope='conv2')

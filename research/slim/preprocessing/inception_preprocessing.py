@@ -35,7 +35,7 @@ def apply_with_random_selector(x, func, num_cases):
     The result of func(x, sel), where func receives the value of the
     selector as a python integer, but sel is sampled dynamically.
   """
-  sel = tf.random_uniform([], maxval=num_cases, dtype=tf.int32)
+  sel = tf.compat.v1.random_uniform([], maxval=num_cases, dtype=tf.int32)
   # Pass the real x only to one of the func calls.
   return control_flow_ops.merge([
       func(control_flow_ops.switch(x, tf.equal(sel, case))[1], case)
@@ -60,7 +60,7 @@ def distort_color(image, color_ordering=0, fast_mode=True, scope=None):
   Raises:
     ValueError: if color_ordering not in [0, 3]
   """
-  with tf.name_scope(scope, 'distort_color', [image]):
+  with tf.compat.v1.name_scope(scope, 'distort_color', [image]):
     if fast_mode:
       if color_ordering == 0:
         image = tf.image.random_brightness(image, max_delta=32. / 255.)
@@ -127,7 +127,7 @@ def distorted_bounding_box_crop(image,
   Returns:
     A tuple, a 3-D Tensor cropped_image and the distorted bbox
   """
-  with tf.name_scope(scope, 'distorted_bounding_box_crop', [image, bbox]):
+  with tf.compat.v1.name_scope(scope, 'distorted_bounding_box_crop', [image, bbox]):
     # Each bounding box has shape [1, num_boxes, box coords] and
     # the coordinates are ordered [ymin, xmin, ymax, xmax].
 
@@ -189,7 +189,7 @@ def preprocess_for_train(image,
   Returns:
     3-D float Tensor of distorted image used for training with range [-1, 1].
   """
-  with tf.name_scope(scope, 'distort_image', [image, height, width, bbox]):
+  with tf.compat.v1.name_scope(scope, 'distort_image', [image, height, width, bbox]):
     if bbox is None:
       bbox = tf.constant([0.0, 0.0, 1.0, 1.0],
                          dtype=tf.float32,
@@ -225,7 +225,7 @@ def preprocess_for_train(image,
     num_resize_cases = 1 if fast_mode else 4
     distorted_image = apply_with_random_selector(
         distorted_image,
-        lambda x, method: tf.image.resize_images(x, [height, width], method),
+        lambda x, method: tf.compat.v1.image.resize_images(x, [height, width], method),
         num_cases=num_resize_cases)
 
     if add_image_summaries:
@@ -278,7 +278,7 @@ def preprocess_for_eval(image,
   Returns:
     3-D float Tensor of prepared image.
   """
-  with tf.name_scope(scope, 'eval_image', [image, height, width]):
+  with tf.compat.v1.name_scope(scope, 'eval_image', [image, height, width]):
     if image.dtype != tf.float32:
       image = tf.image.convert_image_dtype(image, dtype=tf.float32)
     # Crop the central region of the image with an area containing 87.5% of

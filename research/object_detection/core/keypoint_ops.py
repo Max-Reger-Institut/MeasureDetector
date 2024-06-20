@@ -35,7 +35,7 @@ def scale(keypoints, y_scale, x_scale, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'Scale'):
+  with tf.compat.v1.name_scope(scope, 'Scale'):
     y_scale = tf.cast(y_scale, tf.float32)
     x_scale = tf.cast(x_scale, tf.float32)
     new_keypoints = keypoints * [[[y_scale, x_scale]]]
@@ -56,7 +56,7 @@ def clip_to_window(keypoints, window, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'ClipToWindow'):
+  with tf.compat.v1.name_scope(scope, 'ClipToWindow'):
     y, x = tf.split(value=keypoints, num_or_size_splits=2, axis=2)
     win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
     y = tf.maximum(tf.minimum(y, win_y_max), win_y_min)
@@ -81,7 +81,7 @@ def prune_outside_window(keypoints, window, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'PruneOutsideWindow'):
+  with tf.compat.v1.name_scope(scope, 'PruneOutsideWindow'):
     y, x = tf.split(value=keypoints, num_or_size_splits=2, axis=2)
     win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
 
@@ -117,7 +117,7 @@ def change_coordinate_frame(keypoints, window, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'ChangeCoordinateFrame'):
+  with tf.compat.v1.name_scope(scope, 'ChangeCoordinateFrame'):
     win_height = window[2] - window[0]
     win_width = window[3] - window[1]
     new_keypoints = scale(keypoints - [window[0], window[1]], 1.0 / win_height,
@@ -149,7 +149,7 @@ def to_normalized_coordinates(keypoints, height, width,
     tensor of shape [num_instances, num_keypoints, 2] with normalized
     coordinates in [0, 1].
   """
-  with tf.name_scope(scope, 'ToNormalizedCoordinates'):
+  with tf.compat.v1.name_scope(scope, 'ToNormalizedCoordinates'):
     height = tf.cast(height, tf.float32)
     width = tf.cast(width, tf.float32)
 
@@ -183,7 +183,7 @@ def to_absolute_coordinates(keypoints, height, width,
     in terms of the image size.
 
   """
-  with tf.name_scope(scope, 'ToAbsoluteCoordinates'):
+  with tf.compat.v1.name_scope(scope, 'ToAbsoluteCoordinates'):
     height = tf.cast(height, tf.float32)
     width = tf.cast(width, tf.float32)
 
@@ -221,7 +221,7 @@ def flip_horizontal(keypoints, flip_point, flip_permutation, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'FlipHorizontal'):
+  with tf.compat.v1.name_scope(scope, 'FlipHorizontal'):
     keypoints = tf.transpose(keypoints, [1, 0, 2])
     keypoints = tf.gather(keypoints, flip_permutation)
     v, u = tf.split(value=keypoints, num_or_size_splits=2, axis=2)
@@ -253,7 +253,7 @@ def flip_vertical(keypoints, flip_point, flip_permutation, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'FlipVertical'):
+  with tf.compat.v1.name_scope(scope, 'FlipVertical'):
     keypoints = tf.transpose(keypoints, [1, 0, 2])
     keypoints = tf.gather(keypoints, flip_permutation)
     v, u = tf.split(value=keypoints, num_or_size_splits=2, axis=2)
@@ -273,7 +273,7 @@ def rot90(keypoints, scope=None):
   Returns:
     new_keypoints: a tensor of shape [num_instances, num_keypoints, 2]
   """
-  with tf.name_scope(scope, 'Rot90'):
+  with tf.compat.v1.name_scope(scope, 'Rot90'):
     keypoints = tf.transpose(keypoints, [1, 0, 2])
     v, u = tf.split(value=keypoints[:, :, ::-1], num_or_size_splits=2, axis=2)
     v = 1.0 - v

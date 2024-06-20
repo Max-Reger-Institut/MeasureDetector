@@ -21,7 +21,8 @@ import tensorflow as tf
 
 from nets import overfeat
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class OverFeatTest(tf.test.TestCase):
@@ -31,7 +32,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 231, 231
     num_classes = 1000
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       logits, _ = overfeat.overfeat(inputs, num_classes)
       self.assertEquals(logits.op.name, 'overfeat/fc8/squeezed')
       self.assertListEqual(logits.get_shape().as_list(),
@@ -42,7 +43,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 281, 281
     num_classes = 1000
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       logits, _ = overfeat.overfeat(inputs, num_classes, spatial_squeeze=False)
       self.assertEquals(logits.op.name, 'overfeat/fc8/BiasAdd')
       self.assertListEqual(logits.get_shape().as_list(),
@@ -53,7 +54,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 281, 281
     num_classes = 1000
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       logits, _ = overfeat.overfeat(inputs, num_classes, spatial_squeeze=False,
                                     global_pool=True)
       self.assertEquals(logits.op.name, 'overfeat/fc8/BiasAdd')
@@ -65,7 +66,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 231, 231
     num_classes = 1000
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       _, end_points = overfeat.overfeat(inputs, num_classes)
       expected_names = ['overfeat/conv1',
                         'overfeat/pool1',
@@ -86,7 +87,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 231, 231
     num_classes = None
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       net, end_points = overfeat.overfeat(inputs, num_classes)
       expected_names = ['overfeat/conv1',
                         'overfeat/pool1',
@@ -107,7 +108,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 231, 231
     num_classes = 1000
     with self.test_session():
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       overfeat.overfeat(inputs, num_classes)
       expected_names = ['overfeat/conv1/weights',
                         'overfeat/conv1/biases',
@@ -134,7 +135,7 @@ class OverFeatTest(tf.test.TestCase):
     height, width = 231, 231
     num_classes = 1000
     with self.test_session():
-      eval_inputs = tf.random_uniform((batch_size, height, width, 3))
+      eval_inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       logits, _ = overfeat.overfeat(eval_inputs, is_training=False)
       self.assertListEqual(logits.get_shape().as_list(),
                            [batch_size, num_classes])
@@ -148,13 +149,13 @@ class OverFeatTest(tf.test.TestCase):
     eval_height, eval_width = 281, 281
     num_classes = 1000
     with self.test_session():
-      train_inputs = tf.random_uniform(
+      train_inputs = tf.compat.v1.random_uniform(
           (train_batch_size, train_height, train_width, 3))
       logits, _ = overfeat.overfeat(train_inputs)
       self.assertListEqual(logits.get_shape().as_list(),
                            [train_batch_size, num_classes])
-      tf.get_variable_scope().reuse_variables()
-      eval_inputs = tf.random_uniform(
+      tf.compat.v1.get_variable_scope().reuse_variables()
+      eval_inputs = tf.compat.v1.random_uniform(
           (eval_batch_size, eval_height, eval_width, 3))
       logits, _ = overfeat.overfeat(eval_inputs, is_training=False,
                                     spatial_squeeze=False)
@@ -168,7 +169,7 @@ class OverFeatTest(tf.test.TestCase):
     batch_size = 1
     height, width = 231, 231
     with self.test_session() as sess:
-      inputs = tf.random_uniform((batch_size, height, width, 3))
+      inputs = tf.compat.v1.random_uniform((batch_size, height, width, 3))
       logits, _ = overfeat.overfeat(inputs)
       sess.run(tf.global_variables_initializer())
       output = sess.run(logits)

@@ -141,7 +141,7 @@ class GetVariablesAvailableInCheckpointTest(tf.test.TestCase):
       ]
       checkpoint_path = os.path.join(self.get_temp_dir(), 'model.ckpt')
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver(variables)
+      saver = tf.compat.v1.train.Saver(variables)
       with self.test_session() as sess:
         sess.run(init_op)
         saver.save(sess, checkpoint_path)
@@ -159,7 +159,7 @@ class GetVariablesAvailableInCheckpointTest(tf.test.TestCase):
       ]
       checkpoint_path = os.path.join(self.get_temp_dir(), 'model.ckpt')
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver(variables)
+      saver = tf.compat.v1.train.Saver(variables)
       with self.test_session() as sess:
         sess.run(init_op)
         saver.save(sess, checkpoint_path)
@@ -171,13 +171,13 @@ class GetVariablesAvailableInCheckpointTest(tf.test.TestCase):
     checkpoint_path = os.path.join(self.get_temp_dir(), 'model.ckpt')
     with tf.Graph().as_default():
       weight_variable = tf.Variable(1.0, name='weights')
-      global_step = tf.train.get_or_create_global_step()
+      global_step = tf.compat.v1.train.get_or_create_global_step()
       graph1_variables = [
           weight_variable,
           global_step
       ]
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver(graph1_variables)
+      saver = tf.compat.v1.train.Saver(graph1_variables)
       with self.test_session() as sess:
         sess.run(init_op)
         saver.save(sess, checkpoint_path)
@@ -195,7 +195,7 @@ class GetVariablesAvailableInCheckpointTest(tf.test.TestCase):
           tf.Variable(1.0, name='ckpt_weights'),
       ]
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver(graph1_variables)
+      saver = tf.compat.v1.train.Saver(graph1_variables)
       with self.test_session() as sess:
         sess.run(init_op)
         saver.save(sess, checkpoint_path)
@@ -216,14 +216,14 @@ class GetVariablesAvailableInCheckpointTest(tf.test.TestCase):
     checkpoint_path = os.path.join(self.get_temp_dir(), 'model.ckpt')
     with tf.Graph().as_default():
       bias_variable = tf.Variable(3.0, name='biases')
-      global_step = tf.train.get_or_create_global_step()
+      global_step = tf.compat.v1.train.get_or_create_global_step()
       graph1_variables = [
           tf.Variable([[1.0, 2.0], [3.0, 4.0]], name='weights'),
           bias_variable,
           global_step
       ]
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver(graph1_variables)
+      saver = tf.compat.v1.train.Saver(graph1_variables)
       with self.test_session() as sess:
         sess.run(init_op)
         saver.save(sess, checkpoint_path)

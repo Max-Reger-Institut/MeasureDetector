@@ -80,7 +80,7 @@ def encode_sample_into_tensorflow_sample(path_to_image: str, annotations: Dict, 
 
     assert (len(xmin) == len(encoded_mask_png_list))
 
-    example = tf.train.Example(features=tf.train.Features(feature={
+    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
         'image/height': dataset_util.int64_feature(image_height),
         'image/width': dataset_util.int64_feature(image_width),
         'image/filename': dataset_util.bytes_feature(
@@ -108,7 +108,7 @@ def annotations_to_tf_example_list(all_image_paths: List[str],
                                    all_annotation_paths: List[str],
                                    all_mask_paths: List[str],
                                    label_map_dict: Dict[str, int],
-                                   scale_factor: float) -> Generator[tf.train.Example, None, None]:
+                                   scale_factor: float) -> Generator[tf.compat.v1.train.Example, None, None]:
     """Convert json files and images to tf.Example proto.
 
     Notice that this function normalizes the bounding box coordinates provided

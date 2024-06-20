@@ -47,7 +47,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
     for architecture in ['resnet_v1_50', 'resnet_v1_101', 'resnet_v1_152']:
       feature_extractor = self._build_feature_extractor(
           first_stage_features_stride=16, architecture=architecture)
-      preprocessed_inputs = tf.random_uniform(
+      preprocessed_inputs = tf.compat.v1.random_uniform(
           [4, 224, 224, 3], maxval=255, dtype=tf.float32)
       rpn_feature_map, _ = feature_extractor.extract_proposal_features(
           preprocessed_inputs, scope='TestScope')
@@ -62,7 +62,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_stride_eight(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=8)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [4, 224, 224, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map, _ = feature_extractor.extract_proposal_features(
         preprocessed_inputs, scope='TestScope')
@@ -77,7 +77,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_half_size_input(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [1, 112, 112, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map, _ = feature_extractor.extract_proposal_features(
         preprocessed_inputs, scope='TestScope')
@@ -112,7 +112,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_dies_with_incorrect_rank_inputs(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.random_uniform(
+    preprocessed_inputs = tf.compat.v1.random_uniform(
         [224, 224, 3], maxval=255, dtype=tf.float32)
     with self.assertRaises(ValueError):
       feature_extractor.extract_proposal_features(
@@ -121,7 +121,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
   def test_extract_box_classifier_features_returns_expected_size(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    proposal_feature_maps = tf.random_uniform(
+    proposal_feature_maps = tf.compat.v1.random_uniform(
         [3, 7, 7, 1024], maxval=255, dtype=tf.float32)
     proposal_classifier_features = (
         feature_extractor.extract_box_classifier_features(
@@ -140,7 +140,7 @@ class FasterRcnnResnetV1FeatureExtractorTest(tf.test.TestCase):
           first_stage_features_stride=16,
           architecture=architecture,
           activation_fn=tf.nn.relu6)
-      preprocessed_inputs = tf.random_uniform([4, 224, 224, 3],
+      preprocessed_inputs = tf.compat.v1.random_uniform([4, 224, 224, 3],
                                               maxval=255,
                                               dtype=tf.float32)
       rpn_feature_map, _ = feature_extractor.extract_proposal_features(

@@ -136,7 +136,7 @@ class MobilenetV1Test(test_case.TestCase):
       expected_feature_map_shape, use_explicit_padding=False, min_depth=8,
       layer_names=None):
     def graph_fn(image_height, image_width):
-      image_tensor = tf.random_uniform([_BATCH_SIZE, image_height, image_width,
+      image_tensor = tf.compat.v1.random_uniform([_BATCH_SIZE, image_height, image_width,
                                         _NUM_CHANNELS], dtype=tf.float32)
       model = self._create_application_with_layer_outputs(
           layer_names=layer_names,
@@ -164,7 +164,7 @@ class MobilenetV1Test(test_case.TestCase):
           batchnorm_training=False, use_explicit_padding=False,
           alpha=depth_multiplier)
       model(preprocessed_inputs)
-      return g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+      return g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
 
   def test_returns_correct_shapes_128(self):
     image_height = 128

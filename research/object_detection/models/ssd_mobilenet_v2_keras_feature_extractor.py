@@ -62,7 +62,7 @@ class SSDMobileNetV2KerasFeatureExtractor(
         params.
       inplace_batchnorm_update: Whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False.

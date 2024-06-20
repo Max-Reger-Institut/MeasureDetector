@@ -20,7 +20,8 @@ from object_detection.core import box_predictor
 from object_detection.utils import shape_utils
 from object_detection.utils import static_shape
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 BOX_ENCODINGS = box_predictor.BOX_ENCODINGS
 CLASS_PREDICTIONS_WITH_BACKGROUND = (
@@ -133,7 +134,7 @@ class ConvolutionalBoxPredictor(box_predictor.BoxPredictor):
     box_predictor_scopes = [_NoopVariableScope()]
     if len(image_features) > 1:
       box_predictor_scopes = [
-          tf.variable_scope('BoxPredictor_{}'.format(i))
+          tf.compat.v1.variable_scope('BoxPredictor_{}'.format(i))
           for i in range(len(image_features))
       ]
     for (image_feature,
@@ -147,7 +148,7 @@ class ConvolutionalBoxPredictor(box_predictor.BoxPredictor):
             # Add additional conv layers before the class predictor.
             features_depth = static_shape.get_depth(image_feature.get_shape())
             depth = max(min(features_depth, self._max_depth), self._min_depth)
-            tf.logging.info('depth of additional conv before box predictor: {}'.
+            tf.compat.v1.logging.info('depth of additional conv before box predictor: {}'.
                             format(depth))
             if depth > 0 and self._num_layers_before_predictor > 0:
               for i in range(self._num_layers_before_predictor):
@@ -358,7 +359,7 @@ class WeightSharedConvolutionalBoxPredictor(box_predictor.BoxPredictor):
     if has_different_feature_channels:
       inserted_layer_counter = 0
       target_channel = max(set(feature_channels), key=feature_channels.count)
-      tf.logging.info('Not all feature maps have the same number of '
+      tf.compat.v1.logging.info('Not all feature maps have the same number of '
                       'channels, found: {}, appending additional projection '
                       'layers to bring all feature maps to uniformly have {} '
                       'channels.'.format(feature_channels, target_channel))
@@ -376,7 +377,7 @@ class WeightSharedConvolutionalBoxPredictor(box_predictor.BoxPredictor):
                         num_predictions_per_location) in enumerate(
                             zip(image_features,
                                 num_predictions_per_location_list)):
-      with tf.variable_scope('WeightSharedConvolutionalBoxPredictor',
+      with tf.compat.v1.variable_scope('WeightSharedConvolutionalBoxPredictor',
                              reuse=tf.AUTO_REUSE):
         with slim.arg_scope(self._conv_hyperparams_fn()):
           # TODO(wangjiang) Pass is_training to the head class directly.

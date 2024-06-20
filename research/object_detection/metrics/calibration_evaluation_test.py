@@ -41,7 +41,7 @@ class CalibrationDetectionEvaluationTest(tf.test.TestCase):
   def _get_ece(self, ece_op, update_op):
     """Return scalar expected calibration error."""
     with self.test_session() as sess:
-      metrics_vars = tf.get_collection(tf.GraphKeys.METRIC_VARIABLES)
+      metrics_vars = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.METRIC_VARIABLES)
       sess.run(tf.variables_initializer(var_list=metrics_vars))
       _ = sess.run(update_op)
     return sess.run(ece_op)

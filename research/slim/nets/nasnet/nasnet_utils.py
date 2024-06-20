@@ -34,8 +34,10 @@ from __future__ import print_function
 import tensorflow as tf
 
 
-arg_scope = tf.contrib.framework.arg_scope
-slim = tf.contrib.slim
+import tf_slim
+arg_scope = tf_slim.arg_scope
+import tf_slim
+slim = tf_slim
 
 DATA_FORMAT_NCHW = 'NCHW'
 DATA_FORMAT_NHWC = 'NHWC'
@@ -55,14 +57,14 @@ def calc_reduction_layers(num_cells, num_reduction_layers):
   return reduction_layers
 
 
-@tf.contrib.framework.add_arg_scope
+@tf_slim.add_arg_scope
 def get_channel_index(data_format=INVALID):
   assert data_format != INVALID
   axis = 3 if data_format == 'NHWC' else 1
   return axis
 
 
-@tf.contrib.framework.add_arg_scope
+@tf_slim.add_arg_scope
 def get_channel_dim(shape, data_format=INVALID):
   assert data_format != INVALID
   assert len(shape) == 4
@@ -74,7 +76,7 @@ def get_channel_dim(shape, data_format=INVALID):
     raise ValueError('Not a valid data_format', data_format)
 
 
-@tf.contrib.framework.add_arg_scope
+@tf_slim.add_arg_scope
 def global_avg_pool(x, data_format=INVALID):
   """Average pool away the height and width spatial dimensions of x."""
   assert data_format != INVALID
@@ -86,7 +88,7 @@ def global_avg_pool(x, data_format=INVALID):
     return tf.reduce_mean(x, [2, 3])
 
 
-@tf.contrib.framework.add_arg_scope
+@tf_slim.add_arg_scope
 def factorized_reduction(net, output_filters, stride, data_format=INVALID):
   """Reduces the shape of net without information loss due to striding."""
   assert data_format != INVALID
@@ -129,14 +131,14 @@ def factorized_reduction(net, output_filters, stride, data_format=INVALID):
   return final_path
 
 
-@tf.contrib.framework.add_arg_scope
+@tf_slim.add_arg_scope
 def drop_path(net, keep_prob, is_training=True):
   """Drops out a whole example hiddenstate with the specified probability."""
   if is_training:
     batch_size = tf.shape(net)[0]
     noise_shape = [batch_size, 1, 1, 1]
     random_tensor = keep_prob
-    random_tensor += tf.random_uniform(noise_shape, dtype=tf.float32)
+    random_tensor += tf.compat.v1.random_uniform(noise_shape, dtype=tf.float32)
     binary_tensor = tf.cast(tf.floor(random_tensor), net.dtype)
     keep_prob_inv = tf.cast(1.0 / keep_prob, net.dtype)
     net = net * keep_prob_inv * binary_tensor
@@ -315,10 +317,10 @@ class NasNetABaseCell(object):
     self._filter_size = int(self._num_conv_filters * filter_scaling)
 
     i = 0
-    with tf.variable_scope(scope):
+    with tf.compat.v1.variable_scope(scope):
       net = self._cell_base(net, prev_layer)
       for iteration in range(5):
-        with tf.variable_scope('comb_iter_{}'.format(iteration)):
+        with tf.compat.v1.variable_scope('comb_iter_{}'.format(iteration)):
           left_hiddenstate_idx, right_hiddenstate_idx = (
               self._hiddenstate_indices[i],
               self._hiddenstate_indices[i + 1])
@@ -331,17 +333,17 @@ class NasNetABaseCell(object):
           operation_right = self._operations[i+1]
           i += 2
           # Apply conv operations
-          with tf.variable_scope('left'):
+          with tf.compat.v1.variable_scope('left'):
             h1 = self._apply_conv_operation(h1, operation_left,
                                             stride, original_input_left,
                                             current_step)
-          with tf.variable_scope('right'):
+          with tf.compat.v1.variable_scope('right'):
             h2 = self._apply_conv_operation(h2, operation_right,
                                             stride, original_input_right,
                                             current_step)
 
           # Combine hidden states using 'add'.
-          with tf.variable_scope('combine'):
+          with tf.compat.v1.variable_scope('combine'):
             h = h1 + h2
             if self._use_bounded_activation:
               h = tf.nn.relu6(h)
@@ -349,7 +351,7 @@ class NasNetABaseCell(object):
           # Add hiddenstate to the list of hiddenstates we can choose from
           net.append(h)
 
-      with tf.variable_scope('cell_output'):
+      with tf.compat.v1.variable_scope('cell_output'):
         net = self._combine_unused_states(net)
 
       return net
@@ -410,7 +412,7 @@ class NasNetABaseCell(object):
       should_reduce = should_reduce and not used_h
       if should_reduce:
         stride = 2 if final_height != curr_height else 1
-        with tf.variable_scope('reduction_{}'.format(idx)):
+        with tf.compat.v1.variable_scope('reduction_{}'.format(idx)):
           net[idx] = factorized_reduction(
               net[idx], final_num_filters, stride)
 
@@ -422,7 +424,7 @@ class NasNetABaseCell(object):
     net = tf.concat(values=states_to_combine, axis=concat_axis)
     return net
 
-  @tf.contrib.framework.add_arg_scope  # No public API. For internal use only.
+  @tf_slim.add_arg_scope  # No public API. For internal use only.
   def _apply_drop_path(self, net, current_step=None,
                        use_summaries=False, drop_connect_version='v3'):
     """Apply drop_path regularization.
@@ -431,7 +433,7 @@ class NasNetABaseCell(object):
       net: the Tensor that gets drop_path regularization applied.
       current_step: a float32 Tensor with the current global_step value,
         to be divided by hparams.total_training_steps. Usually None, which
-        defaults to tf.train.get_or_create_global_step() properly casted.
+        defaults to tf.compat.v1.train.get_or_create_global_step() properly casted.
       use_summaries: a Python boolean. If set to False, no summaries are output.
       drop_connect_version: one of 'v1', 'v2', 'v3', controlling whether
         the dropout rate is scaled by current_step (v1), layer (v2), or
@@ -456,7 +458,7 @@ class NasNetABaseCell(object):
       if drop_connect_version in ['v1', 'v3']:
         # Decrease the keep probability over time
         if current_step is None:
-          current_step = tf.train.get_or_create_global_step()
+          current_step = tf.compat.v1.train.get_or_create_global_step()
         current_step = tf.cast(current_step, tf.float32)
         drop_path_burn_in_steps = self._total_training_steps
         current_ratio = current_step / drop_path_burn_in_steps

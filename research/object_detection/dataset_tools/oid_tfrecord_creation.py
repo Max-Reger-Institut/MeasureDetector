@@ -103,4 +103,4 @@ def tf_example_from_annotations_data_frame(annotations_data_frame, label_map,
     feature_map[standard_fields.TfExampleFields.
                 image_class_text] = dataset_util.bytes_list_feature(
                     filtered_data_frame_labels.LabelName.as_matrix()),
-  return tf.train.Example(features=tf.train.Features(feature=feature_map))
+  return tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=feature_map))

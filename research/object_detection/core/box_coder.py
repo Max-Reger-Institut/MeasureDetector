@@ -74,7 +74,7 @@ class BoxCoder(six.with_metaclass(ABCMeta, object)):
     Returns:
       a tensor representing N relative-encoded boxes
     """
-    with tf.name_scope('Encode'):
+    with tf.compat.v1.name_scope('Encode'):
       return self._encode(boxes, anchors)
 
   def decode(self, rel_codes, anchors):
@@ -88,7 +88,7 @@ class BoxCoder(six.with_metaclass(ABCMeta, object)):
       boxlist: BoxList holding N boxes encoded in the ordinary way (i.e.,
         with corners y_min, x_min, y_max, x_max)
     """
-    with tf.name_scope('Decode'):
+    with tf.compat.v1.name_scope('Decode'):
       return self._decode(rel_codes, anchors)
 
   @abstractmethod

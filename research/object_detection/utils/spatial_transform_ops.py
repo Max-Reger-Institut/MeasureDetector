@@ -310,7 +310,7 @@ def multilevel_roi_align(features, boxes, box_levels, output_size,
     A 5D float tensor of shape [batch_size, num_boxes, output_size[0],
     output_size[1], channels] representing the cropped features.
   """
-  with tf.name_scope(scope, 'MultiLevelRoIAlign'):
+  with tf.compat.v1.name_scope(scope, 'MultiLevelRoIAlign'):
     features, true_feature_shapes = pad_to_max_size(features)
     batch_size = tf.shape(features)[0]
     num_levels = features.get_shape().as_list()[1]
@@ -412,7 +412,7 @@ def native_crop_and_resize(image, boxes, crop_size, scope=None):
         tf.range(start=0, limit=proposals_shape[0]), 1)
     return tf.reshape(ones_mat * multiplier, [-1])
 
-  with tf.name_scope(scope, 'CropAndResize'):
+  with tf.compat.v1.name_scope(scope, 'CropAndResize'):
     cropped_regions = tf.image.crop_and_resize(
         image, tf.reshape(boxes, [-1] + boxes.shape.as_list()[2:]),
         get_box_inds(boxes), crop_size)
@@ -470,7 +470,7 @@ def matmul_crop_and_resize(image, boxes, crop_size, extrapolation_value=0.0,
   Returns:
     A 5-D tensor of shape `[batch, num_boxes, crop_height, crop_width, depth]`
   """
-  with tf.name_scope(scope, 'MatMulCropAndResize'):
+  with tf.compat.v1.name_scope(scope, 'MatMulCropAndResize'):
     box_levels = tf.zeros(tf.shape(boxes)[:2], dtype=tf.int32)
     return multilevel_roi_align([image],
                                 boxes,

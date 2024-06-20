@@ -48,25 +48,25 @@ from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 from object_detection.utils.np_box_ops import iou
 
-tf.app.flags.DEFINE_string('data_dir', '', 'Location of root directory for the '
+tf.compat.v1.app.flags.DEFINE_string('data_dir', '', 'Location of root directory for the '
                            'data. Folder structure is assumed to be:'
                            '<data_dir>/training/label_2 (annotations) and'
                            '<data_dir>/data_object_image_2/training/image_2'
                            '(images).')
-tf.app.flags.DEFINE_string('output_path', '', 'Path to which TFRecord files'
+tf.compat.v1.app.flags.DEFINE_string('output_path', '', 'Path to which TFRecord files'
                            'will be written. The TFRecord with the training set'
                            'will be located at: <output_path>_train.tfrecord.'
                            'And the TFRecord with the validation set will be'
                            'located at: <output_path>_val.tfrecord')
-tf.app.flags.DEFINE_string('classes_to_use', 'car,pedestrian,dontcare',
+tf.compat.v1.app.flags.DEFINE_string('classes_to_use', 'car,pedestrian,dontcare',
                            'Comma separated list of class names that will be'
                            'used. Adding the dontcare class will remove all'
                            'bboxs in the dontcare regions.')
-tf.app.flags.DEFINE_string('label_map_path', 'data/kitti_label_map.pbtxt',
+tf.compat.v1.app.flags.DEFINE_string('label_map_path', 'data/kitti_label_map.pbtxt',
                            'Path to label map proto.')
-tf.app.flags.DEFINE_integer('validation_set_size', '500', 'Number of images to'
+tf.compat.v1.app.flags.DEFINE_integer('validation_set_size', '500', 'Number of images to'
                             'be used as a validation set.')
-FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.compat.v1.app.flags.FLAGS
 
 
 def convert_kitti_to_tfrecords(data_dir, output_path, classes_to_use,
@@ -109,7 +109,7 @@ def convert_kitti_to_tfrecords(data_dir, output_path, classes_to_use,
   val_writer = tf.python_io.TFRecordWriter('%s_val.tfrecord'%
                                            output_path)
 
-  images = sorted(tf.gfile.ListDirectory(image_dir))
+  images = sorted(tf.compat.v1.gfile.ListDirectory(image_dir))
   for img_name in images:
     img_num = int(img_name.split('.')[0])
     is_validation_img = img_num < validation_set_size
@@ -147,7 +147,7 @@ def prepare_example(image_path, annotations, label_map_dict):
   Returns:
     example: The converted tf.Example.
   """
-  with tf.gfile.GFile(image_path, 'rb') as fid:
+  with tf.compat.v1.gfile.GFile(image_path, 'rb') as fid:
     encoded_png = fid.read()
   encoded_png_io = io.BytesIO(encoded_png)
   image = pil.open(encoded_png_io)
@@ -165,7 +165,7 @@ def prepare_example(image_path, annotations, label_map_dict):
 
   difficult_obj = [0]*len(xmin_norm)
 
-  example = tf.train.Example(features=tf.train.Features(feature={
+  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
       'image/height': dataset_util.int64_feature(height),
       'image/width': dataset_util.int64_feature(width),
       'image/filename': dataset_util.bytes_feature(image_path.encode('utf8')),
@@ -307,4 +307,4 @@ def main(_):
       validation_set_size=FLAGS.validation_set_size)
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run()

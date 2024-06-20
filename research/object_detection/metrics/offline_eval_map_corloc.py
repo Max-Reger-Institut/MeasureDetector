@@ -42,8 +42,8 @@ from object_detection.metrics import tf_example_parser
 from object_detection.utils import config_util
 from object_detection.utils import label_map_util
 
-flags = tf.app.flags
-tf.logging.set_verbosity(tf.logging.INFO)
+flags = tf.compat.v1.app.flags
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
 flags.DEFINE_string('eval_dir', None, 'Directory to write eval summaries to.')
 flags.DEFINE_string('eval_config_path', None,
@@ -102,17 +102,17 @@ def read_data_and_evaluate(input_config, eval_config):
     skipped_images = 0
     processed_images = 0
     for input_path in _generate_filenames(input_paths):
-      tf.logging.info('Processing file: {0}'.format(input_path))
+      tf.compat.v1.logging.info('Processing file: {0}'.format(input_path))
 
       record_iterator = tf.python_io.tf_record_iterator(path=input_path)
       data_parser = tf_example_parser.TfExampleDetectionAndGTParser()
 
       for string_record in record_iterator:
-        tf.logging.log_every_n(tf.logging.INFO, 'Processed %d images...', 1000,
+        tf.compat.v1.logging.log_every_n(tf.compat.v1.logging.INFO, 'Processed %d images...', 1000,
                                processed_images)
         processed_images += 1
 
-        example = tf.train.Example()
+        example = tf.compat.v1.train.Example()
         example.ParseFromString(string_record)
         decoded_dict = data_parser.parse(example)
 
@@ -125,7 +125,7 @@ def read_data_and_evaluate(input_config, eval_config):
               decoded_dict)
         else:
           skipped_images += 1
-          tf.logging.info('Skipped images: {0}'.format(skipped_images))
+          tf.compat.v1.logging.info('Skipped images: {0}'.format(skipped_images))
 
     return object_detection_evaluator.evaluate()
 
@@ -139,7 +139,7 @@ def write_metrics(metrics, output_dir):
     metrics: A dictionary containing metric names and values.
     output_dir: Directory to write metrics to.
   """
-  tf.logging.info('Writing metrics.')
+  tf.compat.v1.logging.info('Writing metrics.')
 
   with open(os.path.join(output_dir, 'metrics.csv'), 'w') as csvfile:
     metrics_writer = csv.writer(csvfile, delimiter=',')
@@ -168,4 +168,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-  tf.app.run(main)
+  tf.compat.v1.app.run(main)

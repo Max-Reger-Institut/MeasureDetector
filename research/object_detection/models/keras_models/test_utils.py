@@ -19,7 +19,8 @@
 #
 # from nets import mobilenet_v1
 #
-# slim = tf.contrib.slim
+# import tf_slim
+slim = tf_slim
 #
 # # Layer names of Slim to map Keras layer names in MobilenetV1
 # _MOBLIENET_V1_SLIM_ENDPOINTS = [

@@ -24,7 +24,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import mobilenet_v1
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class SSDMobileNetV1PpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -59,7 +60,7 @@ class SSDMobileNetV1PpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         33, preprocessed_inputs)
 
-    with tf.variable_scope('MobilenetV1',
+    with tf.compat.v1.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(

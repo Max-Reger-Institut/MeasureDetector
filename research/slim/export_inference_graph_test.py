@@ -33,7 +33,7 @@ class ExportInferenceGraphTest(tf.test.TestCase):
   def testExportInferenceGraph(self):
     tmpdir = self.get_temp_dir()
     output_file = os.path.join(tmpdir, 'inception_v3.pb')
-    flags = tf.app.flags.FLAGS
+    flags = tf.compat.v1.app.flags.FLAGS
     flags.output_file = output_file
     flags.model_name = 'inception_v3'
     flags.dataset_dir = tmpdir

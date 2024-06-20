@@ -25,9 +25,10 @@ from datasets import dataset_factory
 from nets import mobilenet_v1
 from preprocessing import preprocessing_factory
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 
 flags.DEFINE_string('master', '', 'Session master')
 flags.DEFINE_integer('batch_size', 250, 'Batch size')
@@ -72,7 +73,7 @@ def imagenet_input(is_training):
 
   image = image_preprocessing_fn(image, FLAGS.image_size, FLAGS.image_size)
 
-  images, labels = tf.train.batch(
+  images, labels = tf.compat.v1.train.batch(
       tensors=[image, label],
       batch_size=FLAGS.batch_size,
       num_threads=4,
@@ -149,4 +150,4 @@ def main(unused_arg):
 
 
 if __name__ == '__main__':
-  tf.app.run(main)
+  tf.compat.v1.app.run(main)

@@ -25,7 +25,8 @@ from object_detection.meta_architectures import ssd_meta_arch_test_lib
 from object_detection.protos import model_pb2
 from object_detection.utils import test_utils
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 keras = tf.keras.layers
 
 
@@ -574,7 +575,7 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
                                        dtype=np.float32)),
                   true_image_shapes=None)
     init_op = tf.global_variables_initializer()
-    saver = tf.train.Saver()
+    saver = tf.compat.v1.train.Saver()
     save_path = self.get_temp_dir()
     with self.test_session() as sess:
       sess.run(init_op)
@@ -583,7 +584,7 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
           fine_tune_checkpoint_type='detection',
           load_all_detection_checkpoint_vars=False)
       self.assertIsInstance(var_map, dict)
-      saver = tf.train.Saver(var_map)
+      saver = tf.compat.v1.train.Saver(var_map)
       saver.restore(sess, saved_model_path)
       for var in sess.run(tf.report_uninitialized_variables()):
         self.assertNotIn('FeatureExtractor', var)
@@ -594,19 +595,19 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
     with test_graph_classification.as_default():
       image = tf.placeholder(dtype=tf.float32, shape=[1, 20, 20, 3])
       if use_keras:
-        with tf.name_scope('mock_model'):
+        with tf.compat.v1.name_scope('mock_model'):
           layer_one = keras.Conv2D(32, kernel_size=1, name='layer1')
           net = layer_one(image)
           layer_two = keras.Conv2D(3, kernel_size=1, name='layer2')
           layer_two(net)
       else:
-        with tf.variable_scope('mock_model'):
+        with tf.compat.v1.variable_scope('mock_model'):
           net = slim.conv2d(image, num_outputs=32, kernel_size=1,
                             scope='layer1')
           slim.conv2d(net, num_outputs=3, kernel_size=1, scope='layer2')
 
       init_op = tf.global_variables_initializer()
-      saver = tf.train.Saver()
+      saver = tf.compat.v1.train.Saver()
       save_path = self.get_temp_dir()
       with self.test_session(graph=test_graph_classification) as sess:
         sess.run(init_op)
@@ -618,7 +619,7 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
     with test_graph_detection.as_default():
       model, _, _, _ = self._create_model(use_keras=use_keras)
       inputs_shape = [2, 2, 2, 3]
-      inputs = tf.cast(tf.random_uniform(
+      inputs = tf.cast(tf.compat.v1.random_uniform(
           inputs_shape, minval=0, maxval=255, dtype=tf.int32), dtype=tf.float32)
       preprocessed_inputs, true_image_shapes = model.preprocess(inputs)
       prediction_dict = model.predict(preprocessed_inputs, true_image_shapes)
@@ -627,7 +628,7 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
       var_map = model.restore_map(fine_tune_checkpoint_type='classification')
       self.assertNotIn('another_variable', var_map)
       self.assertIsInstance(var_map, dict)
-      saver = tf.train.Saver(var_map)
+      saver = tf.compat.v1.train.Saver(var_map)
       with self.test_session(graph=test_graph_detection) as sess:
         saver.restore(sess, saved_model_path)
         for var in sess.run(tf.report_uninitialized_variables()):
@@ -639,7 +640,7 @@ class SsdMetaArchTest(ssd_meta_arch_test_lib.SSDMetaArchTestBase,
       model, _, _, _ = self._create_model(use_keras=use_keras)
       inputs_shape = [2, 2, 2, 3]
       inputs = tf.cast(
-          tf.random_uniform(inputs_shape, minval=0, maxval=255, dtype=tf.int32),
+          tf.compat.v1.random_uniform(inputs_shape, minval=0, maxval=255, dtype=tf.int32),
           dtype=tf.float32)
       preprocessed_inputs, true_image_shapes = model.preprocess(inputs)
       prediction_dict = model.predict(preprocessed_inputs, true_image_shapes)

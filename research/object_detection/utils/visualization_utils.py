@@ -106,7 +106,7 @@ def save_image_array_as_png(image, output_path):
     output_path: path to which image should be written.
   """
   image_pil = Image.fromarray(np.uint8(image)).convert('RGB')
-  with tf.gfile.Open(output_path, 'w') as fid:
+  with tf.compat.v1.gfile.Open(output_path, 'w') as fid:
     image_pil.save(fid, 'PNG')
 
 
@@ -395,7 +395,7 @@ def create_visualization_fn(category_index, include_masks=False,
 
 def _resize_original_image(image, image_shape):
   image = tf.expand_dims(image, 0)
-  image = tf.image.resize_images(
+  image = tf.compat.v1.image.resize_images(
       image,
       image_shape,
       method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,

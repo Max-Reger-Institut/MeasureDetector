@@ -91,8 +91,8 @@ class ExportTfliteGraphTest(tf.test.TestCase):
       inputs = tf.placeholder(tf.float32, shape=[1, 10, 10, num_channels])
       mock_model.predict(inputs, true_image_shapes=None)
       if use_moving_averages:
-        tf.train.ExponentialMovingAverage(0.0).apply()
-      tf.train.get_or_create_global_step()
+        tf.compat.v1.train.ExponentialMovingAverage(0.0).apply()
+      tf.compat.v1.train.get_or_create_global_step()
       if quantize:
         graph_rewriter_config = graph_rewriter_pb2.GraphRewriter()
         graph_rewriter_config.quantization.delay = 500000
@@ -100,14 +100,14 @@ class ExportTfliteGraphTest(tf.test.TestCase):
             graph_rewriter_config, is_training=False)
         graph_rewriter_fn()
 
-      saver = tf.train.Saver()
+      saver = tf.compat.v1.train.Saver()
       init = tf.global_variables_initializer()
       with self.test_session() as sess:
         sess.run(init)
         saver.save(sess, checkpoint_path)
 
   def _assert_quant_vars_exists(self, tflite_graph_file):
-    with tf.gfile.Open(tflite_graph_file) as f:
+    with tf.compat.v1.gfile.Open(tflite_graph_file) as f:
       graph_string = f.read()
       print(graph_string)
       self.assertTrue('quant' in graph_string)
@@ -117,7 +117,7 @@ class ExportTfliteGraphTest(tf.test.TestCase):
     graph = tf.Graph()
     with graph.as_default():
       graph_def = tf.GraphDef()
-      with tf.gfile.Open(tflite_graph_file) as f:
+      with tf.compat.v1.gfile.Open(tflite_graph_file) as f:
         graph_def.ParseFromString(f.read())
       tf.import_graph_def(graph_def, name='')
       input_tensor = graph.get_tensor_by_name('normalized_input_image_tensor:0')
@@ -322,7 +322,7 @@ class ExportTfliteGraphTest(tf.test.TestCase):
     graph = tf.Graph()
     with graph.as_default():
       graph_def = tf.GraphDef()
-      with tf.gfile.Open(tflite_graph_file) as f:
+      with tf.compat.v1.gfile.Open(tflite_graph_file) as f:
         graph_def.ParseFromString(f.read())
       all_op_names = [node.name for node in graph_def.node]
       self.assertTrue('TFLite_Detection_PostProcess' in all_op_names)

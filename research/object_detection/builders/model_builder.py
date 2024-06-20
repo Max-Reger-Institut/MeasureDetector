@@ -349,7 +349,7 @@ def _build_faster_rcnn_feature_extractor(
     inplace_batchnorm_update: Whether to update batch_norm inplace during
       training. This is required for batch norm to work correctly on TPUs. When
       this is false, user must add a control dependency on
-      tf.GraphKeys.UPDATE_OPS for train/loss op in order to update the batch
+      tf.compat.v1.GraphKeys.UPDATE_OPS for train/loss op in order to update the batch
       norm moving average parameters.
 
   Returns:
@@ -387,7 +387,7 @@ def _build_faster_rcnn_keras_feature_extractor(
     inplace_batchnorm_update: Whether to update batch_norm inplace during
       training. This is required for batch norm to work correctly on TPUs. When
       this is false, user must add a control dependency on
-      tf.GraphKeys.UPDATE_OPS for train/loss op in order to update the batch
+      tf.compat.v1.GraphKeys.UPDATE_OPS for train/loss op in order to update the batch
       norm moving average parameters.
 
   Returns:

@@ -68,7 +68,7 @@ class SSDMobileNetV1FpnKerasFeatureExtractor(
         params.
       inplace_batchnorm_update: whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       fpn_min_level: the highest resolution feature map to use in FPN. The valid
         values are {2, 3, 4, 5} which map to MobileNet v1 layers

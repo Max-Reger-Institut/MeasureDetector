@@ -26,7 +26,7 @@ import tensorflow as tf
 
 from object_detection.tpu_exporters import export_saved_model_tpu_lib
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 FLAGS = flags.FLAGS
 
 
@@ -50,8 +50,8 @@ class ExportSavedModelTPUTest(tf.test.TestCase, parameterized.TestCase):
 
     input_placeholder_name = 'placeholder_tensor'
     export_dir = os.path.join(FLAGS.test_tmpdir, 'tpu_saved_model')
-    if tf.gfile.Exists(export_dir):
-      tf.gfile.DeleteRecursively(export_dir)
+    if tf.compat.v1.gfile.Exists(export_dir):
+      tf.compat.v1.gfile.DeleteRecursively(export_dir)
     ckpt_path = None
     export_saved_model_tpu_lib.export(pipeline_config_file, ckpt_path,
                                       export_dir, input_placeholder_name,
@@ -61,7 +61,7 @@ class ExportSavedModelTPUTest(tf.test.TestCase, parameterized.TestCase):
     tensor_dict_out = export_saved_model_tpu_lib.run_inference_from_saved_model(
         inputs, export_dir, input_placeholder_name, repeat)
     for k, v in tensor_dict_out.items():
-      tf.logging.info('{}: {}'.format(k, v))
+      tf.compat.v1.logging.info('{}: {}'.format(k, v))
 
 
 if __name__ == '__main__':

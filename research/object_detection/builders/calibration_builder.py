@@ -198,7 +198,7 @@ def build(calibration_config):
               fn_x=class_id_function_dict[class_id][0],
               fn_y=class_id_function_dict[class_id][1])
         else:
-          tf.logging.info(
+          tf.compat.v1.logging.info(
               'Calibration parameters for class id `%d` not not found',
               class_id)
           output_tensor = flat_class_tensor

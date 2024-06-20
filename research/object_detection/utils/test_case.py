@@ -22,7 +22,7 @@ from six.moves import zip
 import tensorflow as tf
 from tensorflow.contrib import tpu
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 
 flags.DEFINE_bool('tpu_test', False, 'Whether to configure test for TPU.')
 FLAGS = flags.FLAGS

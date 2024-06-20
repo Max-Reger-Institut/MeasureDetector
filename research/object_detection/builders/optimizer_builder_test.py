@@ -123,7 +123,7 @@ class OptimizerBuilderTest(tf.test.TestCase):
     optimizer_proto = optimizer_pb2.Optimizer()
     text_format.Merge(optimizer_text_proto, optimizer_proto)
     optimizer, _ = optimizer_builder.build(optimizer_proto)
-    self.assertTrue(isinstance(optimizer, tf.train.RMSPropOptimizer))
+    self.assertTrue(isinstance(optimizer, tf.compat.v1.train.RMSPropOptimizer))
 
   def testBuildMomentumOptimizer(self):
     optimizer_text_proto = """
@@ -140,7 +140,7 @@ class OptimizerBuilderTest(tf.test.TestCase):
     optimizer_proto = optimizer_pb2.Optimizer()
     text_format.Merge(optimizer_text_proto, optimizer_proto)
     optimizer, _ = optimizer_builder.build(optimizer_proto)
-    self.assertTrue(isinstance(optimizer, tf.train.MomentumOptimizer))
+    self.assertTrue(isinstance(optimizer, tf.compat.v1.train.MomentumOptimizer))
 
   def testBuildAdamOptimizer(self):
     optimizer_text_proto = """
@@ -156,7 +156,7 @@ class OptimizerBuilderTest(tf.test.TestCase):
     optimizer_proto = optimizer_pb2.Optimizer()
     text_format.Merge(optimizer_text_proto, optimizer_proto)
     optimizer, _ = optimizer_builder.build(optimizer_proto)
-    self.assertTrue(isinstance(optimizer, tf.train.AdamOptimizer))
+    self.assertTrue(isinstance(optimizer, tf.compat.v1.train.AdamOptimizer))
 
   def testBuildMovingAverageOptimizer(self):
     optimizer_text_proto = """

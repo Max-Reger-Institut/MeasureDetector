@@ -23,7 +23,8 @@ from object_detection.utils import context_manager
 from object_detection.utils import ops
 from nets import mobilenet_v1
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 class EmbeddedSSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -140,7 +141,7 @@ class EmbeddedSSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         'use_depthwise': self._use_depthwise,
     }
 
-    with tf.variable_scope('MobilenetV1',
+    with tf.compat.v1.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(is_training=None)):

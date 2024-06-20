@@ -301,7 +301,7 @@ class SingleClassTpFpWithGroupOfBoxesTestWeighted(tf.test.TestCase):
         detected_masks=self.detected_masks,
         groundtruth_masks=self.groundtruth_masks)
 
-    tf.logging.info(
+    tf.compat.v1.logging.info(
         "test_mask_match_to_non_group_of_and_group_of_box {} {}".format(
             tp_fp_labels, expected_tp_fp_labels))
 
@@ -320,7 +320,7 @@ class SingleClassTpFpWithGroupOfBoxesTestWeighted(tf.test.TestCase):
         groundtruth_groundtruth_is_difficult_list,
         groundtruth_groundtruth_is_group_of_list)
 
-    tf.logging.info("test_match_two_to_group_of_box {} {}".format(
+    tf.compat.v1.logging.info("test_match_two_to_group_of_box {} {}".format(
         tp_fp_labels, expected_tp_fp_labels))
 
     self.assertTrue(np.allclose(expected_scores, scores))
@@ -343,7 +343,7 @@ class SingleClassTpFpWithGroupOfBoxesTestWeighted(tf.test.TestCase):
         detected_masks=self.detected_masks,
         groundtruth_masks=self.groundtruth_masks)
 
-    tf.logging.info("test_mask_match_two_to_group_of_box {} {}".format(
+    tf.compat.v1.logging.info("test_mask_match_two_to_group_of_box {} {}".format(
         tp_fp_labels, expected_tp_fp_labels))
 
     self.assertTrue(np.allclose(expected_scores, scores))

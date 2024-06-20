@@ -18,7 +18,8 @@ import functools
 
 import tensorflow as tf
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 
 def _fixed_padding(inputs, kernel_size, rate=1):
@@ -78,8 +79,8 @@ def _split_divisible(num, num_ways, divisible_by=8):
 @contextlib.contextmanager
 def _v1_compatible_scope_naming(scope):
   if scope is None:  # Create uniqified separable blocks.
-    with tf.variable_scope(None, default_name='separable') as s, \
-         tf.name_scope(s.original_name_scope):
+    with tf.compat.v1.variable_scope(None, default_name='separable') as s, \
+         tf.compat.v1.name_scope(s.original_name_scope):
       yield ''
   else:
     # We use scope_depthwise, scope_pointwise for compatibility with V1 ckpts.
@@ -228,8 +229,8 @@ def expanded_conv(input_tensor,
   Raises:
     TypeError: on inval
   """
-  with tf.variable_scope(scope, default_name='expanded_conv') as s, \
-       tf.name_scope(s.original_name_scope):
+  with tf.compat.v1.variable_scope(scope, default_name='expanded_conv') as s, \
+       tf.compat.v1.name_scope(s.original_name_scope):
     prev_depth = input_tensor.get_shape().as_list()[3]
     if  depthwise_location not in [None, 'input', 'output', 'expansion']:
       raise TypeError('%r is unknown value for depthwise_location' %

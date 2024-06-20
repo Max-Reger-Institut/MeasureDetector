@@ -28,7 +28,7 @@ class ImageResizerBuilderTest(tf.test.TestCase):
     text_format.Merge(text_proto, image_resizer_config)
     image_resizer_fn = image_resizer_builder.build(image_resizer_config)
     images = tf.cast(
-        tf.random_uniform(input_shape, minval=0, maxval=255, dtype=tf.int32),
+        tf.compat.v1.random_uniform(input_shape, minval=0, maxval=255, dtype=tf.int32),
         dtype=tf.float32)
     resized_images, _ = image_resizer_fn(images)
     with self.test_session() as sess:

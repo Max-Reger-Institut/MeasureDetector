@@ -24,7 +24,7 @@ import tensorflow as tf
 
 # Orignaly, add_arg_scope = slim.add_arg_scope and layers = slim, now switch to
 # more update-to-date tf.contrib.* API.
-add_arg_scope = tf.contrib.framework.add_arg_scope
+add_arg_scope = tf_slim.add_arg_scope
 layers = tf.contrib.layers
 
 
@@ -226,13 +226,13 @@ def inception_block_v1_3d(inputs,
   """
   use_gating = self_gating_fn is not None
 
-  with tf.variable_scope(scope):
-    with tf.variable_scope('Branch_0'):
+  with tf.compat.v1.variable_scope(scope):
+    with tf.compat.v1.variable_scope('Branch_0'):
       branch_0 = layers.conv3d(
           inputs, num_outputs_0_0a, [1, 1, 1], scope='Conv2d_0a_1x1')
       if use_gating:
         branch_0 = self_gating_fn(branch_0, scope='Conv2d_0a_1x1')
-    with tf.variable_scope('Branch_1'):
+    with tf.compat.v1.variable_scope('Branch_1'):
       branch_1 = layers.conv3d(
           inputs, num_outputs_1_0a, [1, 1, 1], scope='Conv2d_0a_1x1')
       branch_1 = conv3d_spatiotemporal(
@@ -240,7 +240,7 @@ def inception_block_v1_3d(inputs,
           scope='Conv2d_0b_3x3')
       if use_gating:
         branch_1 = self_gating_fn(branch_1, scope='Conv2d_0b_3x3')
-    with tf.variable_scope('Branch_2'):
+    with tf.compat.v1.variable_scope('Branch_2'):
       branch_2 = layers.conv3d(
           inputs, num_outputs_2_0a, [1, 1, 1], scope='Conv2d_0a_1x1')
       branch_2 = conv3d_spatiotemporal(
@@ -248,7 +248,7 @@ def inception_block_v1_3d(inputs,
           scope='Conv2d_0b_3x3')
       if use_gating:
         branch_2 = self_gating_fn(branch_2, scope='Conv2d_0b_3x3')
-    with tf.variable_scope('Branch_3'):
+    with tf.compat.v1.variable_scope('Branch_3'):
       branch_3 = layers.max_pool3d(inputs, [3, 3, 3], scope='MaxPool_0a_3x3')
       branch_3 = layers.conv3d(
           branch_3, num_outputs_3_0b, [1, 1, 1], scope='Conv2d_0b_1x1')

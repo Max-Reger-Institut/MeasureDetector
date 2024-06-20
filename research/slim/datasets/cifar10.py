@@ -27,7 +27,8 @@ import tensorflow as tf
 
 from datasets import dataset_utils
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 _FILE_PATTERN = 'cifar10_%s.tfrecord'
 
@@ -70,9 +71,9 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
     reader = tf.TFRecordReader
 
   keys_to_features = {
-      'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
-      'image/format': tf.FixedLenFeature((), tf.string, default_value='png'),
-      'image/class/label': tf.FixedLenFeature(
+      'image/encoded': tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
+      'image/format': tf.compat.v1.FixedLenFeature((), tf.string, default_value='png'),
+      'image/class/label': tf.compat.v1.FixedLenFeature(
           [], tf.int64, default_value=tf.zeros([], dtype=tf.int64)),
   }
 

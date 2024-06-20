@@ -43,7 +43,7 @@ def create_mock_tfrecord():
           dataset_util.bytes_feature(encoded_image),
   }
 
-  tf_example = tf.train.Example(features=tf.train.Features(feature=feature_map))
+  tf_example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=feature_map))
   with tf.python_io.TFRecordWriter(get_mock_tfrecord_path()) as writer:
     writer.write(tf_example.SerializeToString())
 
@@ -68,7 +68,7 @@ def create_mock_graph():
         name='detection_classes')
     graph_def = g.as_graph_def()
 
-  with tf.gfile.Open(get_mock_graph_path(), 'w') as fl:
+  with tf.compat.v1.gfile.Open(get_mock_graph_path(), 'w') as fl:
     fl.write(graph_def.SerializeToString())
 
 
@@ -89,7 +89,7 @@ class InferDetectionsTests(tf.test.TestCase):
     with self.test_session(use_gpu=False) as sess:
       sess.run(tf.global_variables_initializer())
       sess.run(tf.local_variables_initializer())
-      tf.train.start_queue_runners()
+      tf.compat.v1.train.start_queue_runners()
 
       tf_example = detection_inference.infer_detections_and_add_to_example(
           serialized_example_tensor, detected_boxes_tensor,
@@ -140,7 +140,7 @@ class InferDetectionsTests(tf.test.TestCase):
     with self.test_session(use_gpu=False) as sess:
       sess.run(tf.global_variables_initializer())
       sess.run(tf.local_variables_initializer())
-      tf.train.start_queue_runners()
+      tf.compat.v1.train.start_queue_runners()
 
       tf_example = detection_inference.infer_detections_and_add_to_example(
           serialized_example_tensor, detected_boxes_tensor,

@@ -87,7 +87,7 @@ def main(unused_argv):
     if FLAGS.run_once:
       estimator.evaluate(input_fn,
                          steps=None,
-                         checkpoint_path=tf.train.latest_checkpoint(
+                         checkpoint_path=tf.compat.v1.train.latest_checkpoint(
                              FLAGS.checkpoint_dir))
     else:
       model_lib.continuous_eval(estimator, FLAGS.checkpoint_dir, input_fn,
@@ -106,4 +106,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run()

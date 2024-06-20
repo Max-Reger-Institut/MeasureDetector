@@ -43,7 +43,7 @@ from object_detection.dataset_tools import tf_record_creation_util
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 
-flags = tf.app.flags
+flags = tf.compat.v1.app.flags
 flags.DEFINE_string('data_dir', '', 'Root directory to raw pet dataset.')
 flags.DEFINE_string('output_dir', '', 'Path to directory to output TFRecords.')
 flags.DEFINE_string('label_map_path', 'data/pet_label_map.pbtxt',
@@ -106,7 +106,7 @@ def dict_to_tf_example(data,
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
   img_path = os.path.join(image_subdirectory, data['filename'])
-  with tf.gfile.GFile(img_path, 'rb') as fid:
+  with tf.compat.v1.gfile.GFile(img_path, 'rb') as fid:
     encoded_jpg = fid.read()
   encoded_jpg_io = io.BytesIO(encoded_jpg)
   image = PIL.Image.open(encoded_jpg_io)
@@ -114,7 +114,7 @@ def dict_to_tf_example(data,
     raise ValueError('Image format not JPEG')
   key = hashlib.sha256(encoded_jpg).hexdigest()
 
-  with tf.gfile.GFile(mask_path, 'rb') as fid:
+  with tf.compat.v1.gfile.GFile(mask_path, 'rb') as fid:
     encoded_mask_png = fid.read()
   encoded_png_io = io.BytesIO(encoded_mask_png)
   mask = PIL.Image.open(encoded_png_io)
@@ -207,7 +207,7 @@ def dict_to_tf_example(data,
       feature_dict['image/object/mask'] = (
           dataset_util.bytes_list_feature(encoded_mask_png_list))
 
-  example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
+  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=feature_dict))
   return example
 
 
@@ -245,7 +245,7 @@ def create_tf_record(output_filename,
       if not os.path.exists(xml_path):
         logging.warning('Could not find %s, ignoring example.', xml_path)
         continue
-      with tf.gfile.GFile(xml_path, 'r') as fid:
+      with tf.compat.v1.gfile.GFile(xml_path, 'r') as fid:
         xml_str = fid.read()
       xml = etree.fromstring(xml_str)
       data = dataset_util.recursive_parse_xml_to_dict(xml)['annotation']
@@ -315,4 +315,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run()

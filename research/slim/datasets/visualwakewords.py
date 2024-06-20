@@ -33,7 +33,8 @@ import tensorflow as tf
 from datasets import dataset_utils
 
 
-slim = tf.contrib.slim
+import tf_slim
+slim = tf_slim
 
 _FILE_PATTERN = '%s.record-*'
 
@@ -86,21 +87,21 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
 
   keys_to_features = {
       'image/encoded':
-          tf.FixedLenFeature((), tf.string, default_value=''),
+          tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
       'image/format':
-          tf.FixedLenFeature((), tf.string, default_value='jpeg'),
+          tf.compat.v1.FixedLenFeature((), tf.string, default_value='jpeg'),
       'image/class/label':
-          tf.FixedLenFeature([], dtype=tf.int64, default_value=-1),
+          tf.compat.v1.FixedLenFeature([], dtype=tf.int64, default_value=-1),
       'image/object/bbox/xmin':
-          tf.VarLenFeature(dtype=tf.float32),
+          tf.compat.v1.VarLenFeature(dtype=tf.float32),
       'image/object/bbox/ymin':
-          tf.VarLenFeature(dtype=tf.float32),
+          tf.compat.v1.VarLenFeature(dtype=tf.float32),
       'image/object/bbox/xmax':
-          tf.VarLenFeature(dtype=tf.float32),
+          tf.compat.v1.VarLenFeature(dtype=tf.float32),
       'image/object/bbox/ymax':
-          tf.VarLenFeature(dtype=tf.float32),
+          tf.compat.v1.VarLenFeature(dtype=tf.float32),
       'image/object/class/label':
-          tf.VarLenFeature(dtype=tf.int64),
+          tf.compat.v1.VarLenFeature(dtype=tf.int64),
   }
 
   items_to_handlers = {
@@ -120,7 +121,7 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
 
   labels_to_names = None
   labels_file = os.path.join(dataset_dir, LABELS_FILENAME)
-  if tf.gfile.Exists(labels_file):
+  if tf.compat.v1.gfile.Exists(labels_file):
     labels_to_names = dataset_utils.read_label_file(dataset_dir)
 
   return slim.dataset.Dataset(

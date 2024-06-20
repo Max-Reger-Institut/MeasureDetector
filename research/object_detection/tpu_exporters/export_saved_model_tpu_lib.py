@@ -37,7 +37,7 @@ model_map = {
 
 def parse_pipeline_config(pipeline_config_file):
   """Returns pipeline config and meta architecture name."""
-  with tf.gfile.GFile(pipeline_config_file, 'r') as config_file:
+  with tf.compat.v1.gfile.GFile(pipeline_config_file, 'r') as config_file:
     config_str = config_file.read()
   pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
   text_format.Merge(config_str, pipeline_config)
@@ -74,7 +74,7 @@ def export(pipeline_config_file,
     placeholder_tensor, result_tensor_dict = model_map[meta_arch].build_graph(
         pipeline_config, shapes_info, input_type, use_bfloat16)
 
-    saver = tf.train.Saver()
+    saver = tf.compat.v1.train.Saver()
     init_op = tf.global_variables_initializer()
 
     sess.run(init_op)
@@ -97,7 +97,7 @@ def export(pipeline_config_file,
             outputs=tensor_info_outputs,
             method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME))
 
-    tf.logging.info('Inputs:\n{}\nOutputs:{}\nPredict method name:{}'.format(
+    tf.compat.v1.logging.info('Inputs:\n{}\nOutputs:{}\nPredict method name:{}'.format(
         tensor_info_inputs, tensor_info_outputs,
         tf.saved_model.signature_constants.PREDICT_METHOD_NAME))
     # Graph for TPU.
@@ -122,7 +122,7 @@ def export(pipeline_config_file,
         },
         strip_default_attrs=True)
     builder.save(as_text=False)
-    tf.logging.info('Model saved to {}'.format(export_dir))
+    tf.compat.v1.logging.info('Model saved to {}'.format(export_dir))
 
 
 def run_inference(inputs,
@@ -157,7 +157,7 @@ def run_inference(inputs,
     placeholder_tensor, result_tensor_dict = model_map[meta_arch].build_graph(
         pipeline_config, shapes_info, input_type, use_bfloat16)
 
-    saver = tf.train.Saver()
+    saver = tf.compat.v1.train.Saver()
     init_op = tf.global_variables_initializer()
 
     sess.run(tf.contrib.tpu.initialize_system())

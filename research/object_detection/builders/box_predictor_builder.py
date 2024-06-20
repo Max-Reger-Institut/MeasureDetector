@@ -148,7 +148,7 @@ def build_convolutional_keras_box_predictor(is_training,
       params.
     inplace_batchnorm_update: Whether to update batch norm moving average
       values inplace. When this is false train op must add a control
-      dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+      dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
       batch norm statistics.
     num_predictions_per_location_list: A list of integers representing the
       number of box predictions to be made per spatial location for each
@@ -346,7 +346,7 @@ def build_weight_shared_convolutional_keras_box_predictor(
       params.
     inplace_batchnorm_update: Whether to update batch norm moving average
       values inplace. When this is false train op must add a control
-      dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+      dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
       batch norm statistics.
     num_predictions_per_location_list: A list of integers representing the
       number of box predictions to be made per spatial location for each
@@ -817,7 +817,7 @@ def build_keras(hyperparams_fn, freeze_batchnorm, inplace_batchnorm_update,
       params.
     inplace_batchnorm_update: Whether to update batch norm moving average
       values inplace. When this is false train op must add a control
-      dependency on tf.graphkeys.UPDATE_OPS collection in order to update
+      dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
       batch norm statistics.
     num_predictions_per_location_list: A list of integers representing the
       number of box predictions to be made per spatial location for each

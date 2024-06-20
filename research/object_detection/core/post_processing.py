@@ -48,7 +48,7 @@ def batch_iou(boxes1, boxes2):
   Returns:
     iou: a tensor with as a shape of [batch_size, N, MAX_NUM_INSTANCES].
   """
-  with tf.name_scope('BatchIOU'):
+  with tf.compat.v1.name_scope('BatchIOU'):
     y1_min, x1_min, y1_max, x1_max = tf.split(
         value=boxes1, num_or_size_splits=4, axis=2)
     y2_min, x2_min, y2_max, x2_max = tf.split(
@@ -469,7 +469,7 @@ def multiclass_non_max_suppression(boxes,
     raise ValueError('Soft NMS (soft_nms_sigma != 0.0) is currently not '
                      'supported when pad_to_max_output_size is True.')
 
-  with tf.name_scope(scope, 'MultiClassNonMaxSuppression'):
+  with tf.compat.v1.name_scope(scope, 'MultiClassNonMaxSuppression'):
     num_scores = tf.shape(scores)[0]
     num_classes = shape_utils.get_dim_as_int(scores.get_shape()[1])
 
@@ -700,7 +700,7 @@ def class_agnostic_non_max_suppression(boxes,
   if boundaries is not None:
     boundaries = tf.squeeze(boundaries, axis=[1])
 
-  with tf.name_scope(scope, 'ClassAgnosticNonMaxSuppression'):
+  with tf.compat.v1.name_scope(scope, 'ClassAgnosticNonMaxSuppression'):
     boxlist_and_class_scores = box_list.BoxList(boxes)
     max_scores = tf.reduce_max(scores, axis=-1)
     classes_with_max_scores = tf.argmax(scores, axis=-1)
@@ -919,7 +919,7 @@ def batch_multiclass_non_max_suppression(boxes,
     ordered_additional_fields = collections.OrderedDict(
         sorted(additional_fields.items(), key=lambda item: item[0]))
   del additional_fields
-  with tf.name_scope(scope, 'BatchMultiClassNonMaxSuppression'):
+  with tf.compat.v1.name_scope(scope, 'BatchMultiClassNonMaxSuppression'):
     boxes_shape = boxes.shape
     batch_size = shape_utils.get_dim_as_int(boxes_shape[0])
     num_anchors = shape_utils.get_dim_as_int(boxes_shape[1])

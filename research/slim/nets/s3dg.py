@@ -34,7 +34,8 @@ inception_block_v1_3d = i3d_utils.inception_block_v1_3d
 
 # Orignaly, arg_scope = slim.arg_scope and layers = slim, now switch to more
 # update-to-date tf.contrib.* API.
-arg_scope = tf.contrib.framework.arg_scope
+import tf_slim
+arg_scope = tf_slim.arg_scope
 layers = tf.contrib.layers
 
 
@@ -207,7 +208,7 @@ def s3dg_base(inputs,
     raise ValueError('depth_multiplier is not greater than zero.')
   depth = lambda d: max(int(d * depth_multiplier), min_depth)
 
-  with tf.variable_scope(scope, 'InceptionV1', [inputs]):
+  with tf.compat.v1.variable_scope(scope, 'InceptionV1', [inputs]):
     with arg_scope([layers.conv3d], weights_initializer=trunc_normal(0.01)):
       with arg_scope(
           [layers.conv3d, layers.max_pool3d, conv3d_spatiotemporal],
@@ -554,7 +555,7 @@ def s3dg(inputs,
   """
   assert data_format in ['NDHWC', 'NCDHW']
   # Final pooling and prediction
-  with tf.variable_scope(
+  with tf.compat.v1.variable_scope(
       scope, 'InceptionV1', [inputs, num_classes], reuse=reuse) as scope:
     with arg_scope(
         [layers.batch_norm, layers.dropout], is_training=is_training):
@@ -568,7 +569,7 @@ def s3dg(inputs,
           depth_multiplier=depth_multiplier,
           data_format=data_format,
           scope=scope)
-      with tf.variable_scope('Logits'):
+      with tf.compat.v1.variable_scope('Logits'):
         if data_format.startswith('NC'):
           net = tf.transpose(net, [0, 2, 3, 4, 1])
         kernel_size = i3d_utils.reduced_kernel_size_3d(net, [2, 7, 7])
