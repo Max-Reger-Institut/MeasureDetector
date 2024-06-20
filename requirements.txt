@@ -21,6 +21,7 @@ tqdm
 omrdatasettools==1.2.2
 mung
 contextlib2
+tf_slim
 
 # For the inference server
 hug

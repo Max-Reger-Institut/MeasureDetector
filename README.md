@@ -15,7 +15,7 @@ You may also want to check out the self-contained [Deep Optical Measure Detector
 ## Install required libraries
 
 - Python 3.6 or 3.7
-- Tensorflow 1.13.1 (or optionally tensorflow-gpu 1.13.1)
+- Tensorflow 1.13.1 (or optionally tensorflow-gpu 1.13.1) -- On macOS: Only install tensorflow-macos==2.12.0 (do not install tensorflow per se)
 - pycocotools
     - On Linux: https://github.com/cocodataset/cocoapi
     - On Windows: run `pip install pycocotools-windows`
