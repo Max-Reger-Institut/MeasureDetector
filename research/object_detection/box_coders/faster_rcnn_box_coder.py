@@ -79,8 +79,8 @@ class FasterRcnnBoxCoder(box_coder.BoxCoder):
 
     tx = (xcenter - xcenter_a) / wa
     ty = (ycenter - ycenter_a) / ha
-    tw = tf.log(w / wa)
-    th = tf.log(h / ha)
+    tw = tf.compat.v1.log(w / wa)
+    th = tf.compat.v1.log(h / ha)
     # Scales location targets as used in paper for joint training.
     if self._scale_factors:
       ty *= self._scale_factors[0]

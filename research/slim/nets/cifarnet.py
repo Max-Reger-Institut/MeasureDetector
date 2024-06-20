@@ -23,7 +23,7 @@ import tensorflow as tf
 import tf_slim
 slim = tf_slim
 
-trunc_normal = lambda stddev: tf.truncated_normal_initializer(stddev=stddev)
+trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(stddev=stddev)
 
 
 def cifarnet(images, num_classes=10, is_training=False,
@@ -107,7 +107,7 @@ def cifarnet_arg_scope(weight_decay=0.004):
   """
   with slim.arg_scope(
       [slim.conv2d],
-      weights_initializer=tf.truncated_normal_initializer(stddev=5e-2),
+      weights_initializer=tf.compat.v1.truncated_normal_initializer(stddev=5e-2),
       activation_fn=tf.nn.relu):
     with slim.arg_scope(
         [slim.fully_connected],

@@ -31,7 +31,7 @@ from nets import s3dg
 
 import tf_slim
 slim = tf_slim
-trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
+trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
 conv3d_spatiotemporal = i3d_utils.conv3d_spatiotemporal
 
 

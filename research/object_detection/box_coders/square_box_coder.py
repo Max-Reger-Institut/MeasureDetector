@@ -90,7 +90,7 @@ class SquareBoxCoder(box_coder.BoxCoder):
 
     tx = (xcenter - xcenter_a) / la
     ty = (ycenter - ycenter_a) / la
-    tl = tf.log(l / la)
+    tl = tf.compat.v1.log(l / la)
     # Scales location targets for joint training.
     if self._scale_factors:
       ty *= self._scale_factors[0]

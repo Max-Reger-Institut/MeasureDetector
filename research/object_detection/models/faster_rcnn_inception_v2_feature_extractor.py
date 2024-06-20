@@ -157,7 +157,7 @@ class FasterRCNNInceptionV2FeatureExtractor(
     net = proposal_feature_maps
 
     depth = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
-    trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
+    trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
 
     data_format = 'NHWC'
     concat_dim = 3 if data_format == 'NHWC' else 1

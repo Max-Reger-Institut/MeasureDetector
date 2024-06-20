@@ -1025,9 +1025,9 @@ def fpn_feature_levels(num_levels, unit_scale_index, image_ratio, boxes):
           num_levels, unit_scale_index))
   box_height_width = boxes[:, :, 2:4] - boxes[:, :, 0:2]
   areas_sqrt = tf.sqrt(tf.reduce_prod(box_height_width, axis=2))
-  log_2 = tf.cast(tf.log(2.0), dtype=boxes.dtype)
+  log_2 = tf.cast(tf.compat.v1.log(2.0), dtype=boxes.dtype)
   levels = tf.cast(
-      tf.floordiv(tf.log(areas_sqrt * image_ratio), log_2)
+      tf.floordiv(tf.compat.v1.log(areas_sqrt * image_ratio), log_2)
       +
       unit_scale_index,
       dtype=tf.int32)

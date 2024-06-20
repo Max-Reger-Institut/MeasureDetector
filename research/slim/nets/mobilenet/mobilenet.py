@@ -459,7 +459,7 @@ def training_scope(is_training=True,
   if stddev < 0:
     weight_intitializer = slim.initializers.xavier_initializer()
   else:
-    weight_intitializer = tf.truncated_normal_initializer(stddev=stddev)
+    weight_intitializer = tf.compat.v1.truncated_normal_initializer(stddev=stddev)
 
   # Set weight_decay for weights in Conv and FC layers.
   with slim.arg_scope(

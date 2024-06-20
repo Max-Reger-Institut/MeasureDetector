@@ -35,7 +35,7 @@ import tensorflow as tf
 
 import tf_slim
 slim = tf_slim
-trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
+trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
 
 
 def overfeat_arg_scope(weight_decay=0.0005):

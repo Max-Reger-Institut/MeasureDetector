@@ -28,7 +28,7 @@ import tensorflow as tf
 
 from nets import i3d_utils
 
-trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
+trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
 conv3d_spatiotemporal = i3d_utils.conv3d_spatiotemporal
 inception_block_v1_3d = i3d_utils.inception_block_v1_3d
 
