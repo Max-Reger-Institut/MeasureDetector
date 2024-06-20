@@ -21,7 +21,7 @@ from __future__ import print_function
 import numpy as np
 import six
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import standard_fields as fields
 from object_detection.utils import ops
@@ -755,7 +755,7 @@ class GroundtruthFilterWithUnrecognizedClassesTest(tf.test.TestCase):
 class OpsTestNormalizeToTarget(tf.test.TestCase):
 
   def test_create_normalize_to_target(self):
-    inputs = tf.compat.v1.random_uniform([5, 10, 12, 3])
+    inputs = tf.random_uniform([5, 10, 12, 3])
     target_norm_value = 4.0
     dim = 3
     with self.test_session():
@@ -765,7 +765,7 @@ class OpsTestNormalizeToTarget(tf.test.TestCase):
       self.assertEqual(var_name, 'NormalizeToTarget/weights:0')
 
   def test_invalid_dim(self):
-    inputs = tf.compat.v1.random_uniform([5, 10, 12, 3])
+    inputs = tf.random_uniform([5, 10, 12, 3])
     target_norm_value = 4.0
     dim = 10
     with self.assertRaisesRegexp(
@@ -774,7 +774,7 @@ class OpsTestNormalizeToTarget(tf.test.TestCase):
       ops.normalize_to_target(inputs, target_norm_value, dim)
 
   def test_invalid_target_norm_values(self):
-    inputs = tf.compat.v1.random_uniform([5, 10, 12, 3])
+    inputs = tf.random_uniform([5, 10, 12, 3])
     target_norm_value = [4.0, 4.0]
     dim = 3
     with self.assertRaisesRegexp(
@@ -782,7 +782,7 @@ class OpsTestNormalizeToTarget(tf.test.TestCase):
       ops.normalize_to_target(inputs, target_norm_value, dim)
 
   def test_correct_output_shape(self):
-    inputs = tf.compat.v1.random_uniform([5, 10, 12, 3])
+    inputs = tf.random_uniform([5, 10, 12, 3])
     target_norm_value = 4.0
     dim = 3
     with self.test_session():
@@ -828,7 +828,7 @@ class OpsTestPositionSensitiveCropRegions(tf.test.TestCase):
     # First channel is 1's, second channel is 2's, etc.
     image = tf.constant(
         list(range(1, 3 * 2 + 1)) * 6, dtype=tf.float32, shape=image_shape)
-    boxes = tf.compat.v1.random_uniform((2, 4))
+    boxes = tf.random_uniform((2, 4))
 
     # The result for both boxes should be [[1, 2], [3, 4], [5, 6]]
     # before averaging.
@@ -851,7 +851,7 @@ class OpsTestPositionSensitiveCropRegions(tf.test.TestCase):
     image = tf.constant(
         list(range(1, 3 * 3 + 1)), dtype=tf.float32, shape=[3, 3, 1])
     tiled_image = tf.tile(image, [1, 1, image_shape[2]])
-    boxes = tf.compat.v1.random_uniform((3, 4))
+    boxes = tf.random_uniform((3, 4))
     box_ind = tf.constant([0, 0, 0], dtype=tf.int32)
 
     # All channels are equal so position-sensitive crop and resize should
@@ -917,7 +917,7 @@ class OpsTestPositionSensitiveCropRegions(tf.test.TestCase):
     # First channel is 1's, second channel is 2's, etc.
     image = tf.constant(
         list(range(1, 3 * 2 + 1)) * 6, dtype=tf.float32, shape=image_shape)
-    boxes = tf.compat.v1.random_uniform((num_boxes, 4))
+    boxes = tf.random_uniform((num_boxes, 4))
 
     expected_output = []
 
@@ -954,7 +954,7 @@ class OpsTestPositionSensitiveCropRegions(tf.test.TestCase):
     # First channel is 1's, second channel is 2's, etc.
     image = tf.constant(
         list(range(1, 3 * 2 + 1)) * 6, dtype=tf.float32, shape=image_shape)
-    boxes = tf.compat.v1.random_uniform((num_boxes, 4))
+    boxes = tf.random_uniform((num_boxes, 4))
 
     expected_output = []
 
@@ -1015,8 +1015,8 @@ class OpsTestBatchPositionSensitiveCropRegions(tf.test.TestCase):
     image_shape = [2, 3, 3, 4]
     crop_size = [2, 2]
 
-    image = tf.compat.v1.random_uniform(image_shape)
-    boxes = tf.compat.v1.random_uniform((2, 3, 4))
+    image = tf.random_uniform(image_shape)
+    boxes = tf.random_uniform((2, 3, 4))
     box_ind = tf.constant([0, 0, 0, 1, 1, 1], dtype=tf.int32)
 
     # When a single bin is used, position-sensitive crop and pool should be
@@ -1075,8 +1075,8 @@ class OpsTestBatchPositionSensitiveCropRegions(tf.test.TestCase):
     image_shape = [2, 3, 3, 4]
     crop_size = [1, 1]
 
-    images = tf.compat.v1.random_uniform(image_shape)
-    boxes = tf.compat.v1.random_uniform((2, 3, 4))
+    images = tf.random_uniform(image_shape)
+    boxes = tf.random_uniform((2, 3, 4))
     # box_ind = tf.constant([0, 0, 0, 1, 1, 1], dtype=tf.int32)
 
     # Since single_bin is used and crop_size = [1, 1] (i.e., no crop resize),

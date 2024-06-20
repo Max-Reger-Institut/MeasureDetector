@@ -15,7 +15,7 @@
 
 """Test utils for other test files."""
 
-# import tensorflow as tf
+# import tensorflow.compat.v1 as tf
 #
 # from nets import mobilenet_v1
 #

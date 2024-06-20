@@ -20,7 +20,7 @@ from __future__ import print_function
 
 import numpy as np
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import spatial_transform_ops as spatial_ops
 from object_detection.utils import test_case
@@ -384,7 +384,7 @@ class MultiLevelRoIAlignTest(test_case.TestCase):
         ], dtype=np.float32) / input_size
         boxes = np.tile(boxes, [batch_size, 1, 1])
         tf_boxes = tf.constant(boxes)
-        tf_levels = tf.compat.v1.random_uniform([batch_size, num_boxes], maxval=5,
+        tf_levels = tf.random_uniform([batch_size, num_boxes], maxval=5,
                                       dtype=tf.int32)
         def crop_and_resize_fn():
           return spatial_ops.multilevel_roi_align(

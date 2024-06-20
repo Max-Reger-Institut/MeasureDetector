@@ -15,7 +15,7 @@
 
 """Tensorflow ops to calibrate class predictions and background class."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from object_detection.utils import shape_utils
 
 
@@ -198,7 +198,7 @@ def build(calibration_config):
               fn_x=class_id_function_dict[class_id][0],
               fn_y=class_id_function_dict[class_id][1])
         else:
-          tf.compat.v1.logging.info(
+          tf.logging.info(
               'Calibration parameters for class id `%d` not not found',
               class_id)
           output_tensor = flat_class_tensor

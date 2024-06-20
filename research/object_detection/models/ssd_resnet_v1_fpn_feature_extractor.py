@@ -17,7 +17,7 @@
 See https://arxiv.org/abs/1708.02002 for details.
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -151,7 +151,7 @@ class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         129, preprocessed_inputs)
 
-    with tf.compat.v1.variable_scope(
+    with tf.variable_scope(
         self._resnet_scope_name, reuse=self._reuse_weights) as scope:
       with slim.arg_scope(resnet_v1.resnet_arg_scope()):
         with (slim.arg_scope(self._conv_hyperparams_fn())
@@ -171,7 +171,7 @@ class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
           image_features = self._filter_features(image_features)
       depth_fn = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
       with slim.arg_scope(self._conv_hyperparams_fn()):
-        with tf.compat.v1.variable_scope(self._fpn_scope_name,
+        with tf.variable_scope(self._fpn_scope_name,
                                reuse=self._reuse_weights):
           base_fpn_max_level = min(self._fpn_max_level, 5)
           feature_block_list = []

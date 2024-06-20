@@ -24,11 +24,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from nets import i3d_utils
 
-trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
+trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
 conv3d_spatiotemporal = i3d_utils.conv3d_spatiotemporal
 inception_block_v1_3d = i3d_utils.inception_block_v1_3d
 
@@ -208,7 +208,7 @@ def s3dg_base(inputs,
     raise ValueError('depth_multiplier is not greater than zero.')
   depth = lambda d: max(int(d * depth_multiplier), min_depth)
 
-  with tf.compat.v1.variable_scope(scope, 'InceptionV1', [inputs]):
+  with tf.variable_scope(scope, 'InceptionV1', [inputs]):
     with arg_scope([layers.conv3d], weights_initializer=trunc_normal(0.01)):
       with arg_scope(
           [layers.conv3d, layers.max_pool3d, conv3d_spatiotemporal],
@@ -555,7 +555,7 @@ def s3dg(inputs,
   """
   assert data_format in ['NDHWC', 'NCDHW']
   # Final pooling and prediction
-  with tf.compat.v1.variable_scope(
+  with tf.variable_scope(
       scope, 'InceptionV1', [inputs, num_classes], reuse=reuse) as scope:
     with arg_scope(
         [layers.batch_norm, layers.dropout], is_training=is_training):
@@ -569,7 +569,7 @@ def s3dg(inputs,
           depth_multiplier=depth_multiplier,
           data_format=data_format,
           scope=scope)
-      with tf.compat.v1.variable_scope('Logits'):
+      with tf.variable_scope('Logits'):
         if data_format.startswith('NC'):
           net = tf.transpose(net, [0, 2, 3, 4, 1])
         kernel_size = i3d_utils.reduced_kernel_size_3d(net, [2, 7, 7])

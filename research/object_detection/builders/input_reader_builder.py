@@ -23,7 +23,7 @@ Detection configuration framework, they should define their own builder function
 that wraps the build function.
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.data_decoders import tf_example_decoder
 from object_detection.protos import input_reader_pb2

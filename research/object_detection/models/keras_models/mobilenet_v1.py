@@ -19,7 +19,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import freezable_batch_norm
 from object_detection.models.keras_models import model_utils
@@ -103,7 +103,7 @@ class _LayersOverride(object):
     self._min_depth = min_depth
     self._conv_defs = conv_defs
     self.regularizer = tf.keras.regularizers.l2(0.00004 * 0.5)
-    self.initializer = tf.compat.v1.truncated_normal_initializer(stddev=0.09)
+    self.initializer = tf.truncated_normal_initializer(stddev=0.09)
 
   def _FixedPaddingLayer(self, kernel_size, rate=1):
     return tf.keras.layers.Lambda(

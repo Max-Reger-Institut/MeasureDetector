@@ -19,7 +19,7 @@ from __future__ import print_function
 
 import numpy as np
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import standard_fields
 from object_detection.metrics import coco_tools
@@ -84,7 +84,7 @@ class CocoDetectionEvaluator(object_detection_evaluation.DetectionEvaluator):
           shape [num_boxes] containing iscrowd flag for groundtruth boxes.
     """
     if image_id in self._image_ids:
-      tf.compat.v1.logging.warning('Ignoring ground truth with image id %s since it was '
+      tf.logging.warning('Ignoring ground truth with image id %s since it was '
                          'previously added', image_id)
       return
 
@@ -135,7 +135,7 @@ class CocoDetectionEvaluator(object_detection_evaluation.DetectionEvaluator):
       raise ValueError('Missing groundtruth for image id: {}'.format(image_id))
 
     if self._image_ids[image_id]:
-      tf.compat.v1.logging.warning('Ignoring detection with image id %s since it was '
+      tf.logging.warning('Ignoring detection with image id %s since it was '
                          'previously added', image_id)
       return
 
@@ -162,8 +162,8 @@ class CocoDetectionEvaluator(object_detection_evaluation.DetectionEvaluator):
         None. In that case nothing will be written to the output file.
     """
     if json_output_path and json_output_path is not None:
-      with tf.compat.v1.gfile.GFile(json_output_path, 'w') as fid:
-        tf.compat.v1.logging.info('Dumping detections to output json file.')
+      with tf.gfile.GFile(json_output_path, 'w') as fid:
+        tf.logging.info('Dumping detections to output json file.')
         json_utils.Dump(
             obj=self._detection_boxes_list, fid=fid, float_digits=4, indent=2)
 
@@ -202,7 +202,7 @@ class CocoDetectionEvaluator(object_detection_evaluation.DetectionEvaluator):
       'PerformanceByCategory' is included in the output regardless of
       all_metrics_per_category.
     """
-    tf.compat.v1.logging.info('Performing evaluation on %d images.', len(self._image_ids))
+    tf.logging.info('Performing evaluation on %d images.', len(self._image_ids))
     groundtruth_dict = {
         'annotations': self._groundtruth_list,
         'images': [{'id': image_id} for image_id in self._image_ids],
@@ -460,7 +460,7 @@ class CocoMaskEvaluator(object_detection_evaluation.DetectionEvaluator):
           {0, 1}.
     """
     if image_id in self._image_id_to_mask_shape_map:
-      tf.compat.v1.logging.warning('Ignoring ground truth with image id %s since it was '
+      tf.logging.warning('Ignoring ground truth with image id %s since it was '
                          'previously added', image_id)
       return
 
@@ -515,7 +515,7 @@ class CocoMaskEvaluator(object_detection_evaluation.DetectionEvaluator):
       raise ValueError('Missing groundtruth for image id: {}'.format(image_id))
 
     if image_id in self._image_ids_with_detections:
-      tf.compat.v1.logging.warning('Ignoring detection with image id %s since it was '
+      tf.logging.warning('Ignoring detection with image id %s since it was '
                          'previously added', image_id)
       return
 
@@ -551,8 +551,8 @@ class CocoMaskEvaluator(object_detection_evaluation.DetectionEvaluator):
         None. In that case nothing will be written to the output file.
     """
     if json_output_path and json_output_path is not None:
-      tf.compat.v1.logging.info('Dumping detections to output json file.')
-      with tf.compat.v1.gfile.GFile(json_output_path, 'w') as fid:
+      tf.logging.info('Dumping detections to output json file.')
+      with tf.gfile.GFile(json_output_path, 'w') as fid:
         json_utils.Dump(
             obj=self._detection_masks_list, fid=fid, float_digits=4, indent=2)
 

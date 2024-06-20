@@ -32,7 +32,7 @@ import os
 import random
 import sys
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_utils
 
@@ -136,7 +136,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
             sys.stdout.flush()
 
             # Read the filename:
-            image_data = tf.compat.v1.gfile.GFile(filenames[i], 'rb').read()
+            image_data = tf.gfile.GFile(filenames[i], 'rb').read()
             height, width = image_reader.read_image_dims(sess, image_data)
 
             class_name = os.path.basename(os.path.dirname(filenames[i]))
@@ -158,10 +158,10 @@ def _clean_up_temporary_files(dataset_dir):
   """
   filename = _DATA_URL.split('/')[-1]
   filepath = os.path.join(dataset_dir, filename)
-  tf.compat.v1.gfile.Remove(filepath)
+  tf.gfile.Remove(filepath)
 
   tmp_dir = os.path.join(dataset_dir, 'flower_photos')
-  tf.compat.v1.gfile.DeleteRecursively(tmp_dir)
+  tf.gfile.DeleteRecursively(tmp_dir)
 
 
 def _dataset_exists(dataset_dir):
@@ -169,7 +169,7 @@ def _dataset_exists(dataset_dir):
     for shard_id in range(_NUM_SHARDS):
       output_filename = _get_dataset_filename(
           dataset_dir, split_name, shard_id)
-      if not tf.compat.v1.gfile.Exists(output_filename):
+      if not tf.gfile.Exists(output_filename):
         return False
   return True
 
@@ -180,8 +180,8 @@ def run(dataset_dir):
   Args:
     dataset_dir: The dataset directory where the dataset is stored.
   """
-  if not tf.compat.v1.gfile.Exists(dataset_dir):
-    tf.compat.v1.gfile.MakeDirs(dataset_dir)
+  if not tf.gfile.Exists(dataset_dir):
+    tf.gfile.MakeDirs(dataset_dir)
 
   if _dataset_exists(dataset_dir):
     print('Dataset files already exist. Exiting without re-creating them.')

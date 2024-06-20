@@ -22,7 +22,7 @@ from __future__ import print_function
 import inspect
 import math
 import six
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 # This signifies the max integer that the controller RNN could predict for the
@@ -214,11 +214,11 @@ def cutout(image, pad_size, replace=0):
   image_width = tf.shape(image)[1]
 
   # Sample the center location in the image where the zero mask will be applied.
-  cutout_center_height = tf.compat.v1.random_uniform(
+  cutout_center_height = tf.random_uniform(
       shape=[], minval=0, maxval=image_height,
       dtype=tf.int32)
 
-  cutout_center_width = tf.compat.v1.random_uniform(
+  cutout_center_width = tf.random_uniform(
       shape=[], minval=0, maxval=image_width,
       dtype=tf.int32)
 
@@ -372,10 +372,10 @@ def random_shift_bbox(image, bbox, pixel_scaling, replace,
 
   # Sample and calculate the new unclipped min/max coordinates of the new bbox.
   if new_min_bbox_coords is None:
-    unclipped_new_min_y = tf.compat.v1.random_uniform(
+    unclipped_new_min_y = tf.random_uniform(
         shape=[], minval=minval_y, maxval=maxval_y,
         dtype=tf.int32)
-    unclipped_new_min_x = tf.compat.v1.random_uniform(
+    unclipped_new_min_x = tf.random_uniform(
         shape=[], minval=minval_x, maxval=maxval_x,
         dtype=tf.int32)
   else:
@@ -601,7 +601,7 @@ def _apply_bbox_augmentation_wrapper(image, bbox, new_bboxes, prob,
     applying augmentation_func.
   """
   should_apply_op = tf.cast(
-      tf.floor(tf.compat.v1.random_uniform([], dtype=tf.float32) + prob), tf.bool)
+      tf.floor(tf.random_uniform([], dtype=tf.float32) + prob), tf.bool)
   if func_changes_bbox:
     augmented_image, bbox = tf.cond(
         should_apply_op,
@@ -1261,11 +1261,11 @@ def _cutout_inside_bbox(image, bbox, pad_fraction):
   pad_size_width = tf.to_int32(pad_fraction * (box_width / 2))
 
   # Sample the center location in the image where the zero mask will be applied.
-  cutout_center_height = tf.compat.v1.random_uniform(
+  cutout_center_height = tf.random_uniform(
       shape=[], minval=min_y, maxval=max_y+1,
       dtype=tf.int32)
 
-  cutout_center_width = tf.compat.v1.random_uniform(
+  cutout_center_width = tf.random_uniform(
       shape=[], minval=min_x, maxval=max_x+1,
       dtype=tf.int32)
 
@@ -1322,7 +1322,7 @@ def bbox_cutout(image, bboxes, pad_fraction, replace_with_mean):
   def apply_bbox_cutout(image, bboxes, pad_fraction):
     """Applies cutout to a single bounding box within image."""
     # Choose a single bounding box to apply cutout to.
-    random_index = tf.compat.v1.random_uniform(
+    random_index = tf.random_uniform(
         shape=[], maxval=tf.shape(bboxes)[0], dtype=tf.int32)
     # Select the corresponding bbox and apply cutout.
     chosen_bbox = tf.gather(bboxes, random_index)
@@ -1385,7 +1385,7 @@ NAME_TO_FUNC = {
 
 def _randomly_negate_tensor(tensor):
   """With 50% prob turn the tensor negative."""
-  should_flip = tf.cast(tf.floor(tf.compat.v1.random_uniform([]) + 0.5), tf.bool)
+  should_flip = tf.cast(tf.floor(tf.random_uniform([]) + 0.5), tf.bool)
   final_tensor = tf.cond(should_flip, lambda: tensor, lambda: -tensor)
   return final_tensor
 
@@ -1528,7 +1528,7 @@ def _apply_func_with_prob(func, image, args, prob, bboxes):
 
   # Apply the function with probability `prob`.
   should_apply_op = tf.cast(
-      tf.floor(tf.compat.v1.random_uniform([], dtype=tf.float32) + prob), tf.bool)
+      tf.floor(tf.random_uniform([], dtype=tf.float32) + prob), tf.bool)
   augmented_image, augmented_bboxes = tf.cond(
       should_apply_op,
       lambda: func(image, bboxes, *args),
@@ -1538,7 +1538,7 @@ def _apply_func_with_prob(func, image, args, prob, bboxes):
 
 def select_and_apply_random_policy(policies, image, bboxes):
   """Select a random policy from `policies` and apply it to `image`."""
-  policy_to_select = tf.compat.v1.random_uniform([], maxval=len(policies), dtype=tf.int32)
+  policy_to_select = tf.random_uniform([], maxval=len(policies), dtype=tf.int32)
   # Note that using tf.case instead of tf.conds would result in significantly
   # larger graphs and would even break export for some larger policies.
   for (i, policy) in enumerate(policies):

@@ -94,22 +94,22 @@ import threading
 
 import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
-tf.compat.v1.app.flags.DEFINE_string('train_directory', '/tmp/',
+tf.app.flags.DEFINE_string('train_directory', '/tmp/',
                            'Training data directory')
-tf.compat.v1.app.flags.DEFINE_string('validation_directory', '/tmp/',
+tf.app.flags.DEFINE_string('validation_directory', '/tmp/',
                            'Validation data directory')
-tf.compat.v1.app.flags.DEFINE_string('output_directory', '/tmp/',
+tf.app.flags.DEFINE_string('output_directory', '/tmp/',
                            'Output data directory')
 
-tf.compat.v1.app.flags.DEFINE_integer('train_shards', 1024,
+tf.app.flags.DEFINE_integer('train_shards', 1024,
                             'Number of shards in training TFRecord files.')
-tf.compat.v1.app.flags.DEFINE_integer('validation_shards', 128,
+tf.app.flags.DEFINE_integer('validation_shards', 128,
                             'Number of shards in validation TFRecord files.')
 
-tf.compat.v1.app.flags.DEFINE_integer('num_threads', 8,
+tf.app.flags.DEFINE_integer('num_threads', 8,
                             'Number of threads to preprocess the images.')
 
 # The labels file contains a list of valid labels are held in this file.
@@ -120,7 +120,7 @@ tf.compat.v1.app.flags.DEFINE_integer('num_threads', 8,
 # where each line corresponds to a label expressed as a synset. We map
 # each synset contained in the file to an integer (based on the alphabetical
 # ordering). See below for details.
-tf.compat.v1.app.flags.DEFINE_string('labels_file',
+tf.app.flags.DEFINE_string('labels_file',
                            'imagenet_lsvrc_2015_synsets.txt',
                            'Labels file')
 
@@ -133,7 +133,7 @@ tf.compat.v1.app.flags.DEFINE_string('labels_file',
 #
 # where each line corresponds to a unique mapping. Note that each line is
 # formatted as <synset>\t<human readable label>.
-tf.compat.v1.app.flags.DEFINE_string('imagenet_metadata_file',
+tf.app.flags.DEFINE_string('imagenet_metadata_file',
                            'imagenet_metadata.txt',
                            'ImageNet metadata file')
 
@@ -149,30 +149,30 @@ tf.compat.v1.app.flags.DEFINE_string('imagenet_metadata_file',
 #
 # Note that there might exist mulitple bounding box annotations associated
 # with an image file.
-tf.compat.v1.app.flags.DEFINE_string('bounding_box_file',
+tf.app.flags.DEFINE_string('bounding_box_file',
                            './imagenet_2012_bounding_boxes.csv',
                            'Bounding box file')
 
-FLAGS = tf.compat.v1.app.flags.FLAGS
+FLAGS = tf.app.flags.FLAGS
 
 
 def _int64_feature(value):
   """Wrapper for inserting int64 features into Example proto."""
   if not isinstance(value, list):
     value = [value]
-  return tf.compat.v1.train.Feature(int64_list=tf.compat.v1.train.Int64List(value=value))
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
 
 
 def _float_feature(value):
   """Wrapper for inserting float features into Example proto."""
   if not isinstance(value, list):
     value = [value]
-  return tf.compat.v1.train.Feature(float_list=tf.compat.v1.train.FloatList(value=value))
+  return tf.train.Feature(float_list=tf.train.FloatList(value=value))
 
 
 def _bytes_feature(value):
   """Wrapper for inserting bytes features into Example proto."""
-  return tf.compat.v1.train.Feature(bytes_list=tf.compat.v1.train.BytesList(value=[value]))
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 
 def _convert_to_example(filename, image_buffer, label, synset, human, bbox,
@@ -207,7 +207,7 @@ def _convert_to_example(filename, image_buffer, label, synset, human, bbox,
   channels = 3
   image_format = 'JPEG'
 
-  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
+  example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': _int64_feature(height),
       'image/width': _int64_feature(width),
       'image/colorspace': _bytes_feature(colorspace),
@@ -314,7 +314,7 @@ def _process_image(filename, coder):
     width: integer, image width in pixels.
   """
   # Read the image file.
-  image_data = tf.compat.v1.gfile.GFile(filename, 'r').read()
+  image_data = tf.gfile.GFile(filename, 'r').read()
 
   # Clean the dirty data.
   if _is_png(filename):
@@ -442,7 +442,7 @@ def _process_image_files(name, filenames, synsets, labels, humans,
   sys.stdout.flush()
 
   # Create a mechanism for monitoring when all threads are finished.
-  coord = tf.compat.v1.train.Coordinator()
+  coord = tf.train.Coordinator()
 
   # Create a generic TensorFlow-based utility for converting all image codings.
   coder = ImageCoder()
@@ -498,7 +498,7 @@ def _find_image_files(data_dir, labels_file):
   """
   print('Determining list of input files and labels from %s.' % data_dir)
   challenge_synsets = [
-      l.strip() for l in tf.compat.v1.gfile.GFile(labels_file, 'r').readlines()
+      l.strip() for l in tf.gfile.GFile(labels_file, 'r').readlines()
   ]
 
   labels = []
@@ -511,7 +511,7 @@ def _find_image_files(data_dir, labels_file):
   # Construct the list of JPEG files and labels.
   for synset in challenge_synsets:
     jpeg_file_path = '%s/%s/*.JPEG' % (data_dir, synset)
-    matching_files = tf.compat.v1.gfile.Glob(jpeg_file_path)
+    matching_files = tf.gfile.Glob(jpeg_file_path)
 
     labels.extend([label_index] * len(matching_files))
     synsets.extend([synset] * len(matching_files))
@@ -622,7 +622,7 @@ def _build_synset_lookup(imagenet_metadata_file):
     Dictionary of synset to human labels, such as:
       'n02119022' --> 'red fox, Vulpes vulpes'
   """
-  lines = tf.compat.v1.gfile.GFile(imagenet_metadata_file, 'r').readlines()
+  lines = tf.gfile.GFile(imagenet_metadata_file, 'r').readlines()
   synset_to_human = {}
   for l in lines:
     if l:
@@ -656,7 +656,7 @@ def _build_bounding_box_lookup(bounding_box_file):
     Dictionary mapping image file names to a list of bounding boxes. This list
     contains 0+ bounding boxes.
   """
-  lines = tf.compat.v1.gfile.GFile(bounding_box_file, 'r').readlines()
+  lines = tf.gfile.GFile(bounding_box_file, 'r').readlines()
   images_to_bboxes = {}
   num_bbox = 0
   num_image = 0
@@ -702,4 +702,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

@@ -15,7 +15,7 @@
 
 """Bipartite matcher implementation."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 

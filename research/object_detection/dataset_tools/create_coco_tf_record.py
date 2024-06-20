@@ -40,14 +40,14 @@ import numpy as np
 import PIL.Image
 
 from pycocotools import mask
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.dataset_tools import tf_record_creation_util
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 tf.flags.DEFINE_boolean('include_masks', False,
                         'Whether to include instance segmentations masks '
                         '(PNG encoded) in the result. default: False.')
@@ -67,7 +67,7 @@ tf.flags.DEFINE_string('output_dir', '/tmp/', 'Output data directory.')
 
 FLAGS = flags.FLAGS
 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+tf.logging.set_verbosity(tf.logging.INFO)
 
 
 def create_tf_example(image,
@@ -110,7 +110,7 @@ def create_tf_example(image,
   image_id = image['id']
 
   full_path = os.path.join(image_dir, filename)
-  with tf.compat.v1.gfile.GFile(full_path, 'rb') as fid:
+  with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
   encoded_jpg_io = io.BytesIO(encoded_jpg)
   image = PIL.Image.open(encoded_jpg_io)
@@ -187,7 +187,7 @@ def create_tf_example(image,
   if include_masks:
     feature_dict['image/object/mask'] = (
         dataset_util.bytes_list_feature(encoded_mask_png))
-  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=feature_dict))
+  example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
   return key, example, num_annotations_skipped
 
 
@@ -204,7 +204,7 @@ def _create_tf_record_from_coco_annotations(
     num_shards: number of output file shards.
   """
   with contextlib2.ExitStack() as tf_record_close_stack, \
-      tf.compat.v1.gfile.GFile(annotations_file, 'r') as fid:
+      tf.gfile.GFile(annotations_file, 'r') as fid:
     output_tfrecords = tf_record_creation_util.open_sharded_output_tfrecords(
         tf_record_close_stack, output_path, num_shards)
     groundtruth_data = json.load(fid)
@@ -214,7 +214,7 @@ def _create_tf_record_from_coco_annotations(
 
     annotations_index = {}
     if 'annotations' in groundtruth_data:
-      tf.compat.v1.logging.info(
+      tf.logging.info(
           'Found groundtruth annotations. Building annotations index.')
       for annotation in groundtruth_data['annotations']:
         image_id = annotation['image_id']
@@ -227,20 +227,20 @@ def _create_tf_record_from_coco_annotations(
       if image_id not in annotations_index:
         missing_annotation_count += 1
         annotations_index[image_id] = []
-    tf.compat.v1.logging.info('%d images are missing annotations.',
+    tf.logging.info('%d images are missing annotations.',
                     missing_annotation_count)
 
     total_num_annotations_skipped = 0
     for idx, image in enumerate(images):
       if idx % 100 == 0:
-        tf.compat.v1.logging.info('On image %d of %d', idx, len(images))
+        tf.logging.info('On image %d of %d', idx, len(images))
       annotations_list = annotations_index[image['id']]
       _, tf_example, num_annotations_skipped = create_tf_example(
           image, annotations_list, image_dir, category_index, include_masks)
       total_num_annotations_skipped += num_annotations_skipped
       shard_idx = idx % num_shards
       output_tfrecords[shard_idx].write(tf_example.SerializeToString())
-    tf.compat.v1.logging.info('Finished writing, skipped %d annotations.',
+    tf.logging.info('Finished writing, skipped %d annotations.',
                     total_num_annotations_skipped)
 
 
@@ -252,8 +252,8 @@ def main(_):
   assert FLAGS.val_annotations_file, '`val_annotations_file` missing.'
   assert FLAGS.testdev_annotations_file, '`testdev_annotations_file` missing.'
 
-  if not tf.compat.v1.gfile.IsDirectory(FLAGS.output_dir):
-    tf.compat.v1.gfile.MakeDirs(FLAGS.output_dir)
+  if not tf.gfile.IsDirectory(FLAGS.output_dir):
+    tf.gfile.MakeDirs(FLAGS.output_dir)
   train_output_path = os.path.join(FLAGS.output_dir, 'coco_train.record')
   val_output_path = os.path.join(FLAGS.output_dir, 'coco_val.record')
   testdev_output_path = os.path.join(FLAGS.output_dir, 'coco_testdev.record')
@@ -279,4 +279,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

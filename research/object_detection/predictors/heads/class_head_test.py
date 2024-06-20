@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Tests for object_detection.predictors.heads.class_head."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import hyperparams_builder
@@ -50,7 +50,7 @@ class MaskRCNNClassHeadTest(test_case.TestCase):
         fc_hyperparams_fn=self._build_arg_scope_with_hyperparams(),
         use_dropout=True,
         dropout_keep_prob=0.5)
-    roi_pooled_features = tf.compat.v1.random_uniform(
+    roi_pooled_features = tf.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = class_prediction_head.predict(
         features=roi_pooled_features, num_predictions_per_location=1)
@@ -70,13 +70,13 @@ class MaskRCNNClassHeadTest(test_case.TestCase):
           fc_hyperparams_fn=self._build_arg_scope_with_hyperparams(),
           use_dropout=True,
           dropout_keep_prob=0.5)
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       class_prediction_head.predict(
           features=image_feature,
           num_predictions_per_location=1)
       actual_variable_set = set([
-          var.op.name for var in g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+          var.op.name for var in g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
       ])
       self.assertSetEqual(expected_var_names, actual_variable_set)
 
@@ -108,7 +108,7 @@ class ConvolutionalClassPredictorTest(test_case.TestCase):
         use_dropout=True,
         dropout_keep_prob=0.5,
         kernel_size=3)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head.predict(
         features=image_feature,
@@ -129,13 +129,13 @@ class ConvolutionalClassPredictorTest(test_case.TestCase):
           use_dropout=True,
           dropout_keep_prob=0.5,
           kernel_size=3)
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       class_prediction_head.predict(
           features=image_feature,
           num_predictions_per_location=1)
       actual_variable_set = set([
-          var.op.name for var in g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+          var.op.name for var in g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
       ])
       self.assertSetEqual(expected_var_names, actual_variable_set)
 
@@ -163,7 +163,7 @@ class WeightSharedConvolutionalClassPredictorTest(test_case.TestCase):
   def test_prediction_size(self):
     class_prediction_head = (
         class_head.WeightSharedConvolutionalClassHead(num_class_slots=20))
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head.predict(
         features=image_feature,
@@ -179,13 +179,13 @@ class WeightSharedConvolutionalClassPredictorTest(test_case.TestCase):
     with g.as_default():
       class_prediction_head = class_head.WeightSharedConvolutionalClassHead(
           num_class_slots=20)
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       class_prediction_head.predict(
           features=image_feature,
           num_predictions_per_location=1)
       actual_variable_set = set([
-          var.op.name for var in g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+          var.op.name for var in g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
       ])
       self.assertSetEqual(expected_var_names, actual_variable_set)
 

@@ -103,14 +103,14 @@ python export_inference_graph \
               } \
             }"
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from google.protobuf import text_format
 from object_detection import exporter
 from object_detection.protos import pipeline_pb2
 
 import tf_slim
 slim = tf_slim
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 
 flags.DEFINE_string('input_type', 'image_tensor', 'Type of input node. Can be '
                     'one of [`image_tensor`, `encoded_image_string_tensor`, '
@@ -135,15 +135,15 @@ flags.DEFINE_string('config_override', '',
                     'text proto to override pipeline_config_path.')
 flags.DEFINE_boolean('write_inference_graph', False,
                      'If true, writes inference graph to disk.')
-tf.compat.v1.app.flags.mark_flag_as_required('pipeline_config_path')
-tf.compat.v1.app.flags.mark_flag_as_required('trained_checkpoint_prefix')
-tf.compat.v1.app.flags.mark_flag_as_required('output_directory')
+tf.app.flags.mark_flag_as_required('pipeline_config_path')
+tf.app.flags.mark_flag_as_required('trained_checkpoint_prefix')
+tf.app.flags.mark_flag_as_required('output_directory')
 FLAGS = flags.FLAGS
 
 
 def main(_):
   pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
-  with tf.compat.v1.gfile.GFile(FLAGS.pipeline_config_path, 'r') as f:
+  with tf.gfile.GFile(FLAGS.pipeline_config_path, 'r') as f:
     text_format.Merge(f.read(), pipeline_config)
   text_format.Merge(FLAGS.config_override, pipeline_config)
   if FLAGS.input_shape:
@@ -160,4 +160,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Builder function to construct tf-slim arg_scope for convolution, fc ops."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import freezable_batch_norm
 from object_detection.protos import hyperparams_pb2
@@ -321,7 +321,7 @@ def _build_initializer(initializer, build_for_keras=False):
   """
   initializer_oneof = initializer.WhichOneof('initializer_oneof')
   if initializer_oneof == 'truncated_normal_initializer':
-    return tf.compat.v1.truncated_normal_initializer(
+    return tf.truncated_normal_initializer(
         mean=initializer.truncated_normal_initializer.mean,
         stddev=initializer.truncated_normal_initializer.stddev)
   if initializer_oneof == 'random_normal_initializer':

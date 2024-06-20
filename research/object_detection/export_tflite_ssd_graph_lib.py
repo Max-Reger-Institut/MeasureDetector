@@ -19,7 +19,7 @@ See export_tflite_ssd_graph.py for usage.
 import os
 import tempfile
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.core.framework import attr_value_pb2
 from tensorflow.core.framework import types_pb2
 from tensorflow.core.protobuf import saver_pb2
@@ -183,7 +183,7 @@ def export_tflite_graph(pipeline_config,
     ValueError: if the pipeline config contains models other than ssd or uses an
       fixed_shape_resizer and provides a shape as well.
   """
-  tf.compat.v1.gfile.MakeDirs(output_dir)
+  tf.gfile.MakeDirs(output_dir)
   if pipeline_config.model.WhichOneof('model') != 'ssd':
     raise ValueError('Only ssd models are supported in tflite. '
                      'Found {} in config'.format(
@@ -239,7 +239,7 @@ def export_tflite_graph(pipeline_config,
   class_predictions = score_conversion_fn(
       predicted_tensors['class_predictions_with_background'])
 
-  with tf.compat.v1.name_scope('raw_outputs'):
+  with tf.name_scope('raw_outputs'):
     # 'raw_outputs/box_encodings': a float32 tensor of shape [1, num_anchors, 4]
     #  containing the encoded box predictions. Note that these are raw
     #  predictions and no Non-Max suppression is applied on them and
@@ -257,7 +257,7 @@ def export_tflite_graph(pipeline_config,
 
   # Add global step to the graph, so we know the training step number when we
   # evaluate the model.
-  tf.compat.v1.train.get_or_create_global_step()
+  tf.train.get_or_create_global_step()
 
   # graph rewriter
   is_quantized = pipeline_config.HasField('graph_rewriter')
@@ -282,7 +282,7 @@ def export_tflite_graph(pipeline_config,
   else:
     checkpoint_to_use = trained_checkpoint_prefix
 
-  saver = tf.compat.v1.train.Saver(**saver_kwargs)
+  saver = tf.train.Saver(**saver_kwargs)
   input_saver_def = saver.as_saver_def()
   frozen_graph_def = exporter.freeze_graph_with_def_protos(
       input_graph_def=tf.get_default_graph().as_graph_def(),
@@ -309,8 +309,8 @@ def export_tflite_graph(pipeline_config,
     transformed_graph_def = frozen_graph_def
 
   binary_graph = os.path.join(output_dir, binary_graph_name)
-  with tf.compat.v1.gfile.GFile(binary_graph, 'wb') as f:
+  with tf.gfile.GFile(binary_graph, 'wb') as f:
     f.write(transformed_graph_def.SerializeToString())
   txt_graph = os.path.join(output_dir, txt_graph_name)
-  with tf.compat.v1.gfile.GFile(txt_graph, 'w') as f:
+  with tf.gfile.GFile(txt_graph, 'w') as f:
     f.write(str(transformed_graph_def))

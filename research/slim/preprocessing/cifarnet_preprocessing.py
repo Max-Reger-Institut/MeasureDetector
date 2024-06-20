@@ -20,7 +20,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 _PADDING = 4
 
@@ -94,7 +94,7 @@ def preprocess_for_eval(image, output_height, output_width,
   image = tf.to_float(image)
 
   # Resize and crop if needed.
-  resized_image = tf.compat.v1.image.resize_image_with_crop_or_pad(image,
+  resized_image = tf.image.resize_image_with_crop_or_pad(image,
                                                          output_width,
                                                          output_height)
   if add_image_summaries:

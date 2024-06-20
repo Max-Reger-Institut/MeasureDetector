@@ -23,7 +23,7 @@ import os
 from absl.testing import parameterized
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection import inputs
 from object_detection.core import preprocessor
@@ -61,8 +61,8 @@ def _make_initializable_iterator(dataset):
   Returns:
     A `tf.data.Iterator`.
   """
-  iterator = tf.compat.v1.data.make_initializable_iterator(dataset)
-  tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
+  iterator = tf.data.make_initializable_iterator(dataset)
+  tf.add_to_collection(tf.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
   return iterator
 
 
@@ -834,11 +834,11 @@ class DataTransformationFnTest(test_case.TestCase):
     }
 
     def fake_image_resizer_fn(image, masks=None):
-      resized_image = tf.compat.v1.image.resize_images(image, [8, 8])
+      resized_image = tf.image.resize_images(image, [8, 8])
       results = [resized_image]
       if masks is not None:
         resized_masks = tf.transpose(
-            tf.compat.v1.image.resize_images(tf.transpose(masks, [1, 2, 0]), [8, 8]),
+            tf.image.resize_images(tf.transpose(masks, [1, 2, 0]), [8, 8]),
             [2, 0, 1])
         results.append(resized_masks)
       results.append(tf.shape(resized_image))

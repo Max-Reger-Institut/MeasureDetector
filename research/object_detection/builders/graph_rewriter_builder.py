@@ -14,7 +14,7 @@
 # ==============================================================================
 """Functions for quantized training and evaluation."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def build(graph_rewriter_config, is_training):

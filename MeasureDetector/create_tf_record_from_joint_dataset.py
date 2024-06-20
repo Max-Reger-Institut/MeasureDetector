@@ -8,7 +8,7 @@ from glob import glob
 
 import PIL.Image
 import contextlib2
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from typing import List, Dict, Generator
 
 from PIL.Image import Image
@@ -44,7 +44,7 @@ sampling_categories = [
 
 def annotations_to_tf_example_list(all_image_paths: List[str],
                                    all_annotation_paths: List[str],
-                                   label_map_dict: Dict[str, int]) -> Generator[tf.compat.v1.train.Example, None, None]:
+                                   label_map_dict: Dict[str, int]) -> Generator[tf.train.Example, None, None]:
     """Convert json files and images to tf.Example proto.
 
     Notice that this function normalizes the bounding box coordinates provided

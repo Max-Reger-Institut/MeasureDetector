@@ -24,7 +24,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 import tf_slim
 slim = tf_slim
@@ -35,7 +35,7 @@ def inception_arg_scope(weight_decay=0.00004,
                         batch_norm_decay=0.9997,
                         batch_norm_epsilon=0.001,
                         activation_fn=tf.nn.relu,
-                        batch_norm_updates_collections=tf.compat.v1.GraphKeys.UPDATE_OPS,
+                        batch_norm_updates_collections=tf.GraphKeys.UPDATE_OPS,
                         batch_norm_scale=False):
   """Defines the default arg scope for inception models.
 

@@ -25,7 +25,7 @@ Huang et al. (https://arxiv.org/abs/1611.10012)
 # Skip pylint for this file because it times out
 # pylint: skip-file
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from object_detection.models.keras_models import inception_resnet_v2
@@ -94,8 +94,8 @@ class FasterRCNNInceptionResnetV2KerasFeatureExtractor(
       And returns rpn_feature_map:
         A tensor with shape [batch, height, width, depth]
     """
-    with tf.compat.v1.name_scope(name):
-      with tf.compat.v1.name_scope('InceptionResnetV2'):
+    with tf.name_scope(name):
+      with tf.name_scope('InceptionResnetV2'):
         model = inception_resnet_v2.inception_resnet_v2(
               self._train_batch_norm,
               output_stride=self._first_stage_features_stride,
@@ -128,8 +128,8 @@ class FasterRCNNInceptionResnetV2KerasFeatureExtractor(
         [batch_size * self.max_num_proposals, height, width, depth]
         representing box classifier features for each proposal.
     """
-    with tf.compat.v1.name_scope(name):
-      with tf.compat.v1.name_scope('InceptionResnetV2'):
+    with tf.name_scope(name):
+      with tf.name_scope('InceptionResnetV2'):
         model = inception_resnet_v2.inception_resnet_v2(
             self._train_batch_norm,
             output_stride=16,

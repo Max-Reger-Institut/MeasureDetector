@@ -32,11 +32,11 @@ import contextlib2
 
 import PIL.Image
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_utils
 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+tf.logging.set_verbosity(tf.logging.INFO)
 
 
 def create_visual_wakeword_annotations(annotations_file,
@@ -64,7 +64,7 @@ def create_visual_wakeword_annotations(annotations_file,
   """
   # default object of interest is person
   foreground_class_of_interest_id = 1
-  with tf.compat.v1.gfile.GFile(annotations_file, 'r') as fid:
+  with tf.gfile.GFile(annotations_file, 'r') as fid:
     groundtruth_data = json.load(fid)
     images = groundtruth_data['images']
     # Create category index
@@ -78,7 +78,7 @@ def create_visual_wakeword_annotations(annotations_file,
     annotations_index = {}
     annotations_index_filtered = {}
     if 'annotations' in groundtruth_data:
-      tf.compat.v1.logging.info(
+      tf.logging.info(
           'Found groundtruth annotations. Building annotations index.')
       for annotation in groundtruth_data['annotations']:
         image_id = annotation['image_id']
@@ -93,12 +93,12 @@ def create_visual_wakeword_annotations(annotations_file,
           missing_annotation_count += 1
           annotations_index[image_id] = []
           annotations_index_filtered[image_id] = []
-      tf.compat.v1.logging.info('%d images are missing annotations.',
+      tf.logging.info('%d images are missing annotations.',
                       missing_annotation_count)
     # Create filtered annotations index
     for idx, image in enumerate(images):
       if idx % 100 == 0:
-        tf.compat.v1.logging.info('On image %d of %d', idx, len(images))
+        tf.logging.info('On image %d of %d', idx, len(images))
       annotations_list = annotations_index[image['id']]
       annotations_list_filtered = _filter_annotations_list(
           annotations_list, image, small_object_area_threshold,
@@ -201,7 +201,7 @@ def create_tf_record_for_visualwakewords_dataset(annotations_file, image_dir,
     num_shards: number of output file shards.
   """
   with contextlib2.ExitStack() as tf_record_close_stack, \
-      tf.compat.v1.gfile.GFile(annotations_file, 'r') as fid:
+      tf.gfile.GFile(annotations_file, 'r') as fid:
     output_tfrecords = dataset_utils.open_sharded_output_tfrecords(
         tf_record_close_stack, output_path, num_shards)
     groundtruth_data = json.load(fid)
@@ -215,7 +215,7 @@ def create_tf_record_for_visualwakewords_dataset(annotations_file, image_dir,
 
     annotations_index = {}
     if 'annotations' in groundtruth_data:
-      tf.compat.v1.logging.info(
+      tf.logging.info(
           'Found groundtruth annotations. Building annotations index.')
       for annotation in groundtruth_data['annotations'].values():
         image_id = annotation[0]['image_id']
@@ -228,20 +228,20 @@ def create_tf_record_for_visualwakewords_dataset(annotations_file, image_dir,
       if image_id not in annotations_index:
         missing_annotation_count += 1
         annotations_index[image_id] = []
-    tf.compat.v1.logging.info('%d images are missing annotations.',
+    tf.logging.info('%d images are missing annotations.',
                     missing_annotation_count)
 
     total_num_annotations_skipped = 0
     for idx, image in enumerate(images):
       if idx % 100 == 0:
-        tf.compat.v1.logging.info('On image %d of %d', idx, len(images))
+        tf.logging.info('On image %d of %d', idx, len(images))
       annotations_list = annotations_index[image['id']]
       _, tf_example, num_annotations_skipped = _create_tf_example(
           image, annotations_list[0], image_dir)
       total_num_annotations_skipped += num_annotations_skipped
       shard_idx = idx % num_shards
       output_tfrecords[shard_idx].write(tf_example.SerializeToString())
-    tf.compat.v1.logging.info('Finished writing, skipped %d annotations.',
+    tf.logging.info('Finished writing, skipped %d annotations.',
                     total_num_annotations_skipped)
 
 
@@ -274,7 +274,7 @@ def _create_tf_example(image, annotations_list, image_dir):
   image_id = image['id']
 
   full_path = os.path.join(image_dir, filename)
-  with tf.compat.v1.gfile.GFile(full_path, 'rb') as fid:
+  with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
   encoded_jpg_io = io.BytesIO(encoded_jpg)
   image = PIL.Image.open(encoded_jpg_io)
@@ -334,5 +334,5 @@ def _create_tf_example(image, annotations_list, image_dir):
       'image/object/area':
           dataset_utils.float_list_feature(area),
   }
-  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=feature_dict))
+  example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
   return key, example, num_annotations_skipped

@@ -19,7 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 from six.moves import xrange  # pylint: disable=redefined-builtin
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from nets import dcgan
 
@@ -71,7 +71,7 @@ class DCGANTest(tf.test.TestCase):
       dcgan.generator(correct_input, final_size=4)
 
   def test_discriminator_run(self):
-    image = tf.compat.v1.random_uniform([5, 32, 32, 3], -1, 1)
+    image = tf.random_uniform([5, 32, 32, 3], -1, 1)
     output, _ = dcgan.discriminator(image)
     with self.test_session() as sess:
       sess.run(tf.global_variables_initializer())
@@ -83,7 +83,7 @@ class DCGANTest(tf.test.TestCase):
     for i, batch_size in zip(xrange(1, 6), xrange(3, 8)):
       tf.reset_default_graph()
       img_w = 2 ** i
-      image = tf.compat.v1.random_uniform([batch_size, img_w, img_w, 3], -1, 1)
+      image = tf.random_uniform([batch_size, img_w, img_w, 3], -1, 1)
       output, end_points = dcgan.discriminator(
           image,
           depth=32)

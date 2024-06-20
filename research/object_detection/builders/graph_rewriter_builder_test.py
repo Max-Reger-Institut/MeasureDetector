@@ -14,7 +14,7 @@
 # ==============================================================================
 """Tests for graph_rewriter_builder."""
 import mock
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from object_detection.builders import graph_rewriter_builder
 from object_detection.protos import graph_rewriter_pb2
 

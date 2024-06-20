@@ -23,7 +23,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_utils
 
@@ -71,9 +71,9 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
     reader = tf.TFRecordReader
 
   keys_to_features = {
-      'image/encoded': tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
-      'image/format': tf.compat.v1.FixedLenFeature((), tf.string, default_value='raw'),
-      'image/class/label': tf.compat.v1.FixedLenFeature(
+      'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
+      'image/format': tf.FixedLenFeature((), tf.string, default_value='raw'),
+      'image/class/label': tf.FixedLenFeature(
           [1], tf.int64, default_value=tf.zeros([1], dtype=tf.int64)),
   }
 

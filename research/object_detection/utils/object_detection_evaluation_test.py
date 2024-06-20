@@ -22,7 +22,7 @@ from absl.testing import parameterized
 import numpy as np
 import six
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from object_detection import eval_util
 from object_detection.core import standard_fields
 from object_detection.utils import object_detection_evaluation
@@ -1065,7 +1065,7 @@ class ObjectDetectionEvaluatorTest(tf.test.TestCase, parameterized.TestCase):
         batch_size=batch_size,
         max_gt_boxes=max_gt_boxes,
         scale_to_absolute=scale_to_absolute)
-    tf.compat.v1.logging.info('eval_dict: {}'.format(eval_dict))
+    tf.logging.info('eval_dict: {}'.format(eval_dict))
     metric_ops = self.od_eval.get_estimator_eval_metric_ops(eval_dict)
     _, update_op = metric_ops['Precision/mAP@0.5IOU']
 

@@ -37,7 +37,7 @@ from __future__ import print_function
 
 import abc
 import six
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import ops
 
@@ -245,7 +245,7 @@ class Matcher(six.with_metaclass(abc.ABCMeta, object)):
     Returns:
       A Match object with the results of matching.
     """
-    with tf.compat.v1.name_scope(scope, 'Match') as scope:
+    with tf.name_scope(scope, 'Match') as scope:
       if valid_rows is None:
         valid_rows = tf.ones(tf.shape(similarity_matrix)[0], dtype=tf.bool)
       return Match(self._match(similarity_matrix, valid_rows),

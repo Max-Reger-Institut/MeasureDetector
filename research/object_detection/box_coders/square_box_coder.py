@@ -32,7 +32,7 @@ coder when the objects being detected tend to be square (e.g. faces) and when
 the input images are not distorted via resizing.
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_coder
 from object_detection.core import box_list
@@ -90,7 +90,7 @@ class SquareBoxCoder(box_coder.BoxCoder):
 
     tx = (xcenter - xcenter_a) / la
     ty = (ycenter - ycenter_a) / la
-    tl = tf.compat.v1.log(l / la)
+    tl = tf.log(l / la)
     # Scales location targets for joint training.
     if self._scale_factors:
       ty *= self._scale_factors[0]

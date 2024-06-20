@@ -18,7 +18,7 @@
 Based on PNASNet model: https://arxiv.org/abs/1712.00559
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from object_detection.utils import variables_helper
@@ -107,7 +107,7 @@ def _build_pnasnet_base(
   # Final nonlinearity.
   # Note that we have dropped the final pooling, dropout and softmax layers
   # from the default pnasnet version.
-  with tf.compat.v1.variable_scope('final_layer'):
+  with tf.variable_scope('final_layer'):
     net = tf.nn.relu(net)
   return net
 

@@ -15,7 +15,7 @@
 
 """Embedded-friendly SSDFeatureExtractor for MobilenetV1 features."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -141,7 +141,7 @@ class EmbeddedSSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         'use_depthwise': self._use_depthwise,
     }
 
-    with tf.compat.v1.variable_scope('MobilenetV1',
+    with tf.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(is_training=None)):

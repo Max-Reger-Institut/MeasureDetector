@@ -71,7 +71,7 @@ def create_cat_tf_example(encoded_cat_image_data):
   classes_text = ['Cat']
   classes = [1]
 
-  tf_example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
+  tf_example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': dataset_util.int64_feature(height),
       'image/width': dataset_util.int64_feature(width),
       'image/filename': dataset_util.bytes_feature(filename),
@@ -94,12 +94,12 @@ A typical conversion script will look like the following:
 
 ```python
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import dataset_util
 
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 FLAGS = flags.FLAGS
 
@@ -121,7 +121,7 @@ def create_tf_example(example):
   classes_text = [] # List of string class name of bounding box (1 per box)
   classes = [] # List of integer class id of bounding box (1 per box)
 
-  tf_example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
+  tf_example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': dataset_util.int64_feature(height),
       'image/width': dataset_util.int64_feature(width),
       'image/filename': dataset_util.bytes_feature(filename),
@@ -151,7 +151,7 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()
 
 ```
 

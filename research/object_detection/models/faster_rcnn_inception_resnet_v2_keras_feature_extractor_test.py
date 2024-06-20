@@ -15,7 +15,7 @@
 
 """Tests for models.faster_rcnn_inception_resnet_v2_keras_feature_extractor."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.models import faster_rcnn_inception_resnet_v2_keras_feature_extractor as frcnn_inc_res
 
@@ -32,7 +32,7 @@ class FasterRcnnInceptionResnetV2KerasFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_returns_expected_size(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.compat.v1.random_uniform(
+    preprocessed_inputs = tf.random_uniform(
         [1, 299, 299, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map = feature_extractor.get_proposal_feature_extractor_model(
         name='TestScope')(preprocessed_inputs)
@@ -47,7 +47,7 @@ class FasterRcnnInceptionResnetV2KerasFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_stride_eight(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=8)
-    preprocessed_inputs = tf.compat.v1.random_uniform(
+    preprocessed_inputs = tf.random_uniform(
         [1, 224, 224, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map = feature_extractor.get_proposal_feature_extractor_model(
         name='TestScope')(preprocessed_inputs)
@@ -62,7 +62,7 @@ class FasterRcnnInceptionResnetV2KerasFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_half_size_input(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.compat.v1.random_uniform(
+    preprocessed_inputs = tf.random_uniform(
         [1, 112, 112, 3], maxval=255, dtype=tf.float32)
     rpn_feature_map = feature_extractor.get_proposal_feature_extractor_model(
         name='TestScope')(preprocessed_inputs)
@@ -81,7 +81,7 @@ class FasterRcnnInceptionResnetV2KerasFeatureExtractorTest(tf.test.TestCase):
   def test_extract_proposal_features_dies_with_incorrect_rank_inputs(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    preprocessed_inputs = tf.compat.v1.random_uniform(
+    preprocessed_inputs = tf.random_uniform(
         [224, 224, 3], maxval=255, dtype=tf.float32)
     with self.assertRaises(ValueError):
       feature_extractor.get_proposal_feature_extractor_model(
@@ -90,7 +90,7 @@ class FasterRcnnInceptionResnetV2KerasFeatureExtractorTest(tf.test.TestCase):
   def test_extract_box_classifier_features_returns_expected_size(self):
     feature_extractor = self._build_feature_extractor(
         first_stage_features_stride=16)
-    proposal_feature_maps = tf.compat.v1.random_uniform(
+    proposal_feature_maps = tf.random_uniform(
         [2, 17, 17, 1088], maxval=255, dtype=tf.float32)
     model = feature_extractor.get_box_classifier_feature_extractor_model(
         name='TestScope')

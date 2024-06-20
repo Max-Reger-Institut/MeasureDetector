@@ -1,6 +1,6 @@
 # Use conda install ... to install these
 matplotlib
-Pillow >= 4.2.1
+Pillow == 9.1
 graphviz # for graphviz, installation via the system might be required, e.g. sudo apt-get install graphviz
 pytest
 #protobuf == 3.4.0
@@ -22,6 +22,7 @@ omrdatasettools==1.2.2
 mung
 contextlib2
 tf_slim
+tensorflow-addons
 
 # For the inference server
 hug

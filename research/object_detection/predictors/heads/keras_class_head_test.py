@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Tests for object_detection.predictors.heads.class_head."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import hyperparams_builder
@@ -53,7 +53,7 @@ class ConvolutionalKerasClassPredictorTest(test_case.TestCase):
         freeze_batchnorm=False,
         num_predictions_per_location=1,
         use_depthwise=False)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head(image_feature,)
     self.assertAllEqual([64, 323, 20],
@@ -71,7 +71,7 @@ class ConvolutionalKerasClassPredictorTest(test_case.TestCase):
         freeze_batchnorm=False,
         num_predictions_per_location=1,
         use_depthwise=True)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head(image_feature,)
     self.assertAllEqual([64, 323, 20],
@@ -106,7 +106,7 @@ class MaskRCNNClassHeadTest(test_case.TestCase):
         freeze_batchnorm=False,
         use_dropout=True,
         dropout_keep_prob=0.5)
-    roi_pooled_features = tf.compat.v1.random_uniform(
+    roi_pooled_features = tf.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = class_prediction_head(roi_pooled_features)
     self.assertAllEqual([64, 1, 20], prediction.get_shape().as_list())
@@ -137,7 +137,7 @@ class WeightSharedConvolutionalKerasClassPredictorTest(test_case.TestCase):
         conv_hyperparams=conv_hyperparams,
         num_predictions_per_location=1,
         use_depthwise=False)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 20], class_predictions.get_shape().as_list())
@@ -149,7 +149,7 @@ class WeightSharedConvolutionalKerasClassPredictorTest(test_case.TestCase):
         conv_hyperparams=conv_hyperparams,
         num_predictions_per_location=1,
         use_depthwise=True)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     class_predictions = class_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 20], class_predictions.get_shape().as_list())
@@ -164,10 +164,10 @@ class WeightSharedConvolutionalKerasClassPredictorTest(test_case.TestCase):
               conv_hyperparams=conv_hyperparams,
               num_predictions_per_location=1,
               use_depthwise=True))
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       _ = class_prediction_head(image_feature)
-      variables = g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+      variables = g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
     self.assertEqual(len(variables), 3)
 
   def test_variable_count_depth_wise_False(self):
@@ -180,10 +180,10 @@ class WeightSharedConvolutionalKerasClassPredictorTest(test_case.TestCase):
               conv_hyperparams=conv_hyperparams,
               num_predictions_per_location=1,
               use_depthwise=False))
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       _ = class_prediction_head(image_feature)
-      variables = g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+      variables = g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
     self.assertEqual(len(variables), 2)
 
 

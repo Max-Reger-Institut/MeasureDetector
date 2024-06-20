@@ -38,7 +38,7 @@ from abc import abstractmethod
 
 import six
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 class AnchorGenerator(six.with_metaclass(ABCMeta, object)):
@@ -104,7 +104,7 @@ class AnchorGenerator(six.with_metaclass(ABCMeta, object)):
         len(feature_map_shape_list) != len(self.num_anchors_per_location())):
       raise ValueError('Number of feature maps is expected to equal the length '
                        'of `num_anchors_per_location`.')
-    with tf.compat.v1.name_scope(self.name_scope()):
+    with tf.name_scope(self.name_scope()):
       anchors_list = self._generate(feature_map_shape_list, **params)
       if self.check_num_anchors:
         with tf.control_dependencies([

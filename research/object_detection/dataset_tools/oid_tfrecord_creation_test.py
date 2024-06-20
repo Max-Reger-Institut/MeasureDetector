@@ -15,7 +15,7 @@
 """Tests for oid_tfrecord_creation.py."""
 
 import pandas as pd
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.dataset_tools import oid_tfrecord_creation
 

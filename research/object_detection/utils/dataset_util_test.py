@@ -20,7 +20,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import dataset_util
 
@@ -30,7 +30,7 @@ class DatasetUtilTest(tf.test.TestCase):
   def test_read_examples_list(self):
     example_list_data = """example1 1\nexample2 2"""
     example_list_path = os.path.join(self.get_temp_dir(), 'examples.txt')
-    with tf.compat.v1.gfile.Open(example_list_path, 'wb') as f:
+    with tf.gfile.Open(example_list_path, 'wb') as f:
       f.write(example_list_data)
 
     examples = dataset_util.read_examples_list(example_list_path)

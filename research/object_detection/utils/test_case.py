@@ -19,10 +19,10 @@ from __future__ import division
 from __future__ import print_function
 import os
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.contrib import tpu
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 
 flags.DEFINE_bool('tpu_test', False, 'Whether to configure test for TPU.')
 FLAGS = flags.FLAGS

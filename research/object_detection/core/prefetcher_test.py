@@ -19,7 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import prefetcher
 
@@ -40,7 +40,7 @@ class PrefetcherTest(tf.test.TestCase):
                                 image_size, 3],
                                dtype=tf.float32,
                                name='images')
-      label = tf.compat.v1.random_uniform([batch_size, 1], 0, 10,
+      label = tf.random_uniform([batch_size, 1], 0, 10,
                                 dtype=tf.int32, name='labels')
 
       prefetch_queue = prefetcher.prefetch(tensor_dict={'counter': counter,
@@ -77,7 +77,7 @@ class PrefetcherTest(tf.test.TestCase):
                                dtype=tf.float32,
                                name='image')
       image.set_shape([batch_size, None, None, 3])
-      label = tf.compat.v1.random_uniform([batch_size, tf.Variable(1)], 0,
+      label = tf.random_uniform([batch_size, tf.Variable(1)], 0,
                                 10, dtype=tf.int32, name='label')
       label.set_shape([batch_size, None])
 

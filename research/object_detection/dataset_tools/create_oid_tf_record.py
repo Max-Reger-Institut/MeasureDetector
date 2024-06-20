@@ -40,7 +40,7 @@ import os
 
 import contextlib2
 import pandas as pd
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.dataset_tools import oid_tfrecord_creation
 from object_detection.dataset_tools import tf_record_creation_util
@@ -64,7 +64,7 @@ FLAGS = tf.flags.FLAGS
 
 
 def main(_):
-  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  tf.logging.set_verbosity(tf.logging.INFO)
 
   required_flags = [
       'input_box_annotations_csv', 'input_images_directory', 'input_label_map',
@@ -82,14 +82,14 @@ def main(_):
         columns={'Confidence': 'ConfidenceImageLabel'}, inplace=True)
   else:
     all_label_annotations = None
-  all_images = tf.compat.v1.gfile.Glob(
+  all_images = tf.gfile.Glob(
       os.path.join(FLAGS.input_images_directory, '*.jpg'))
   all_image_ids = [os.path.splitext(os.path.basename(v))[0] for v in all_images]
   all_image_ids = pd.DataFrame({'ImageID': all_image_ids})
   all_annotations = pd.concat(
       [all_box_annotations, all_image_ids, all_label_annotations])
 
-  tf.compat.v1.logging.log(tf.compat.v1.logging.INFO, 'Found %d images...', len(all_image_ids))
+  tf.logging.log(tf.logging.INFO, 'Found %d images...', len(all_image_ids))
 
   with contextlib2.ExitStack() as tf_record_close_stack:
     output_tfrecords = tf_record_creation_util.open_sharded_output_tfrecords(
@@ -97,13 +97,13 @@ def main(_):
         FLAGS.num_shards)
 
     for counter, image_data in enumerate(all_annotations.groupby('ImageID')):
-      tf.compat.v1.logging.log_every_n(tf.compat.v1.logging.INFO, 'Processed %d images...', 1000,
+      tf.logging.log_every_n(tf.logging.INFO, 'Processed %d images...', 1000,
                              counter)
 
       image_id, image_annotations = image_data
       # In OID image file names are formed by appending ".jpg" to the image ID.
       image_path = os.path.join(FLAGS.input_images_directory, image_id + '.jpg')
-      with tf.compat.v1.gfile.Open(image_path) as image_file:
+      with tf.gfile.Open(image_path) as image_file:
         encoded_image = image_file.read()
 
       tf_example = oid_tfrecord_creation.tf_example_from_annotations_data_frame(
@@ -114,4 +114,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

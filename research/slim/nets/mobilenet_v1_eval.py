@@ -19,7 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 import math
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_factory
 from nets import mobilenet_v1
@@ -28,7 +28,7 @@ from preprocessing import preprocessing_factory
 import tf_slim
 slim = tf_slim
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 
 flags.DEFINE_string('master', '', 'Session master')
 flags.DEFINE_integer('batch_size', 250, 'Batch size')
@@ -73,7 +73,7 @@ def imagenet_input(is_training):
 
   image = image_preprocessing_fn(image, FLAGS.image_size, FLAGS.image_size)
 
-  images, labels = tf.compat.v1.train.batch(
+  images, labels = tf.train.batch(
       tensors=[image, label],
       batch_size=FLAGS.batch_size,
       num_threads=4,
@@ -150,4 +150,4 @@ def main(unused_arg):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run(main)
+  tf.app.run(main)

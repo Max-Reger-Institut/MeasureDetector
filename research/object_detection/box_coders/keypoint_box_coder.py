@@ -35,7 +35,7 @@ to box coordinates):
   anchor-encoded keypoint coordinates.
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_coder
 from object_detection.core import box_list
@@ -107,8 +107,8 @@ class KeypointBoxCoder(box_coder.BoxCoder):
 
     tx = (xcenter - xcenter_a) / wa
     ty = (ycenter - ycenter_a) / ha
-    tw = tf.compat.v1.log(w / wa)
-    th = tf.compat.v1.log(h / ha)
+    tw = tf.log(w / wa)
+    th = tf.log(h / ha)
 
     tiled_anchor_centers = tf.tile(
         tf.stack([ycenter_a, xcenter_a]), [self._num_keypoints, 1])

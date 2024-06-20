@@ -54,7 +54,7 @@ from pycocotools import mask
 
 from six.moves import range
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import json_utils
 
@@ -112,7 +112,7 @@ class COCOWrapper(coco.COCO):
     results = coco.COCO()
     results.dataset['images'] = [img for img in self.dataset['images']]
 
-    tf.compat.v1.logging.info('Loading and preparing annotation results...')
+    tf.logging.info('Loading and preparing annotation results...')
     tic = time.time()
 
     if not isinstance(annotations, list):
@@ -134,7 +134,7 @@ class COCOWrapper(coco.COCO):
         ann['bbox'] = mask.toBbox(ann['segmentation'])
         ann['id'] = idx + 1
         ann['iscrowd'] = 0
-    tf.compat.v1.logging.info('DONE (t=%0.2fs)', (time.time() - tic))
+    tf.logging.info('DONE (t=%0.2fs)', (time.time() - tic))
 
     results.dataset['annotations'] = annotations
     results.createIndex()
@@ -485,7 +485,7 @@ def ExportGroundtruthToCOCO(image_ids,
       'categories': categories
   }
   if output_path:
-    with tf.compat.v1.gfile.GFile(output_path, 'w') as fid:
+    with tf.gfile.GFile(output_path, 'w') as fid:
       json_utils.Dump(groundtruth_dict, fid, float_digits=4, indent=2)
   return groundtruth_dict
 
@@ -672,7 +672,7 @@ def ExportDetectionsToCOCO(image_ids,
         scores,
         classes))
   if output_path:
-    with tf.compat.v1.gfile.GFile(output_path, 'w') as fid:
+    with tf.gfile.GFile(output_path, 'w') as fid:
       json_utils.Dump(detections_export_list, fid, float_digits=4, indent=2)
   return detections_export_list
 
@@ -752,7 +752,7 @@ def ExportSegmentsToCOCO(image_ids,
         image_id, category_id_set, np.squeeze(masks, axis=3), scores, classes))
 
   if output_path:
-    with tf.compat.v1.gfile.GFile(output_path, 'w') as fid:
+    with tf.gfile.GFile(output_path, 'w') as fid:
       json_utils.Dump(segment_export_list, fid, float_digits=4, indent=2)
   return segment_export_list
 
@@ -851,6 +851,6 @@ def ExportKeypointsToCOCO(image_ids,
         })
 
   if output_path:
-    with tf.compat.v1.gfile.GFile(output_path, 'w') as fid:
+    with tf.gfile.GFile(output_path, 'w') as fid:
       json_utils.Dump(keypoints_export_list, fid, float_digits=4, indent=2)
   return keypoints_export_list

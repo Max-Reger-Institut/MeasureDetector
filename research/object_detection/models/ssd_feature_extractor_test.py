@@ -19,7 +19,7 @@ from abc import abstractmethod
 
 import itertools
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import hyperparams_builder
@@ -153,7 +153,7 @@ class SsdFeatureExtractorTestBase(test_case.TestCase):
       use_depthwise=False):
 
     def graph_fn(image_height, image_width):
-      image_tensor = tf.compat.v1.random_uniform([batch_size, image_height, image_width,
+      image_tensor = tf.random_uniform([batch_size, image_height, image_width,
                                         3], dtype=tf.float32)
       return self._extract_features(
           image_tensor,
@@ -222,4 +222,4 @@ class SsdFeatureExtractorTestBase(test_case.TestCase):
           pad_to_multiple,
           use_keras=use_keras,
           use_depthwise=use_depthwise)
-      return g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+      return g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)

@@ -20,7 +20,7 @@ from __future__ import print_function
 import numpy as np
 from six.moves import range
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def exponential_decay_with_burnin(global_step,
@@ -63,7 +63,7 @@ def exponential_decay_with_burnin(global_step,
 
   def eager_decay_rate():
     """Callable to compute the learning rate."""
-    post_burnin_learning_rate = tf.compat.v1.train.exponential_decay(
+    post_burnin_learning_rate = tf.train.exponential_decay(
         learning_rate_base,
         global_step - burnin_steps,
         learning_rate_decay_steps,

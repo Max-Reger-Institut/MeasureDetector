@@ -23,7 +23,7 @@ from __future__ import division
 from __future__ import print_function
 
 from absl import flags
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 from object_detection import model_hparams
@@ -139,4 +139,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

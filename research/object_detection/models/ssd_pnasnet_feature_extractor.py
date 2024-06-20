@@ -18,7 +18,7 @@
 Based on PNASNet ImageNet model: https://arxiv.org/abs/1712.00559
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -145,7 +145,7 @@ class SSDPNASNetFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
               num_classes=None,
               is_training=self._is_training,
               final_endpoint='Cell_11')
-    with tf.compat.v1.variable_scope('SSD_feature_maps', reuse=self._reuse_weights):
+    with tf.variable_scope('SSD_feature_maps', reuse=self._reuse_weights):
       with slim.arg_scope(self._conv_hyperparams_fn()):
         feature_maps = feature_map_generators.multi_resolution_feature_maps(
             feature_map_layout=feature_map_layout,

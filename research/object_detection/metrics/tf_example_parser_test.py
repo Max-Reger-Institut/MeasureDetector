@@ -16,7 +16,7 @@
 
 import numpy as np
 import numpy.testing as np_testing
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import standard_fields as fields
 from object_detection.metrics import tf_example_parser
@@ -25,13 +25,13 @@ from object_detection.metrics import tf_example_parser
 class TfExampleDecoderTest(tf.test.TestCase):
 
   def _Int64Feature(self, value):
-    return tf.compat.v1.train.Feature(int64_list=tf.compat.v1.train.Int64List(value=value))
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
 
   def _FloatFeature(self, value):
-    return tf.compat.v1.train.Feature(float_list=tf.compat.v1.train.FloatList(value=value))
+    return tf.train.Feature(float_list=tf.train.FloatList(value=value))
 
   def _BytesFeature(self, value):
-    return tf.compat.v1.train.Feature(bytes_list=tf.compat.v1.train.BytesList(value=[value]))
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
   def testParseDetectionsAndGT(self):
     source_id = 'abc.jpg'
@@ -72,7 +72,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
             self._FloatFeature(detection_score),
     }
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
     parser = tf_example_parser.TfExampleDetectionAndGTParser()
 
     results_dict = parser.parse(example)
@@ -83,7 +83,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
     features[fields.TfExampleFields.object_difficult] = (
         self._Int64Feature(object_difficult))
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
     results_dict = parser.parse(example)
 
     self.assertIsNotNone(results_dict)
@@ -111,7 +111,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
     features[fields.TfExampleFields.object_group_of] = (
         self._Int64Feature(object_group_of))
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
     results_dict = parser.parse(example)
     self.assertIsNotNone(results_dict)
     np_testing.assert_equal(
@@ -121,7 +121,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
     features[fields.TfExampleFields.image_class_label] = (
         self._Int64Feature(verified_labels))
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
     results_dict = parser.parse(example)
     self.assertIsNotNone(results_dict)
     np_testing.assert_equal(
@@ -131,7 +131,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
   def testParseString(self):
     string_val = 'abc'
     features = {'string': self._BytesFeature(string_val)}
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
 
     parser = tf_example_parser.StringParser('string')
     result = parser.parse(example)
@@ -145,7 +145,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
   def testParseFloat(self):
     float_array_val = [1.5, 1.4, 2.0]
     features = {'floats': self._FloatFeature(float_array_val)}
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
 
     parser = tf_example_parser.FloatParser('floats')
     result = parser.parse(example)
@@ -159,7 +159,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
   def testInt64Parser(self):
     int_val = [1, 2, 3]
     features = {'ints': self._Int64Feature(int_val)}
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
 
     parser = tf_example_parser.Int64Parser('ints')
     result = parser.parse(example)
@@ -180,7 +180,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
         'xmax': self._FloatFeature(bounding_boxes[:, 3])
     }
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature=features))
+    example = tf.train.Example(features=tf.train.Features(feature=features))
 
     parser = tf_example_parser.BoundingBoxParser('xmin', 'ymin', 'xmax', 'ymax')
     result = parser.parse(example)

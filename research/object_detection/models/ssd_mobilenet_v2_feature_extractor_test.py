@@ -17,7 +17,7 @@
 from absl.testing import parameterized
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.models import ssd_feature_extractor_test
 from object_detection.models import ssd_mobilenet_v2_feature_extractor

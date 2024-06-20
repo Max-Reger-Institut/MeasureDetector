@@ -34,7 +34,7 @@ from __future__ import print_function
 
 import os
 from six.moves import urllib
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_utils
 
@@ -149,23 +149,23 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
     reader = tf.TFRecordReader
 
   keys_to_features = {
-      'image/encoded': tf.compat.v1.FixedLenFeature(
+      'image/encoded': tf.FixedLenFeature(
           (), tf.string, default_value=''),
-      'image/format': tf.compat.v1.FixedLenFeature(
+      'image/format': tf.FixedLenFeature(
           (), tf.string, default_value='jpeg'),
-      'image/class/label': tf.compat.v1.FixedLenFeature(
+      'image/class/label': tf.FixedLenFeature(
           [], dtype=tf.int64, default_value=-1),
-      'image/class/text': tf.compat.v1.FixedLenFeature(
+      'image/class/text': tf.FixedLenFeature(
           [], dtype=tf.string, default_value=''),
-      'image/object/bbox/xmin': tf.compat.v1.VarLenFeature(
+      'image/object/bbox/xmin': tf.VarLenFeature(
           dtype=tf.float32),
-      'image/object/bbox/ymin': tf.compat.v1.VarLenFeature(
+      'image/object/bbox/ymin': tf.VarLenFeature(
           dtype=tf.float32),
-      'image/object/bbox/xmax': tf.compat.v1.VarLenFeature(
+      'image/object/bbox/xmax': tf.VarLenFeature(
           dtype=tf.float32),
-      'image/object/bbox/ymax': tf.compat.v1.VarLenFeature(
+      'image/object/bbox/ymax': tf.VarLenFeature(
           dtype=tf.float32),
-      'image/object/class/label': tf.compat.v1.VarLenFeature(
+      'image/object/class/label': tf.VarLenFeature(
           dtype=tf.int64),
   }
 

@@ -94,7 +94,7 @@ configured in the meta architecture:
 """
 import abc
 import functools
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.anchor_generators import grid_anchor_generator
 from object_detection.builders import box_predictor_builder
@@ -164,7 +164,7 @@ class FasterRCNNFeatureExtractor(object):
       rpn_feature_map: A tensor with shape [batch, height, width, depth]
       activations: A dictionary mapping activation tensor names to tensors.
     """
-    with tf.compat.v1.variable_scope(scope, values=[preprocessed_inputs]):
+    with tf.variable_scope(scope, values=[preprocessed_inputs]):
       return self._extract_proposal_features(preprocessed_inputs, scope)
 
   @abc.abstractmethod
@@ -186,7 +186,7 @@ class FasterRCNNFeatureExtractor(object):
         [batch_size * self.max_num_proposals, height, width, depth]
         representing box classifier features for each proposal.
     """
-    with tf.compat.v1.variable_scope(
+    with tf.variable_scope(
         scope, values=[proposal_feature_maps], reuse=tf.AUTO_REUSE):
       return self._extract_box_classifier_features(proposal_feature_maps, scope)
 
@@ -551,7 +551,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
           first_stage_box_predictor_arg_scope_fn)
       def rpn_box_predictor_feature_extractor(rpn_features_to_crop):
         with slim.arg_scope(self._first_stage_box_predictor_arg_scope_fn()):
-          reuse = tf.compat.v1.get_variable_scope().reuse
+          reuse = tf.get_variable_scope().reuse
           return slim.conv2d(
               rpn_features_to_crop,
               self._first_stage_box_predictor_depth,
@@ -697,7 +697,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
     """
     if inputs.dtype is not tf.float32:
       raise ValueError('`preprocess` expects a tf.float32 tensor')
-    with tf.compat.v1.name_scope('Preprocessor'):
+    with tf.name_scope('Preprocessor'):
       outputs = shape_utils.static_or_dynamic_map_fn(
           self._image_resizer_fn,
           elems=inputs,
@@ -1427,7 +1427,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       ValueError: If `predict` is called before `preprocess`.
     """
 
-    with tf.compat.v1.name_scope('FirstStagePostprocessor'):
+    with tf.name_scope('FirstStagePostprocessor'):
       if self._number_of_stages == 1:
         (proposal_boxes, proposal_scores, proposal_multiclass_scores,
          num_proposals, raw_proposal_boxes,
@@ -1453,7 +1453,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
     # TODO(jrru): Remove mask_predictions from _post_process_box_classifier.
     if (self._number_of_stages == 2 or
         (self._number_of_stages == 3 and self._is_training)):
-      with tf.compat.v1.name_scope('SecondStagePostprocessor'):
+      with tf.name_scope('SecondStagePostprocessor'):
         mask_predictions = prediction_dict.get(box_predictor.MASK_PREDICTIONS)
         detections_dict = self._postprocess_box_classifier(
             prediction_dict['refined_box_encodings'],
@@ -1498,7 +1498,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         [batch size, max_detections, height, width, depth] representing
         cropped image features
     """
-    with tf.compat.v1.name_scope('SecondStageDetectionFeaturesExtract'):
+    with tf.name_scope('SecondStageDetectionFeaturesExtract'):
       flattened_detected_feature_maps = (
           self._compute_second_stage_input_feature_maps(
               rpn_features_to_crop, detection_boxes))
@@ -2069,7 +2069,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         'second_stage_classification_loss') to scalar tensors representing
         corresponding loss values.
     """
-    with tf.compat.v1.name_scope(scope, 'Loss', prediction_dict.values()):
+    with tf.name_scope(scope, 'Loss', prediction_dict.values()):
       (groundtruth_boxlists, groundtruth_classes_with_background_list,
        groundtruth_masks_list, groundtruth_weights_list
       ) = self._format_groundtruth_data(true_image_shapes)
@@ -2128,7 +2128,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         `first_stage_objectness_loss`) to scalar tensors representing
         corresponding loss values.
     """
-    with tf.compat.v1.name_scope('RPNLoss'):
+    with tf.name_scope('RPNLoss'):
       (batch_cls_targets, batch_cls_weights, batch_reg_targets,
        batch_reg_weights, _) = target_assigner.batch_assign_targets(
            target_assigner=self._proposal_target_assigner,
@@ -2256,7 +2256,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
         second_stage_mask_rcnn_box_predictor is True and
         `groundtruth_masks_list` is not provided.
     """
-    with tf.compat.v1.name_scope('BoxClassifierLoss'):
+    with tf.name_scope('BoxClassifierLoss'):
       paddings_indicator = self._padded_batched_proposals_indicator(
           num_proposals, proposal_boxes.shape[1])
       proposal_boxlists = [
@@ -2590,7 +2590,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       A list of regularization loss tensors.
     """
     all_losses = []
-    slim_losses = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.REGULARIZATION_LOSSES)
+    slim_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
     # Copy the slim losses to avoid modifying the collection
     if slim_losses:
       all_losses.extend(slim_losses)
@@ -2657,7 +2657,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
           self.first_stage_feature_extractor_scope,
           self.second_stage_feature_extractor_scope
       ]
-    feature_extractor_variables = tf.contrib.framework.filter_variables(
+    feature_extractor_variables = filter_variables(
         variables_to_restore, include_patterns=include_patterns)
     return {var.op.name: var for var in feature_extractor_variables}
 
@@ -2672,7 +2672,7 @@ class FasterRCNNMetaArch(model.DetectionModel):
       A list of update operators.
     """
     update_ops = []
-    slim_update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
+    slim_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     # Copy the slim ops to avoid modifying the collection
     if slim_update_ops:
       update_ops.extend(slim_update_ops)
@@ -2723,3 +2723,64 @@ class FasterRCNNMetaArch(model.DetectionModel):
             self._mask_rcnn_box_predictor.get_updates_for(
                 self._mask_rcnn_box_predictor.inputs))
     return update_ops
+
+# Source: https://github.com/tensorflow/tensorflow/blob/r1.4/tensorflow/contrib/framework/python/ops/variables.py
+import re
+def filter_variables(var_list, include_patterns=None, exclude_patterns=None,
+                     reg_search=True):
+  """Filter a list of variables using regular expressions.
+
+  First includes variables according to the list of include_patterns.
+  Afterwards, eliminates variables according to the list of exclude_patterns.
+
+  For example, one can obtain a list of variables with the weights of all
+  convolutional layers (depending on the network definition) by:
+
+  ```python
+  variables = tf.contrib.framework.get_model_variables()
+  conv_weight_variables = tf.contrib.framework.filter_variables(
+      variables,
+      include_patterns=['Conv'],
+      exclude_patterns=['biases', 'Logits'])
+  ```
+
+  Args:
+    var_list: list of variables.
+    include_patterns: list of regular expressions to include. Defaults to None,
+        which means all variables are selected according to the include rules.
+        A variable is included if it matches any of the include_patterns.
+    exclude_patterns: list of regular expressions to exclude. Defaults to None,
+        which means all variables are selected according to the exclude rules.
+        A variable is excluded if it matches any of the exclude_patterns.
+    reg_search: boolean. If True (default), performs re.search to find matches
+        (i.e. pattern can match any substring of the variable name). If False,
+        performs re.match (i.e. regexp should match from the beginning of the
+        variable name).
+
+  Returns:
+    filtered list of variables.
+  """
+  if reg_search:
+    reg_exp_func = re.search
+  else:
+    reg_exp_func = re.match
+
+  # First include variables.
+  if include_patterns is None:
+    included_variables = list(var_list)
+  else:
+    included_variables = []
+    for var in var_list:
+      if any(reg_exp_func(ptrn, var.name) for ptrn in include_patterns):
+        included_variables.append(var)
+
+  # Afterwards, exclude variables.
+  if exclude_patterns is None:
+    filtered_variables = included_variables
+  else:
+    filtered_variables = []
+    for var in included_variables:
+      if not any(reg_exp_func(ptrn, var.name) for ptrn in exclude_patterns):
+        filtered_variables.append(var)
+
+  return filtered_variables

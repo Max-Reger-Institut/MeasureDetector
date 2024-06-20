@@ -20,7 +20,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import shape_utils
 
@@ -340,7 +340,7 @@ class AssertShapeEqualTest(tf.test.TestCase):
 class FlattenExpandDimensionTest(tf.test.TestCase):
 
   def test_flatten_given_dims(self):
-    inputs = tf.compat.v1.random_uniform([5, 2, 10, 10, 3])
+    inputs = tf.random_uniform([5, 2, 10, 10, 3])
     actual_flattened = shape_utils.flatten_dimensions(inputs, first=1, last=3)
     expected_flattened = tf.reshape(inputs, [5, 20, 10, 3])
     with self.test_session() as sess:
@@ -349,7 +349,7 @@ class FlattenExpandDimensionTest(tf.test.TestCase):
     self.assertAllClose(expected_flattened_np, actual_flattened_np)
 
   def test_raises_value_error_incorrect_dimensions(self):
-    inputs = tf.compat.v1.random_uniform([5, 2, 10, 10, 3])
+    inputs = tf.random_uniform([5, 2, 10, 10, 3])
     with self.assertRaises(ValueError):
       shape_utils.flatten_dimensions(inputs, first=0, last=6)
 

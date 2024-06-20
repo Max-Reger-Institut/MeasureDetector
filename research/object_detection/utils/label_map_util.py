@@ -21,7 +21,7 @@ from __future__ import print_function
 import logging
 
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from google.protobuf import text_format
 from object_detection.protos import string_int_label_map_pb2
 
@@ -134,7 +134,7 @@ def load_labelmap(path):
   Returns:
     a StringIntLabelMapProto
   """
-  with tf.compat.v1.gfile.GFile(path, 'r') as fid:
+  with tf.gfile.GFile(path, 'r') as fid:
     label_map_string = fid.read()
     label_map = string_int_label_map_pb2.StringIntLabelMap()
     try:

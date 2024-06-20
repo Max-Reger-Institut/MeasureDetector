@@ -91,12 +91,12 @@ python object_detection/export_tflite_ssd_graph \
        "
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from google.protobuf import text_format
 from object_detection import export_tflite_ssd_graph_lib
 from object_detection.protos import pipeline_pb2
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 flags.DEFINE_string('output_directory', None, 'Path to write outputs.')
 flags.DEFINE_string(
     'pipeline_config_path', None,
@@ -130,7 +130,7 @@ def main(argv):
 
   pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
 
-  with tf.compat.v1.gfile.GFile(FLAGS.pipeline_config_path, 'r') as f:
+  with tf.gfile.GFile(FLAGS.pipeline_config_path, 'r') as f:
     text_format.Merge(f.read(), pipeline_config)
   text_format.Merge(FLAGS.config_override, pipeline_config)
   export_tflite_ssd_graph_lib.export_tflite_graph(
@@ -140,4 +140,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run(main)
+  tf.app.run(main)

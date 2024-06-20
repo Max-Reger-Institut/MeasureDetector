@@ -26,7 +26,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 import six
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_list_ops
 from object_detection.core import standard_fields as fields
@@ -52,7 +52,7 @@ class RegionSimilarityCalculator(six.with_metaclass(ABCMeta, object)):
     Returns:
       a (float32) tensor of shape [N, M] with pairwise similarity score.
     """
-    with tf.compat.v1.name_scope(scope, 'Compare', [boxlist1, boxlist2]) as scope:
+    with tf.name_scope(scope, 'Compare', [boxlist1, boxlist2]) as scope:
       return self._compare(boxlist1, boxlist2)
 
   @abstractmethod

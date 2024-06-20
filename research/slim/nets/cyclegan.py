@@ -19,7 +19,7 @@ from __future__ import print_function
 
 import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 layers = tf.contrib.layers
 
@@ -87,7 +87,7 @@ def cyclegan_upsample(net, num_outputs, stride, method='conv2d_transpose',
   Raises:
     ValueError: if `method` is not recognized.
   """
-  with tf.compat.v1.variable_scope('upconv'):
+  with tf.variable_scope('upconv'):
     net_shape = tf.shape(net)
     height = net_shape[1]
     width = net_shape[2]
@@ -201,13 +201,13 @@ def cyclegan_generator_resnet(images,
     ###########
     # Encoder #
     ###########
-    with tf.compat.v1.variable_scope('input'):
+    with tf.variable_scope('input'):
       # 7x7 input stage
       net = tf.pad(images, spatial_pad_3, 'REFLECT')
       net = layers.conv2d(net, num_filters, kernel_size=[7, 7], padding='VALID')
       end_points['encoder_0'] = net
 
-    with tf.compat.v1.variable_scope('encoder'):
+    with tf.variable_scope('encoder'):
       with tf.contrib.framework.arg_scope(
           [layers.conv2d],
           kernel_size=kernel_size,
@@ -225,7 +225,7 @@ def cyclegan_generator_resnet(images,
     ###################
     # Residual Blocks #
     ###################
-    with tf.compat.v1.variable_scope('residual_blocks'):
+    with tf.variable_scope('residual_blocks'):
       with tf.contrib.framework.arg_scope(
           [layers.conv2d],
           kernel_size=kernel_size,
@@ -233,7 +233,7 @@ def cyclegan_generator_resnet(images,
           activation_fn=tf.nn.relu,
           padding='VALID'):
         for block_id in xrange(num_resnet_blocks):
-          with tf.compat.v1.variable_scope('block_{}'.format(block_id)):
+          with tf.variable_scope('block_{}'.format(block_id)):
             res_net = tf.pad(net, paddings, 'REFLECT')
             res_net = layers.conv2d(res_net, num_filters * 4)
             res_net = tf.pad(res_net, paddings, 'REFLECT')
@@ -246,7 +246,7 @@ def cyclegan_generator_resnet(images,
     ###########
     # Decoder #
     ###########
-    with tf.compat.v1.variable_scope('decoder'):
+    with tf.variable_scope('decoder'):
 
       with tf.contrib.framework.arg_scope(
           [layers.conv2d],
@@ -254,15 +254,15 @@ def cyclegan_generator_resnet(images,
           stride=1,
           activation_fn=tf.nn.relu):
 
-        with tf.compat.v1.variable_scope('decoder1'):
+        with tf.variable_scope('decoder1'):
           net = upsample_fn(net, num_outputs=num_filters * 2, stride=[2, 2])
         end_points['decoder1'] = net
 
-        with tf.compat.v1.variable_scope('decoder2'):
+        with tf.variable_scope('decoder2'):
           net = upsample_fn(net, num_outputs=num_filters, stride=[2, 2])
         end_points['decoder2'] = net
 
-    with tf.compat.v1.variable_scope('output'):
+    with tf.variable_scope('output'):
       net = tf.pad(net, spatial_pad_3, 'REFLECT')
       logits = layers.conv2d(
           net,

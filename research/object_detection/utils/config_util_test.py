@@ -21,7 +21,7 @@ from __future__ import print_function
 import os
 
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 
@@ -37,7 +37,7 @@ from object_detection.utils import config_util
 def _write_config(config, config_path):
   """Writes a config object to disk."""
   config_text = text_format.MessageToString(config)
-  with tf.compat.v1.gfile.Open(config_path, "wb") as f:
+  with tf.gfile.Open(config_path, "wb") as f:
     f.write(config_text)
 
 

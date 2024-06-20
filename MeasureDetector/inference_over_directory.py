@@ -8,7 +8,7 @@ from time import time
 import PIL
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from PIL import Image
 from tqdm import tqdm
 

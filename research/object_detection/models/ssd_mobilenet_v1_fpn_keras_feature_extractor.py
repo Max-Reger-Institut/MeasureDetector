@@ -15,7 +15,7 @@
 
 """SSD Keras-based MobilenetV1 FPN Feature Extractor."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -68,7 +68,7 @@ class SSDMobileNetV1FpnKerasFeatureExtractor(
         params.
       inplace_batchnorm_update: whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
+        dependency on tf.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       fpn_min_level: the highest resolution feature map to use in FPN. The valid
         values are {2, 3, 4, 5} which map to MobileNet v1 layers

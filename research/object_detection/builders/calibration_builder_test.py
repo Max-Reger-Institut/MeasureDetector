@@ -17,7 +17,7 @@
 
 import numpy as np
 from scipy import interpolate
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from object_detection.builders import calibration_builder
 from object_detection.protos import calibration_pb2
 

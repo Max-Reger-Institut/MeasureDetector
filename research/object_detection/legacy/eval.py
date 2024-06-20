@@ -44,7 +44,8 @@ Example usage:
 """
 import functools
 import os
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_eager_execution()
 
 from object_detection.builders import dataset_builder
 from object_detection.builders import graph_rewriter_builder
@@ -53,9 +54,9 @@ from object_detection.legacy import evaluator
 from object_detection.utils import config_util
 from object_detection.utils import label_map_util
 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+tf.logging.set_verbosity(tf.logging.INFO)
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 flags.DEFINE_boolean('eval_training_data', False,
                      'If training data should be evaluated for this job.')
 flags.DEFINE_string(
@@ -88,11 +89,11 @@ def main(unused_argv):
 
   assert FLAGS.checkpoint_dir, '`checkpoint_dir` is missing.'
   assert FLAGS.eval_dir, '`eval_dir` is missing.'
-  tf.compat.v1.gfile.MakeDirs(FLAGS.eval_dir)
+  tf.gfile.MakeDirs(FLAGS.eval_dir)
   if FLAGS.pipeline_config_path:
     configs = config_util.get_configs_from_pipeline_file(
         FLAGS.pipeline_config_path)
-    tf.compat.v1.gfile.Copy(
+    tf.gfile.Copy(
         FLAGS.pipeline_config_path,
         os.path.join(FLAGS.eval_dir, 'pipeline.config'),
         overwrite=True)
@@ -104,7 +105,7 @@ def main(unused_argv):
     for name, config in [('model.config', FLAGS.model_config_path),
                          ('eval.config', FLAGS.eval_config_path),
                          ('input.config', FLAGS.input_config_path)]:
-      tf.compat.v1.gfile.Copy(config, os.path.join(FLAGS.eval_dir, name), overwrite=True)
+      tf.gfile.Copy(config, os.path.join(FLAGS.eval_dir, name), overwrite=True)
 
   model_config = configs['model']
   eval_config = configs['eval_config']
@@ -143,4 +144,4 @@ def main(unused_argv):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

@@ -16,7 +16,7 @@
 """Functions to export object detection inference graph."""
 import os
 import tempfile
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.contrib.quantize.python import graph_matcher
 from tensorflow.core.protobuf import saver_pb2
 from tensorflow.python.tools import freeze_graph  # pylint: disable=g-direct-tensorflow-import
@@ -98,12 +98,12 @@ def replace_variable_values_with_moving_averages(graph,
     new_checkpoint_file: file path to write a new checkpoint.
   """
   with graph.as_default():
-    variable_averages = tf.compat.v1.train.ExponentialMovingAverage(0.0)
+    variable_averages = tf.train.ExponentialMovingAverage(0.0)
     ema_variables_to_restore = variable_averages.variables_to_restore()
     with tf.Session() as sess:
-      read_saver = tf.compat.v1.train.Saver(ema_variables_to_restore)
+      read_saver = tf.train.Saver(ema_variables_to_restore)
       read_saver.restore(sess, current_checkpoint_file)
-      write_saver = tf.compat.v1.train.Saver()
+      write_saver = tf.train.Saver()
       write_saver.save(sess, new_checkpoint_file)
 
 
@@ -258,7 +258,7 @@ def add_output_tensor_nodes(postprocessed_tensors,
     outputs[detection_fields.detection_masks] = tf.identity(
         masks, name=detection_fields.detection_masks)
   for output_key in outputs:
-    tf.compat.v1.add_to_collection(output_collection_name, outputs[output_key])
+    tf.add_to_collection(output_collection_name, outputs[output_key])
 
   return outputs
 
@@ -323,7 +323,7 @@ def write_graph_and_checkpoint(inference_graph_def,
   with tf.Graph().as_default():
     tf.import_graph_def(inference_graph_def, name='')
     with tf.Session() as sess:
-      saver = tf.compat.v1.train.Saver(
+      saver = tf.train.Saver(
           saver_def=input_saver_def, save_relative_paths=True)
       saver.restore(sess, trained_checkpoint_prefix)
       saver.save(sess, model_path)
@@ -379,7 +379,7 @@ def _export_inference_graph(input_type,
                             write_inference_graph=False,
                             temp_checkpoint_prefix=''):
   """Export helper."""
-  tf.compat.v1.gfile.MakeDirs(output_directory)
+  tf.gfile.MakeDirs(output_directory)
   frozen_graph_path = os.path.join(output_directory,
                                    'frozen_inference_graph.pb')
   saved_model_path = os.path.join(output_directory, 'saved_model')
@@ -409,7 +409,7 @@ def _export_inference_graph(input_type,
   else:
     checkpoint_to_use = trained_checkpoint_prefix
 
-  saver = tf.compat.v1.train.Saver(**saver_kwargs)
+  saver = tf.train.Saver(**saver_kwargs)
   input_saver_def = saver.as_saver_def()
 
   write_graph_and_checkpoint(
@@ -423,7 +423,7 @@ def _export_inference_graph(input_type,
                                         'inference_graph.pbtxt')
     for node in inference_graph_def.node:
       node.device = ''
-    with tf.compat.v1.gfile.GFile(inference_graph_path, 'wb') as f:
+    with tf.gfile.GFile(inference_graph_path, 'wb') as f:
       f.write(str(inference_graph_def))
 
   if additional_output_tensor_names is not None:

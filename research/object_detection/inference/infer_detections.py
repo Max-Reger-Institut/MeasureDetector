@@ -35,7 +35,7 @@ metrics).
 """
 
 import itertools
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from object_detection.inference import detection_inference
 
 tf.flags.DEFINE_string('input_tfrecord_paths', None,
@@ -54,7 +54,7 @@ FLAGS = tf.flags.FLAGS
 
 
 def main(_):
-  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  tf.logging.set_verbosity(tf.logging.INFO)
 
   required_flags = ['input_tfrecord_paths', 'output_tfrecord_path',
                     'inference_graph']
@@ -65,23 +65,23 @@ def main(_):
   with tf.Session() as sess:
     input_tfrecord_paths = [
         v for v in FLAGS.input_tfrecord_paths.split(',') if v]
-    tf.compat.v1.logging.info('Reading input from %d files', len(input_tfrecord_paths))
+    tf.logging.info('Reading input from %d files', len(input_tfrecord_paths))
     serialized_example_tensor, image_tensor = detection_inference.build_input(
         input_tfrecord_paths)
-    tf.compat.v1.logging.info('Reading graph and building model...')
+    tf.logging.info('Reading graph and building model...')
     (detected_boxes_tensor, detected_scores_tensor,
      detected_labels_tensor) = detection_inference.build_inference_graph(
          image_tensor, FLAGS.inference_graph)
 
-    tf.compat.v1.logging.info('Running inference and writing output to {}'.format(
+    tf.logging.info('Running inference and writing output to {}'.format(
         FLAGS.output_tfrecord_path))
     sess.run(tf.local_variables_initializer())
-    tf.compat.v1.train.start_queue_runners()
+    tf.train.start_queue_runners()
     with tf.python_io.TFRecordWriter(
         FLAGS.output_tfrecord_path) as tf_record_writer:
       try:
         for counter in itertools.count():
-          tf.compat.v1.logging.log_every_n(tf.compat.v1.logging.INFO, 'Processed %d images...', 10,
+          tf.logging.log_every_n(tf.logging.INFO, 'Processed %d images...', 10,
                                  counter)
           tf_example = detection_inference.infer_detections_and_add_to_example(
               serialized_example_tensor, detected_boxes_tensor,
@@ -89,8 +89,8 @@ def main(_):
               FLAGS.discard_image_pixels)
           tf_record_writer.write(tf_example.SerializeToString())
       except tf.errors.OutOfRangeError:
-        tf.compat.v1.logging.info('Finished processing records')
+        tf.logging.info('Finished processing records')
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

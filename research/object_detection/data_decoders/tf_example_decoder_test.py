@@ -17,7 +17,7 @@
 import os
 import numpy as np
 import six
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import standard_fields as fields
 from object_detection.data_decoders import tf_example_decoder
@@ -58,8 +58,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     encoded_additional_channel = self._EncodeImage(additional_channel_tensor)
     decoded_additional_channel = self._DecodeImage(encoded_additional_channel)
 
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -86,8 +86,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     decoded_jpeg = self._DecodeImage(encoded_jpeg)
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -117,8 +117,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
   def testDecodeImageKeyAndFilename(self):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded': dataset_util.bytes_feature(encoded_jpeg),
                 'image/key/sha256': dataset_util.bytes_feature(six.b('abc')),
@@ -139,8 +139,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_png = self._EncodeImage(image_tensor, encoding_type='png')
     decoded_png = self._DecodeImage(encoded_png, encoding_type='png')
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded': dataset_util.bytes_feature(encoded_png),
                 'image/format': dataset_util.bytes_feature(six.b('png')),
@@ -176,8 +176,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     decoded_png_2 = np.squeeze(mask_2.astype(np.float32))
     encoded_masks = [encoded_png_1, encoded_png_2]
     decoded_masks = np.stack([decoded_png_1, decoded_png_2])
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -202,8 +202,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(10, 10, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     encoded_masks = []
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -234,8 +234,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     bbox_xmins = [1.0, 5.0]
     bbox_ymaxs = [2.0, 6.0]
     bbox_xmaxs = [3.0, 7.0]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -273,8 +273,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     bbox_xmaxs = [3.0, 7.0]
     keypoint_ys = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
     keypoint_xs = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -323,8 +323,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     bbox_xmins = [1.0, 5.0]
     bbox_ymaxs = [2.0, 6.0]
     bbox_xmaxs = [3.0, 7.0]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -356,8 +356,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes = [0, 1]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -387,8 +387,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     bbox_ymaxs = [2.0, 6.0]
     bbox_xmaxs = [3.0, 7.0]
     flattened_multiclass_scores = [100., 50.] + [20., 30.]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -422,8 +422,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     bbox_xmins = [1.0, 5.0]
     bbox_ymaxs = [2.0, 6.0]
     bbox_xmaxs = [3.0, 7.0]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -451,8 +451,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes = [1, 2]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -472,7 +472,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
 
     example_decoder = tf_example_decoder.TfExampleDecoder(
@@ -497,8 +497,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     # Annotation label gets overridden by labelmap id.
     annotated_bbox_classes = [3, 4]
     expected_bbox_classes = [1, 2]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -520,7 +520,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
 
     example_decoder = tf_example_decoder.TfExampleDecoder(
@@ -539,8 +539,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes_text = [six.b('cat'), six.b('cheetah')]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -561,7 +561,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
     example_decoder = tf_example_decoder.TfExampleDecoder(
         label_map_proto_file=label_map_path)
@@ -581,8 +581,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes_text = [six.b('cat'), six.b('dog')]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -603,7 +603,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
     example_decoder = tf_example_decoder.TfExampleDecoder(
         label_map_proto_file=label_map_path)
@@ -624,8 +624,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes_text = [six.b('cat'), six.b('cheetah')]
     bbox_classes_id = [5, 6]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -650,7 +650,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
     example_decoder = tf_example_decoder.TfExampleDecoder(
         label_map_proto_file=label_map_path)
@@ -667,8 +667,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     bbox_classes_text = [six.b('cat'), six.b('dog')]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -689,7 +689,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
     example_decoder = tf_example_decoder.TfExampleDecoder(
         label_map_proto_file=label_map_path)
@@ -709,8 +709,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     object_area = [100., 174.]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -735,8 +735,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     object_is_crowd = [0, 1]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -763,8 +763,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     object_difficult = [0, 1]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -791,8 +791,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     object_group_of = [0, 1]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -819,8 +819,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
     object_weights = [0.75, 1.0]
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -861,8 +861,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     object_classes = np.random.randint(
         100, size=(num_instances)).astype(np.int64)
 
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -916,8 +916,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     object_classes = np.random.randint(
         100, size=(num_instances)).astype(np.int64)
 
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -940,8 +940,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
   def testDecodeImageLabels(self):
     image_tensor = np.random.randint(256, size=(4, 5, 3)).astype(np.uint8)
     encoded_jpeg = self._EncodeImage(image_tensor)
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded': dataset_util.bytes_feature(encoded_jpeg),
                 'image/format': dataset_util.bytes_feature(six.b('jpeg')),
@@ -956,8 +956,8 @@ class TfExampleDecoderTest(tf.test.TestCase):
     self.assertAllEqual(
         tensor_dict[fields.InputDataFields.groundtruth_image_classes],
         np.array([1, 2]))
-    example = tf.compat.v1.train.Example(
-        features=tf.compat.v1.train.Features(
+    example = tf.train.Example(
+        features=tf.train.Features(
             feature={
                 'image/encoded':
                     dataset_util.bytes_feature(encoded_jpeg),
@@ -978,7 +978,7 @@ class TfExampleDecoderTest(tf.test.TestCase):
       }
     """
     label_map_path = os.path.join(self.get_temp_dir(), 'label_map.pbtxt')
-    with tf.compat.v1.gfile.Open(label_map_path, 'wb') as f:
+    with tf.gfile.Open(label_map_path, 'wb') as f:
       f.write(label_map_string)
     example_decoder = tf_example_decoder.TfExampleDecoder(
         label_map_proto_file=label_map_path)

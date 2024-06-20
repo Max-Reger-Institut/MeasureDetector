@@ -15,7 +15,7 @@
 
 """Tests for object_detection.core.matcher."""
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import matcher
 
@@ -134,7 +134,7 @@ class MatchTest(tf.test.TestCase):
     # Note: deliberately setting to small number so not always
     # all possibilities appear (matched, unmatched, ignored)
     num_matches = 10
-    match_results = tf.compat.v1.random_uniform(
+    match_results = tf.random_uniform(
         [num_matches], minval=-2, maxval=5, dtype=tf.int32)
     match = matcher.Match(match_results)
     matched_column_indices = match.matched_column_indices()

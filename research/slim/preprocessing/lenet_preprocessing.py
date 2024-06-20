@@ -18,7 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 import tf_slim
 slim = tf_slim
@@ -38,7 +38,7 @@ def preprocess_image(image, output_height, output_width, is_training):
     A preprocessed image.
   """
   image = tf.to_float(image)
-  image = tf.compat.v1.image.resize_image_with_crop_or_pad(
+  image = tf.image.resize_image_with_crop_or_pad(
       image, output_width, output_height)
   image = tf.subtract(image, 128.0)
   image = tf.div(image, 128.0)

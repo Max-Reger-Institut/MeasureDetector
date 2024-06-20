@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Tests for object_detection.predictors.heads.box_head."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import hyperparams_builder
@@ -52,7 +52,7 @@ class MaskRCNNBoxHeadTest(test_case.TestCase):
         dropout_keep_prob=0.5,
         box_code_size=4,
         share_box_across_classes=False)
-    roi_pooled_features = tf.compat.v1.random_uniform(
+    roi_pooled_features = tf.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = box_prediction_head.predict(
         features=roi_pooled_features, num_predictions_per_location=1)
@@ -84,7 +84,7 @@ class ConvolutionalBoxPredictorTest(test_case.TestCase):
         is_training=True,
         box_code_size=4,
         kernel_size=3)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head.predict(
         features=image_feature,
@@ -115,7 +115,7 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
   def test_prediction_size(self):
     box_prediction_head = box_head.WeightSharedConvolutionalBoxHead(
         box_code_size=4)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head.predict(
         features=image_feature,

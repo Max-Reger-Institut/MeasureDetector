@@ -33,7 +33,7 @@ import tarfile
 import numpy as np
 from six.moves import cPickle
 from six.moves import urllib
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from datasets import dataset_utils
 
@@ -72,7 +72,7 @@ def _add_to_tfrecord(filename, tfrecord_writer, offset=0):
   Returns:
     The new offset.
   """
-  with tf.compat.v1.gfile.Open(filename, 'rb') as f:
+  with tf.gfile.Open(filename, 'rb') as f:
     if sys.version_info < (3,):
       data = cPickle.load(f)
     else:
@@ -150,10 +150,10 @@ def _clean_up_temporary_files(dataset_dir):
   """
   filename = _DATA_URL.split('/')[-1]
   filepath = os.path.join(dataset_dir, filename)
-  tf.compat.v1.gfile.Remove(filepath)
+  tf.gfile.Remove(filepath)
 
   tmp_dir = os.path.join(dataset_dir, 'cifar-10-batches-py')
-  tf.compat.v1.gfile.DeleteRecursively(tmp_dir)
+  tf.gfile.DeleteRecursively(tmp_dir)
 
 
 def run(dataset_dir):
@@ -162,13 +162,13 @@ def run(dataset_dir):
   Args:
     dataset_dir: The dataset directory where the dataset is stored.
   """
-  if not tf.compat.v1.gfile.Exists(dataset_dir):
-    tf.compat.v1.gfile.MakeDirs(dataset_dir)
+  if not tf.gfile.Exists(dataset_dir):
+    tf.gfile.MakeDirs(dataset_dir)
 
   training_filename = _get_output_filename(dataset_dir, 'train')
   testing_filename = _get_output_filename(dataset_dir, 'test')
 
-  if tf.compat.v1.gfile.Exists(training_filename) and tf.compat.v1.gfile.Exists(testing_filename):
+  if tf.gfile.Exists(training_filename) and tf.gfile.Exists(testing_filename):
     print('Dataset files already exist. Exiting without re-creating them.')
     return
 

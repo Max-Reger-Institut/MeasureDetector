@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """SSDFeatureExtractor for InceptionV2 features."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -120,7 +120,7 @@ class SSDInceptionV2FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     }
 
     with slim.arg_scope(self._conv_hyperparams_fn()):
-      with tf.compat.v1.variable_scope('InceptionV2',
+      with tf.variable_scope('InceptionV2',
                              reuse=self._reuse_weights) as scope:
         _, image_features = inception_v2.inception_v2_base(
             ops.pad_to_multiple(preprocessed_inputs, self._pad_to_multiple),

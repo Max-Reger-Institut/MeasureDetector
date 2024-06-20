@@ -20,7 +20,7 @@ All the box prediction heads have a predict function that receives the
 `features` as the first argument and returns `box_encodings`.
 """
 import functools
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.predictors.heads import head
 

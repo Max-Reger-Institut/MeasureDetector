@@ -21,7 +21,7 @@ from __future__ import print_function
 import copy
 import time
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection import eval_util
 from object_detection import inputs
@@ -318,7 +318,7 @@ def load_fine_tune_checkpoint(
           var_map,
           checkpoint_path,
           include_global_step=False))
-  tf.compat.v1.train.init_from_checkpoint(checkpoint_path,
+  tf.train.init_from_checkpoint(checkpoint_path,
                                 available_var_map)
 
 
@@ -399,7 +399,7 @@ def train_loop(
   # Read export_to_tpu from hparams if not passed.
   if export_to_tpu is None:
     export_to_tpu = hparams.get('export_to_tpu', False)
-  tf.compat.v1.logging.info(
+  tf.logging.info(
       'train_loop: use_tpu %s, export_to_tpu %s', use_tpu,
       export_to_tpu)
 
@@ -743,7 +743,7 @@ def eval_continuously(
     kwargs['train_steps'] = train_steps
   if override_eval_num_epochs:
     kwargs.update({'eval_num_epochs': 1})
-    tf.compat.v1.logging.warning(
+    tf.logging.warning(
         'Forced number of epochs for all eval validations to be 1.')
   configs = merge_external_params_with_configs(
       configs, hparams, kwargs_dict=kwargs)
@@ -755,7 +755,7 @@ def eval_continuously(
   eval_on_train_input_config.sample_1_of_n_examples = (
       sample_1_of_n_eval_on_train_examples)
   if override_eval_num_epochs and eval_on_train_input_config.num_epochs != 1:
-    tf.compat.v1.logging.warning('Expected number of evaluation epochs is 1, but '
+    tf.logging.warning('Expected number of evaluation epochs is 1, but '
                        'instead encountered `eval_on_train_input_config'
                        '.num_epochs` = '
                        '{}. Overwriting `num_epochs` to 1.'.format(
@@ -778,7 +778,7 @@ def eval_continuously(
   # Read export_to_tpu from hparams if not passed.
   if export_to_tpu is None:
     export_to_tpu = hparams.get('export_to_tpu', False)
-  tf.compat.v1.logging.info('eval_continuously: use_tpu %s, export_to_tpu %s',
+  tf.logging.info('eval_continuously: use_tpu %s, export_to_tpu %s',
                   use_tpu, export_to_tpu)
 
   global_step = tf.compat.v2.Variable(
@@ -795,22 +795,22 @@ def eval_continuously(
     latest_checkpoint = manager.latest_checkpoint
     if prev_checkpoint == latest_checkpoint:
       if prev_checkpoint is None:
-        tf.compat.v1.logging.info('No checkpoints found yet. Trying again in %s seconds.'
+        tf.logging.info('No checkpoints found yet. Trying again in %s seconds.'
                         % wait_interval)
         time.sleep(wait_interval)
       else:
         if waiting:
-          tf.compat.v1.logging.info('Terminating eval after %s seconds of no new '
+          tf.logging.info('Terminating eval after %s seconds of no new '
                           'checkpoints.' % wait_interval)
           break
         else:
-          tf.compat.v1.logging.info('No new checkpoint found. Will try again '
+          tf.logging.info('No new checkpoint found. Will try again '
                           'in %s seconds and terminate if no checkpoint '
                           'appears.' % wait_interval)
           waiting = True
           time.sleep(wait_interval)
     else:
-      tf.compat.v1.logging.info('New checkpoint found. Starting evaluation.')
+      tf.logging.info('New checkpoint found. Starting evaluation.')
       waiting = False
       prev_checkpoint = latest_checkpoint
       ckpt.restore(latest_checkpoint)

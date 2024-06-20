@@ -15,7 +15,7 @@
 
 """SSDFeatureExtractor for MobilenetV1 PPN features."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -60,7 +60,7 @@ class SSDMobileNetV1PpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         33, preprocessed_inputs)
 
-    with tf.compat.v1.variable_scope('MobilenetV1',
+    with tf.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(

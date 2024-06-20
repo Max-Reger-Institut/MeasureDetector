@@ -28,7 +28,7 @@ consistent.
 
 import itertools
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.models.keras_models import inception_resnet_v2
 from object_detection.utils import test_case

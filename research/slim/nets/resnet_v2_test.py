@@ -19,7 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from nets import resnet_utils
 from nets import resnet_v2
@@ -82,7 +82,7 @@ class ResnetUtilsTest(tf.test.TestCase):
 
     tf.get_variable('Conv/weights', initializer=w)
     tf.get_variable('Conv/biases', initializer=tf.zeros([1]))
-    tf.compat.v1.get_variable_scope().reuse_variables()
+    tf.get_variable_scope().reuse_variables()
 
     y1 = slim.conv2d(x, 1, [3, 3], stride=1, scope='Conv')
     y1_expected = tf.to_float([[14, 28, 43, 26],
@@ -123,7 +123,7 @@ class ResnetUtilsTest(tf.test.TestCase):
 
     tf.get_variable('Conv/weights', initializer=w)
     tf.get_variable('Conv/biases', initializer=tf.zeros([1]))
-    tf.compat.v1.get_variable_scope().reuse_variables()
+    tf.get_variable_scope().reuse_variables()
 
     y1 = slim.conv2d(x, 1, [3, 3], stride=1, scope='Conv')
     y1_expected = tf.to_float([[14, 28, 43, 58, 34],
@@ -154,7 +154,7 @@ class ResnetUtilsTest(tf.test.TestCase):
 
   def _resnet_plain(self, inputs, blocks, output_stride=None, scope=None):
     """A plain ResNet without extra layers before or after the ResNet blocks."""
-    with tf.compat.v1.variable_scope(scope, values=[inputs]):
+    with tf.variable_scope(scope, values=[inputs]):
       with slim.arg_scope([slim.conv2d], outputs_collections='end_points'):
         net = resnet_utils.stack_blocks_dense(inputs, blocks, output_stride)
         end_points = slim.utils.convert_collection_to_dict('end_points')
@@ -191,9 +191,9 @@ class ResnetUtilsTest(tf.test.TestCase):
   def _stack_blocks_nondense(self, net, blocks):
     """A simplified ResNet Block stacker without output stride control."""
     for block in blocks:
-      with tf.compat.v1.variable_scope(block.scope, 'block', [net]):
+      with tf.variable_scope(block.scope, 'block', [net]):
         for i, unit in enumerate(block.args):
-          with tf.compat.v1.variable_scope('unit_%d' % (i + 1), values=[net]):
+          with tf.variable_scope('unit_%d' % (i + 1), values=[net]):
             net = block.unit_fn(net, rate=1, **unit)
     return net
 
@@ -234,7 +234,7 @@ class ResnetUtilsTest(tf.test.TestCase):
 
               output = resnet_utils.subsample(output, factor)
               # Make the two networks use the same weights.
-              tf.compat.v1.get_variable_scope().reuse_variables()
+              tf.get_variable_scope().reuse_variables()
               # Feature extraction at the nominal network rate.
               expected = self._stack_blocks_nondense(inputs, blocks)
               sess.run(tf.global_variables_initializer())
@@ -407,7 +407,7 @@ class ResnetCompleteNetworkTest(tf.test.TestCase):
               factor = nominal_stride // output_stride
             output = resnet_utils.subsample(output, factor)
             # Make the two networks use the same weights.
-            tf.compat.v1.get_variable_scope().reuse_variables()
+            tf.get_variable_scope().reuse_variables()
             # Feature extraction at the nominal network rate.
             expected, _ = self._resnet_small(inputs, None,
                                              is_training=False,

@@ -24,7 +24,7 @@ the MSRA provided checkpoints
 (see https://github.com/KaimingHe/deep-residual-networks), e.g., with
 same preprocessing, batch norm scaling, etc.
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from nets import resnet_utils
@@ -131,7 +131,7 @@ class FasterRCNNResnetV1FeatureExtractor(
               batch_norm_scale=True,
               activation_fn=self._activation_fn,
               weight_decay=self._weight_decay)):
-        with tf.compat.v1.variable_scope(
+        with tf.variable_scope(
             self._architecture, reuse=self._reuse_weights) as var_scope:
           _, activations = self._resnet_model(
               preprocessed_inputs,
@@ -159,7 +159,7 @@ class FasterRCNNResnetV1FeatureExtractor(
         [batch_size * self.max_num_proposals, height, width, depth]
         representing box classifier features for each proposal.
     """
-    with tf.compat.v1.variable_scope(self._architecture, reuse=self._reuse_weights):
+    with tf.variable_scope(self._architecture, reuse=self._reuse_weights):
       with slim.arg_scope(
           resnet_utils.resnet_arg_scope(
               batch_norm_epsilon=1e-5,

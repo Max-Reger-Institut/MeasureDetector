@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Provides functions to prefetch tensors to feed into models."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def prefetch(tensor_dict, capacity):
@@ -48,12 +48,12 @@ def prefetch(tensor_dict, capacity):
   names = list(tensor_dict.keys())
   dtypes = [t.dtype for t in tensor_dict.values()]
   shapes = [t.get_shape() for t in tensor_dict.values()]
-  prefetch_queue = tf.compat.v1.PaddingFIFOQueue(capacity, dtypes=dtypes,
+  prefetch_queue = tf.PaddingFIFOQueue(capacity, dtypes=dtypes,
                                        shapes=shapes,
                                        names=names,
                                        name='prefetch_queue')
   enqueue_op = prefetch_queue.enqueue(tensor_dict)
-  tf.compat.v1.train.queue_runner.add_queue_runner(tf.compat.v1.train.queue_runner.QueueRunner(
+  tf.train.queue_runner.add_queue_runner(tf.train.queue_runner.QueueRunner(
       prefetch_queue, [enqueue_op]))
   tf.summary.scalar(
       'queue/%s/fraction_of_%d_full' % (prefetch_queue.name, capacity),

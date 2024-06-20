@@ -17,7 +17,7 @@
 
 from absl.testing import parameterized
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import box_predictor_builder
@@ -174,7 +174,7 @@ class ConvolutionalBoxPredictorTest(test_case.TestCase):
            feed_dict={image_features:
                       np.random.rand(4, resolution, resolution, 64)})
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       self.assertAllEqual(box_encodings_shape, [4, expected_num_anchors, 1, 4])
       self.assertAllEqual(objectness_predictions_shape,
                           [4, expected_num_anchors, 1])
@@ -222,7 +222,7 @@ class ConvolutionalBoxPredictorTest(test_case.TestCase):
            feed_dict={image_features:
                       np.random.rand(4, resolution, resolution, 64)})
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     self.assertAllEqual(box_encodings_shape, [4, expected_num_anchors, 1, 4])
     self.assertAllEqual(objectness_predictions_shape,
                         [4, expected_num_anchors, 1])
@@ -481,10 +481,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Box prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'
@@ -549,10 +549,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Box prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'
@@ -610,10 +610,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Box prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'
@@ -681,10 +681,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Box prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'
@@ -741,10 +741,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Shared prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'
@@ -797,10 +797,10 @@ class WeightSharedConvolutionalBoxPredictorTest(test_case.TestCase):
       return (box_encodings, class_predictions_with_background)
 
     with self.test_session(graph=tf.Graph()):
-      graph_fn(tf.compat.v1.random_uniform([4, 32, 32, 3], dtype=tf.float32),
-               tf.compat.v1.random_uniform([4, 16, 16, 3], dtype=tf.float32))
+      graph_fn(tf.random_uniform([4, 32, 32, 3], dtype=tf.float32),
+               tf.random_uniform([4, 16, 16, 3], dtype=tf.float32))
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
     expected_variable_set = set([
         # Shared prediction tower
         ('BoxPredictor/WeightSharedConvolutionalBoxPredictor/'

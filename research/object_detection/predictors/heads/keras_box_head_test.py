@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Tests for object_detection.predictors.heads.box_head."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from object_detection.builders import hyperparams_builder
@@ -51,7 +51,7 @@ class ConvolutionalKerasBoxHeadTest(test_case.TestCase):
         freeze_batchnorm=False,
         num_predictions_per_location=1,
         use_depthwise=False)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 1, 4], box_encodings.get_shape().as_list())
@@ -66,7 +66,7 @@ class ConvolutionalKerasBoxHeadTest(test_case.TestCase):
         freeze_batchnorm=False,
         num_predictions_per_location=1,
         use_depthwise=True)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 1, 4], box_encodings.get_shape().as_list())
@@ -102,7 +102,7 @@ class MaskRCNNKerasBoxHeadTest(test_case.TestCase):
         dropout_keep_prob=0.5,
         box_code_size=4,
         share_box_across_classes=False)
-    roi_pooled_features = tf.compat.v1.random_uniform(
+    roi_pooled_features = tf.random_uniform(
         [64, 7, 7, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     prediction = box_prediction_head(roi_pooled_features)
     self.assertAllEqual([64, 1, 20, 4], prediction.get_shape().as_list())
@@ -133,7 +133,7 @@ class WeightSharedConvolutionalKerasBoxHead(test_case.TestCase):
         conv_hyperparams=conv_hyperparams,
         num_predictions_per_location=1,
         use_depthwise=False)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 4], box_encodings.get_shape().as_list())
@@ -145,7 +145,7 @@ class WeightSharedConvolutionalKerasBoxHead(test_case.TestCase):
         conv_hyperparams=conv_hyperparams,
         num_predictions_per_location=1,
         use_depthwise=True)
-    image_feature = tf.compat.v1.random_uniform(
+    image_feature = tf.random_uniform(
         [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
     box_encodings = box_prediction_head(image_feature)
     self.assertAllEqual([64, 323, 4], box_encodings.get_shape().as_list())
@@ -159,10 +159,10 @@ class WeightSharedConvolutionalKerasBoxHead(test_case.TestCase):
           conv_hyperparams=conv_hyperparams,
           num_predictions_per_location=1,
           use_depthwise=True)
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       _ = box_prediction_head(image_feature)
-      variables = g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+      variables = g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
     self.assertEqual(len(variables), 3)
 
   def test_variable_count_depth_wise_False(self):
@@ -174,10 +174,10 @@ class WeightSharedConvolutionalKerasBoxHead(test_case.TestCase):
           conv_hyperparams=conv_hyperparams,
           num_predictions_per_location=1,
           use_depthwise=False)
-      image_feature = tf.compat.v1.random_uniform(
+      image_feature = tf.random_uniform(
           [64, 17, 19, 1024], minval=-10.0, maxval=10.0, dtype=tf.float32)
       _ = box_prediction_head(image_feature)
-      variables = g.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
+      variables = g.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
     self.assertEqual(len(variables), 2)
 
 if __name__ == '__main__':

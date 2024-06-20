@@ -17,7 +17,7 @@
 
 import copy
 import functools
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -131,7 +131,7 @@ class SSDMobileNetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     preprocessed_inputs = shape_utils.check_min_image_dim(
         33, preprocessed_inputs)
 
-    with tf.compat.v1.variable_scope('MobilenetV1',
+    with tf.variable_scope('MobilenetV1',
                            reuse=self._reuse_weights) as scope:
       with slim.arg_scope(
           mobilenet_v1.mobilenet_v1_arg_scope(
@@ -150,7 +150,7 @@ class SSDMobileNetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
 
       depth_fn = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
       with slim.arg_scope(self._conv_hyperparams_fn()):
-        with tf.compat.v1.variable_scope('fpn', reuse=self._reuse_weights):
+        with tf.variable_scope('fpn', reuse=self._reuse_weights):
           feature_blocks = [
               'Conv2d_3_pointwise', 'Conv2d_5_pointwise', 'Conv2d_11_pointwise',
               'Conv2d_13_pointwise'

@@ -20,7 +20,7 @@ import numpy as np
 
 from pycocotools import mask
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.metrics import coco_tools
 
@@ -94,7 +94,7 @@ class CocoToolsTest(tf.test.TestCase):
         categories,
         output_path=output_path)
     self.assertDictEqual(result, self._groundtruth_dict)
-    with tf.compat.v1.gfile.GFile(output_path, 'r') as f:
+    with tf.gfile.GFile(output_path, 'r') as f:
       written_result = f.read()
       # The json output should have floats written to 4 digits of precision.
       matcher = re.compile(r'"bbox":\s+\[\n\s+\d+.\d\d\d\d,', re.MULTILINE)
@@ -120,7 +120,7 @@ class CocoToolsTest(tf.test.TestCase):
         categories,
         output_path=output_path)
     self.assertListEqual(result, self._detections_list)
-    with tf.compat.v1.gfile.GFile(output_path, 'r') as f:
+    with tf.gfile.GFile(output_path, 'r') as f:
       written_result = f.read()
       # The json output should have floats written to 4 digits of precision.
       matcher = re.compile(r'"bbox":\s+\[\n\s+\d+.\d\d\d\d,', re.MULTILINE)
@@ -153,7 +153,7 @@ class CocoToolsTest(tf.test.TestCase):
         detection_classes,
         categories,
         output_path=output_path)
-    with tf.compat.v1.gfile.GFile(output_path, 'r') as f:
+    with tf.gfile.GFile(output_path, 'r') as f:
       written_result = f.read()
       written_result = json.loads(written_result)
       mask_load = mask.decode([written_result[0]['segmentation']])
@@ -187,7 +187,7 @@ class CocoToolsTest(tf.test.TestCase):
         categories,
         output_path=output_path)
 
-    with tf.compat.v1.gfile.GFile(output_path, 'r') as f:
+    with tf.gfile.GFile(output_path, 'r') as f:
       written_result = f.read()
       written_result = json.loads(written_result)
       self.assertAlmostEqual(result, written_result)

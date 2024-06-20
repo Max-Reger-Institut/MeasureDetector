@@ -18,7 +18,7 @@
 See "Rethinking the Inception Architecture for Computer Vision"
 https://arxiv.org/abs/1512.00567
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from nets import inception_v2
@@ -126,7 +126,7 @@ class FasterRCNNInceptionV2FeatureExtractor(
         ['image size must at least be 33 in both height and width.'])
 
     with tf.control_dependencies([shape_assert]):
-      with tf.compat.v1.variable_scope('InceptionV2',
+      with tf.variable_scope('InceptionV2',
                              reuse=self._reuse_weights) as scope:
         with _batch_norm_arg_scope([slim.conv2d, slim.separable_conv2d],
                                    batch_norm_scale=True,
@@ -157,12 +157,12 @@ class FasterRCNNInceptionV2FeatureExtractor(
     net = proposal_feature_maps
 
     depth = lambda d: max(int(d * self._depth_multiplier), self._min_depth)
-    trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
+    trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
 
     data_format = 'NHWC'
     concat_dim = 3 if data_format == 'NHWC' else 1
 
-    with tf.compat.v1.variable_scope('InceptionV2', reuse=self._reuse_weights):
+    with tf.variable_scope('InceptionV2', reuse=self._reuse_weights):
       with slim.arg_scope(
           [slim.conv2d, slim.max_pool2d, slim.avg_pool2d],
           stride=1,
@@ -172,15 +172,15 @@ class FasterRCNNInceptionV2FeatureExtractor(
                                    batch_norm_scale=True,
                                    train_batch_norm=self._train_batch_norm):
 
-          with tf.compat.v1.variable_scope('Mixed_5a'):
-            with tf.compat.v1.variable_scope('Branch_0'):
+          with tf.variable_scope('Mixed_5a'):
+            with tf.variable_scope('Branch_0'):
               branch_0 = slim.conv2d(
                   net, depth(128), [1, 1],
                   weights_initializer=trunc_normal(0.09),
                   scope='Conv2d_0a_1x1')
               branch_0 = slim.conv2d(branch_0, depth(192), [3, 3], stride=2,
                                      scope='Conv2d_1a_3x3')
-            with tf.compat.v1.variable_scope('Branch_1'):
+            with tf.variable_scope('Branch_1'):
               branch_1 = slim.conv2d(
                   net, depth(192), [1, 1],
                   weights_initializer=trunc_normal(0.09),
@@ -189,23 +189,23 @@ class FasterRCNNInceptionV2FeatureExtractor(
                                      scope='Conv2d_0b_3x3')
               branch_1 = slim.conv2d(branch_1, depth(256), [3, 3], stride=2,
                                      scope='Conv2d_1a_3x3')
-            with tf.compat.v1.variable_scope('Branch_2'):
+            with tf.variable_scope('Branch_2'):
               branch_2 = slim.max_pool2d(net, [3, 3], stride=2,
                                          scope='MaxPool_1a_3x3')
             net = tf.concat([branch_0, branch_1, branch_2], concat_dim)
 
-          with tf.compat.v1.variable_scope('Mixed_5b'):
-            with tf.compat.v1.variable_scope('Branch_0'):
+          with tf.variable_scope('Mixed_5b'):
+            with tf.variable_scope('Branch_0'):
               branch_0 = slim.conv2d(net, depth(352), [1, 1],
                                      scope='Conv2d_0a_1x1')
-            with tf.compat.v1.variable_scope('Branch_1'):
+            with tf.variable_scope('Branch_1'):
               branch_1 = slim.conv2d(
                   net, depth(192), [1, 1],
                   weights_initializer=trunc_normal(0.09),
                   scope='Conv2d_0a_1x1')
               branch_1 = slim.conv2d(branch_1, depth(320), [3, 3],
                                      scope='Conv2d_0b_3x3')
-            with tf.compat.v1.variable_scope('Branch_2'):
+            with tf.variable_scope('Branch_2'):
               branch_2 = slim.conv2d(
                   net, depth(160), [1, 1],
                   weights_initializer=trunc_normal(0.09),
@@ -214,7 +214,7 @@ class FasterRCNNInceptionV2FeatureExtractor(
                                      scope='Conv2d_0b_3x3')
               branch_2 = slim.conv2d(branch_2, depth(224), [3, 3],
                                      scope='Conv2d_0c_3x3')
-            with tf.compat.v1.variable_scope('Branch_3'):
+            with tf.variable_scope('Branch_3'):
               branch_3 = slim.avg_pool2d(net, [3, 3], scope='AvgPool_0a_3x3')
               branch_3 = slim.conv2d(
                   branch_3, depth(128), [1, 1],
@@ -223,18 +223,18 @@ class FasterRCNNInceptionV2FeatureExtractor(
             net = tf.concat([branch_0, branch_1, branch_2, branch_3],
                             concat_dim)
 
-          with tf.compat.v1.variable_scope('Mixed_5c'):
-            with tf.compat.v1.variable_scope('Branch_0'):
+          with tf.variable_scope('Mixed_5c'):
+            with tf.variable_scope('Branch_0'):
               branch_0 = slim.conv2d(net, depth(352), [1, 1],
                                      scope='Conv2d_0a_1x1')
-            with tf.compat.v1.variable_scope('Branch_1'):
+            with tf.variable_scope('Branch_1'):
               branch_1 = slim.conv2d(
                   net, depth(192), [1, 1],
                   weights_initializer=trunc_normal(0.09),
                   scope='Conv2d_0a_1x1')
               branch_1 = slim.conv2d(branch_1, depth(320), [3, 3],
                                      scope='Conv2d_0b_3x3')
-            with tf.compat.v1.variable_scope('Branch_2'):
+            with tf.variable_scope('Branch_2'):
               branch_2 = slim.conv2d(
                   net, depth(192), [1, 1],
                   weights_initializer=trunc_normal(0.09),
@@ -243,7 +243,7 @@ class FasterRCNNInceptionV2FeatureExtractor(
                                      scope='Conv2d_0b_3x3')
               branch_2 = slim.conv2d(branch_2, depth(224), [3, 3],
                                      scope='Conv2d_0c_3x3')
-            with tf.compat.v1.variable_scope('Branch_3'):
+            with tf.variable_scope('Branch_3'):
               branch_3 = slim.max_pool2d(net, [3, 3], scope='MaxPool_0a_3x3')
               branch_3 = slim.conv2d(
                   branch_3, depth(128), [1, 1],

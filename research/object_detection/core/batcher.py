@@ -21,7 +21,7 @@ from __future__ import print_function
 import collections
 
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import prefetcher
 
@@ -93,7 +93,7 @@ class BatchQueue(object):
 
     all_tensors = tensor_dict
     all_tensors.update(runtime_shapes)
-    batched_tensors = tf.compat.v1.train.batch(
+    batched_tensors = tf.train.batch(
         all_tensors,
         capacity=batch_queue_capacity,
         batch_size=batch_size,

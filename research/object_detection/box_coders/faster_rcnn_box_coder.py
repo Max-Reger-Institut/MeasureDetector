@@ -28,7 +28,7 @@ Faster RCNN box coder follows the coding schema described below:
   See http://arxiv.org/abs/1506.01497 for details.
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_coder
 from object_detection.core import box_list
@@ -79,8 +79,8 @@ class FasterRcnnBoxCoder(box_coder.BoxCoder):
 
     tx = (xcenter - xcenter_a) / wa
     ty = (ycenter - ycenter_a) / ha
-    tw = tf.compat.v1.log(w / wa)
-    th = tf.compat.v1.log(h / ha)
+    tw = tf.log(w / wa)
+    th = tf.log(h / ha)
     # Scales location targets as used in paper for joint training.
     if self._scale_factors:
       ty *= self._scale_factors[0]

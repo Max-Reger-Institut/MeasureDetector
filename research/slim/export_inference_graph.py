@@ -57,7 +57,7 @@ from __future__ import division
 from __future__ import print_function
 import os
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from tensorflow.python.platform import gfile
 from datasets import dataset_factory
@@ -67,51 +67,51 @@ from nets import nets_factory
 import tf_slim
 slim = tf_slim
 
-tf.compat.v1.app.flags.DEFINE_string(
+tf.app.flags.DEFINE_string(
     'model_name', 'inception_v3', 'The name of the architecture to save.')
 
-tf.compat.v1.app.flags.DEFINE_boolean(
+tf.app.flags.DEFINE_boolean(
     'is_training', False,
     'Whether to save out a training-focused version of the model.')
 
-tf.compat.v1.app.flags.DEFINE_integer(
+tf.app.flags.DEFINE_integer(
     'image_size', None,
     'The image size to use, otherwise use the model default_image_size.')
 
-tf.compat.v1.app.flags.DEFINE_integer(
+tf.app.flags.DEFINE_integer(
     'batch_size', None,
     'Batch size for the exported model. Defaulted to "None" so batch size can '
     'be specified at model runtime.')
 
-tf.compat.v1.app.flags.DEFINE_string('dataset_name', 'imagenet',
+tf.app.flags.DEFINE_string('dataset_name', 'imagenet',
                            'The name of the dataset to use with the model.')
 
-tf.compat.v1.app.flags.DEFINE_integer(
+tf.app.flags.DEFINE_integer(
     'labels_offset', 0,
     'An offset for the labels in the dataset. This flag is primarily used to '
     'evaluate the VGG and ResNet architectures which do not use a background '
     'class for the ImageNet dataset.')
 
-tf.compat.v1.app.flags.DEFINE_string(
+tf.app.flags.DEFINE_string(
     'output_file', '', 'Where to save the resulting file to.')
 
-tf.compat.v1.app.flags.DEFINE_string(
+tf.app.flags.DEFINE_string(
     'dataset_dir', '', 'Directory to save intermediate dataset files to')
 
-tf.compat.v1.app.flags.DEFINE_bool(
+tf.app.flags.DEFINE_bool(
     'quantize', False, 'whether to use quantized graph or not.')
 
-tf.compat.v1.app.flags.DEFINE_bool(
+tf.app.flags.DEFINE_bool(
     'is_video_model', False, 'whether to use 5-D inputs for video model.')
 
-tf.compat.v1.app.flags.DEFINE_integer(
+tf.app.flags.DEFINE_integer(
     'num_frames', None,
     'The number of frames to use. Only used if is_video_model is True.')
 
-tf.compat.v1.app.flags.DEFINE_bool('write_text_graphdef', False,
+tf.app.flags.DEFINE_bool('write_text_graphdef', False,
                          'Whether to write a text version of graphdef.')
 
-FLAGS = tf.compat.v1.app.flags.FLAGS
+FLAGS = tf.app.flags.FLAGS
 
 
 def main(_):
@@ -120,7 +120,7 @@ def main(_):
   if FLAGS.is_video_model and not FLAGS.num_frames:
     raise ValueError(
         'Number of frames must be specified for video models with --num_frames')
-  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  tf.logging.set_verbosity(tf.logging.INFO)
   with tf.Graph().as_default() as graph:
     dataset = dataset_factory.get_dataset(FLAGS.dataset_name, 'train',
                                           FLAGS.dataset_dir)
@@ -154,4 +154,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()

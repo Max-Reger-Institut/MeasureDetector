@@ -21,7 +21,7 @@ from __future__ import print_function
 import numpy as np
 from six.moves import range
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import anchor_generator
 from object_detection.core import box_coder

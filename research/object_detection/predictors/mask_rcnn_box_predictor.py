@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """Mask R-CNN Box Predictor."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_predictor
 

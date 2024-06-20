@@ -28,7 +28,7 @@ from __future__ import division
 from __future__ import print_function
 
 from six.moves import range
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import box_list
 from object_detection.utils import ops
@@ -56,7 +56,7 @@ def area(boxlist, scope=None):
   Returns:
     a tensor with shape [N] representing box areas.
   """
-  with tf.compat.v1.name_scope(scope, 'Area'):
+  with tf.name_scope(scope, 'Area'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
     return tf.squeeze((y_max - y_min) * (x_max - x_min), [1])
@@ -73,7 +73,7 @@ def height_width(boxlist, scope=None):
     Height: A tensor with shape [N] representing box heights.
     Width: A tensor with shape [N] representing box widths.
   """
-  with tf.compat.v1.name_scope(scope, 'HeightWidth'):
+  with tf.name_scope(scope, 'HeightWidth'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
     return tf.squeeze(y_max - y_min, [1]), tf.squeeze(x_max - x_min, [1])
@@ -91,7 +91,7 @@ def scale(boxlist, y_scale, x_scale, scope=None):
   Returns:
     boxlist: BoxList holding N boxes
   """
-  with tf.compat.v1.name_scope(scope, 'Scale'):
+  with tf.name_scope(scope, 'Scale'):
     y_scale = tf.cast(y_scale, tf.float32)
     x_scale = tf.cast(x_scale, tf.float32)
     y_min, x_min, y_max, x_max = tf.split(
@@ -123,7 +123,7 @@ def clip_to_window(boxlist, window, filter_nonoverlapping=True, scope=None):
   Returns:
     a BoxList holding M_out boxes where M_out <= M_in
   """
-  with tf.compat.v1.name_scope(scope, 'ClipToWindow'):
+  with tf.name_scope(scope, 'ClipToWindow'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
     win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
@@ -162,7 +162,7 @@ def prune_outside_window(boxlist, window, scope=None):
     valid_indices: a tensor with shape [M_out] indexing the valid bounding boxes
      in the input tensor.
   """
-  with tf.compat.v1.name_scope(scope, 'PruneOutsideWindow'):
+  with tf.name_scope(scope, 'PruneOutsideWindow'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
     win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
@@ -194,7 +194,7 @@ def prune_completely_outside_window(boxlist, window, scope=None):
     valid_indices: a tensor with shape [M_out] indexing the valid bounding boxes
      in the input tensor.
   """
-  with tf.compat.v1.name_scope(scope, 'PruneCompleteleyOutsideWindow'):
+  with tf.name_scope(scope, 'PruneCompleteleyOutsideWindow'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
     win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
@@ -218,7 +218,7 @@ def intersection(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N, M] representing pairwise intersections
   """
-  with tf.compat.v1.name_scope(scope, 'Intersection'):
+  with tf.name_scope(scope, 'Intersection'):
     y_min1, x_min1, y_max1, x_max1 = tf.split(
         value=boxlist1.get(), num_or_size_splits=4, axis=1)
     y_min2, x_min2, y_max2, x_max2 = tf.split(
@@ -243,7 +243,7 @@ def matched_intersection(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N] representing pairwise intersections
   """
-  with tf.compat.v1.name_scope(scope, 'MatchedIntersection'):
+  with tf.name_scope(scope, 'MatchedIntersection'):
     y_min1, x_min1, y_max1, x_max1 = tf.split(
         value=boxlist1.get(), num_or_size_splits=4, axis=1)
     y_min2, x_min2, y_max2, x_max2 = tf.split(
@@ -268,7 +268,7 @@ def iou(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N, M] representing pairwise iou scores.
   """
-  with tf.compat.v1.name_scope(scope, 'IOU'):
+  with tf.name_scope(scope, 'IOU'):
     intersections = intersection(boxlist1, boxlist2)
     areas1 = area(boxlist1)
     areas2 = area(boxlist2)
@@ -290,7 +290,7 @@ def matched_iou(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N] representing pairwise iou scores.
   """
-  with tf.compat.v1.name_scope(scope, 'MatchedIOU'):
+  with tf.name_scope(scope, 'MatchedIOU'):
     intersections = matched_intersection(boxlist1, boxlist2)
     areas1 = area(boxlist1)
     areas2 = area(boxlist2)
@@ -315,7 +315,7 @@ def ioa(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N, M] representing pairwise ioa scores.
   """
-  with tf.compat.v1.name_scope(scope, 'IOA'):
+  with tf.name_scope(scope, 'IOA'):
     intersections = intersection(boxlist1, boxlist2)
     areas = tf.expand_dims(area(boxlist2), 0)
     return tf.truediv(intersections, areas)
@@ -340,7 +340,7 @@ def prune_non_overlapping_boxes(
     keep_inds: A tensor with shape [N'] indexing kept bounding boxes in the
       first input BoxList `boxlist1`.
   """
-  with tf.compat.v1.name_scope(scope, 'PruneNonOverlappingBoxes'):
+  with tf.name_scope(scope, 'PruneNonOverlappingBoxes'):
     ioa_ = ioa(boxlist2, boxlist1)  # [M, N] tensor
     ioa_ = tf.reduce_max(ioa_, reduction_indices=[0])  # [N] tensor
     keep_bool = tf.greater_equal(ioa_, tf.constant(min_overlap))
@@ -360,7 +360,7 @@ def prune_small_boxes(boxlist, min_side, scope=None):
   Returns:
     A pruned boxlist.
   """
-  with tf.compat.v1.name_scope(scope, 'PruneSmallBoxes'):
+  with tf.name_scope(scope, 'PruneSmallBoxes'):
     height, width = height_width(boxlist)
     is_valid = tf.logical_and(tf.greater_equal(width, min_side),
                               tf.greater_equal(height, min_side))
@@ -387,7 +387,7 @@ def change_coordinate_frame(boxlist, window, scope=None):
   Returns:
     Returns a BoxList object with N boxes.
   """
-  with tf.compat.v1.name_scope(scope, 'ChangeCoordinateFrame'):
+  with tf.name_scope(scope, 'ChangeCoordinateFrame'):
     win_height = window[2] - window[0]
     win_width = window[3] - window[1]
     boxlist_new = scale(box_list.BoxList(
@@ -418,7 +418,7 @@ def sq_dist(boxlist1, boxlist2, scope=None):
   Returns:
     a tensor with shape [N, M] representing pairwise distances
   """
-  with tf.compat.v1.name_scope(scope, 'SqDist'):
+  with tf.name_scope(scope, 'SqDist'):
     sqnorm1 = tf.reduce_sum(tf.square(boxlist1.get()), 1, keep_dims=True)
     sqnorm2 = tf.reduce_sum(tf.square(boxlist2.get()), 1, keep_dims=True)
     innerprod = tf.matmul(boxlist1.get(), boxlist2.get(),
@@ -454,7 +454,7 @@ def boolean_mask(boxlist, indicator, fields=None, scope=None,
   Raises:
     ValueError: if `indicator` is not a rank-1 boolean tensor.
   """
-  with tf.compat.v1.name_scope(scope, 'BooleanMask'):
+  with tf.name_scope(scope, 'BooleanMask'):
     if indicator.shape.ndims != 1:
       raise ValueError('indicator should have rank 1')
     if indicator.dtype != tf.bool:
@@ -513,7 +513,7 @@ def gather(boxlist, indices, fields=None, scope=None, use_static_shapes=False):
     ValueError: if specified field is not contained in boxlist or if the
       indices are not of type int32
   """
-  with tf.compat.v1.name_scope(scope, 'Gather'):
+  with tf.name_scope(scope, 'Gather'):
     if len(indices.shape.as_list()) != 1:
       raise ValueError('indices should have rank 1')
     if indices.dtype != tf.int32 and indices.dtype != tf.int64:
@@ -555,7 +555,7 @@ def concatenate(boxlists, fields=None, scope=None):
       contains non BoxList objects), or if requested fields are not contained in
       all boxlists
   """
-  with tf.compat.v1.name_scope(scope, 'Concatenate'):
+  with tf.name_scope(scope, 'Concatenate'):
     if not isinstance(boxlists, list):
       raise ValueError('boxlists should be a list')
     if not boxlists:
@@ -605,7 +605,7 @@ def sort_by_field(boxlist, field, order=SortOrder.descend, scope=None):
     ValueError: if specified field does not exist
     ValueError: if the order is not either descend or ascend
   """
-  with tf.compat.v1.name_scope(scope, 'SortByField'):
+  with tf.name_scope(scope, 'SortByField'):
     if order != SortOrder.descend and order != SortOrder.ascend:
       raise ValueError('Invalid sort order')
 
@@ -646,7 +646,7 @@ def visualize_boxes_in_image(image, boxlist, normalized=False, scope=None):
   Returns:
     image_and_boxes: an image tensor with shape [height, width, 3]
   """
-  with tf.compat.v1.name_scope(scope, 'VisualizeBoxesInImage'):
+  with tf.name_scope(scope, 'VisualizeBoxesInImage'):
     if not normalized:
       height, width, _ = tf.unstack(tf.shape(image))
       boxlist = scale(boxlist,
@@ -673,7 +673,7 @@ def filter_field_value_equals(boxlist, field, value, scope=None):
     ValueError: if boxlist not a BoxList object or if it does not have
       the specified field.
   """
-  with tf.compat.v1.name_scope(scope, 'FilterFieldValueEquals'):
+  with tf.name_scope(scope, 'FilterFieldValueEquals'):
     if not isinstance(boxlist, box_list.BoxList):
       raise ValueError('boxlist must be a BoxList')
     if not boxlist.has_field(field):
@@ -704,7 +704,7 @@ def filter_greater_than(boxlist, thresh, scope=None):
     ValueError: if boxlist not a BoxList object or if it does not
       have a scores field
   """
-  with tf.compat.v1.name_scope(scope, 'FilterGreaterThan'):
+  with tf.name_scope(scope, 'FilterGreaterThan'):
     if not isinstance(boxlist, box_list.BoxList):
       raise ValueError('boxlist must be a BoxList')
     if not boxlist.has_field('scores'):
@@ -741,7 +741,7 @@ def non_max_suppression(boxlist, thresh, max_output_size, scope=None):
   Raises:
     ValueError: if thresh is not in [0, 1]
   """
-  with tf.compat.v1.name_scope(scope, 'NonMaxSuppression'):
+  with tf.name_scope(scope, 'NonMaxSuppression'):
     if not 0 <= thresh <= 1.0:
       raise ValueError('thresh must be between 0 and 1')
     if not isinstance(boxlist, box_list.BoxList):
@@ -792,7 +792,7 @@ def to_normalized_coordinates(boxlist, height, width,
   Returns:
     boxlist with normalized coordinates in [0, 1].
   """
-  with tf.compat.v1.name_scope(scope, 'ToNormalizedCoordinates'):
+  with tf.name_scope(scope, 'ToNormalizedCoordinates'):
     height = tf.cast(height, tf.float32)
     width = tf.cast(width, tf.float32)
 
@@ -831,7 +831,7 @@ def to_absolute_coordinates(boxlist,
     boxlist with absolute coordinates in terms of the image size.
 
   """
-  with tf.compat.v1.name_scope(scope, 'ToAbsoluteCoordinates'):
+  with tf.name_scope(scope, 'ToAbsoluteCoordinates'):
     height = tf.cast(height, tf.float32)
     width = tf.cast(width, tf.float32)
 
@@ -1007,7 +1007,7 @@ def pad_or_clip_box_list(boxlist, num_boxes, scope=None):
   Returns:
     BoxList with all fields padded or clipped.
   """
-  with tf.compat.v1.name_scope(scope, 'PadOrClipBoxList'):
+  with tf.name_scope(scope, 'PadOrClipBoxList'):
     subboxlist = box_list.BoxList(shape_utils.pad_or_clip_tensor(
         boxlist.get(), num_boxes))
     for field in boxlist.get_extra_fields():
@@ -1036,14 +1036,14 @@ def select_random_box(boxlist,
     valid: A bool tensor indicating whether a valid bounding box is returned
       (True) or whether the default box is returned (False).
   """
-  with tf.compat.v1.name_scope(scope, 'SelectRandomBox'):
+  with tf.name_scope(scope, 'SelectRandomBox'):
     bboxes = boxlist.get()
     combined_shape = shape_utils.combined_static_and_dynamic_shape(bboxes)
     number_of_boxes = combined_shape[0]
     default_box = default_box or tf.constant([[-1., -1., -1., -1.]])
 
     def select_box():
-      random_index = tf.compat.v1.random_uniform([],
+      random_index = tf.random_uniform([],
                                        maxval=number_of_boxes,
                                        dtype=tf.int32,
                                        seed=seed)
@@ -1072,7 +1072,7 @@ def get_minimal_coverage_box(boxlist,
     boxes in the box list. If the boxlist does not contain any boxes, the
     default box is returned.
   """
-  with tf.compat.v1.name_scope(scope, 'CreateCoverageBox'):
+  with tf.name_scope(scope, 'CreateCoverageBox'):
     num_boxes = boxlist.num_boxes()
 
     def coverage_box(bboxes):
@@ -1116,9 +1116,9 @@ def sample_boxes_by_jittering(boxlist,
     sampled_boxlist: A boxlist containing num_boxes_to_sample boxes in
       normalized coordinates.
   """
-  with tf.compat.v1.name_scope(scope, 'SampleBoxesByJittering'):
+  with tf.name_scope(scope, 'SampleBoxesByJittering'):
     num_boxes = boxlist.num_boxes()
-    box_indices = tf.compat.v1.random_uniform(
+    box_indices = tf.random_uniform(
         [num_boxes_to_sample],
         minval=0,
         maxval=num_boxes,

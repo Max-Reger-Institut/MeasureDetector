@@ -9,7 +9,7 @@ from typing import List, Dict, Generator
 
 import PIL.Image
 import contextlib2
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from MeasureDetector.errors import InvalidImageFormatError, InvalidImageError
 from PIL.Image import Image
 from object_detection.dataset_tools import tf_record_creation_util
@@ -19,7 +19,7 @@ from tqdm import tqdm
 
 def encode_sample_into_tensorflow_sample(path_to_image: str, annotations: Dict, label_map_dict: Dict[str, int],
                                          included_classes: List[str]):
-    with tf.compat.v1.gfile.GFile(path_to_image, 'rb') as fid:
+    with tf.gfile.GFile(path_to_image, 'rb') as fid:
         encoded_image = fid.read()
     encoded_image_io = io.BytesIO(encoded_image)
     image = PIL.Image.open(encoded_image_io)  # type: Image
@@ -77,7 +77,7 @@ def encode_sample_into_tensorflow_sample(path_to_image: str, annotations: Dict, 
             classes.append(label_map_dict[instance_name])
             classes_text.append(instance_name.encode('utf8'))
 
-    example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
+    example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(image_height),
         'image/width': dataset_util.int64_feature(image_width),
         'image/filename': dataset_util.bytes_feature(
@@ -103,7 +103,7 @@ def encode_sample_into_tensorflow_sample(path_to_image: str, annotations: Dict, 
 def annotations_to_tf_example_list(all_image_paths: List[str],
                                    all_annotation_paths: List[str],
                                    label_map_dict: Dict[str, int],
-                                   included_classes: List[str]) -> Generator[tf.compat.v1.train.Example, None, None]:
+                                   included_classes: List[str]) -> Generator[tf.train.Example, None, None]:
     """Convert json files and images to tf.Example proto.
 
     Notice that this function normalizes the bounding box coordinates provided

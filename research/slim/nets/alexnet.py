@@ -36,11 +36,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 import tf_slim
 slim = tf_slim
-trunc_normal = lambda stddev: tf.compat.v1.truncated_normal_initializer(0.0, stddev)
+trunc_normal = lambda stddev: tf.truncated_normal_initializer(0.0, stddev)
 
 
 def alexnet_v2_arg_scope(weight_decay=0.0005):
@@ -94,7 +94,7 @@ def alexnet_v2(inputs,
       or None).
     end_points: a dict of tensors with intermediate activations.
   """
-  with tf.compat.v1.variable_scope(scope, 'alexnet_v2', [inputs]) as sc:
+  with tf.variable_scope(scope, 'alexnet_v2', [inputs]) as sc:
     end_points_collection = sc.original_name_scope + '_end_points'
     # Collect outputs for conv2d, fully_connected and max_pool2d.
     with slim.arg_scope([slim.conv2d, slim.fully_connected, slim.max_pool2d],

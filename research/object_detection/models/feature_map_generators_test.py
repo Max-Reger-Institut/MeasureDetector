@@ -18,7 +18,7 @@
 from absl.testing import parameterized
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 
@@ -99,9 +99,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
 
   def test_get_expected_feature_map_shapes_with_inception_v2(self, use_keras):
     image_features = {
-        'Mixed_3c': tf.compat.v1.random_uniform([4, 28, 28, 256], dtype=tf.float32),
-        'Mixed_4c': tf.compat.v1.random_uniform([4, 14, 14, 576], dtype=tf.float32),
-        'Mixed_5c': tf.compat.v1.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
+        'Mixed_3c': tf.random_uniform([4, 28, 28, 256], dtype=tf.float32),
+        'Mixed_4c': tf.random_uniform([4, 14, 14, 576], dtype=tf.float32),
+        'Mixed_5c': tf.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
     }
     feature_map_generator = self._build_feature_map_generator(
         feature_map_layout=INCEPTION_V2_LAYOUT,
@@ -128,9 +128,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
   def test_get_expected_feature_map_shapes_with_inception_v2_use_depthwise(
       self, use_keras):
     image_features = {
-        'Mixed_3c': tf.compat.v1.random_uniform([4, 28, 28, 256], dtype=tf.float32),
-        'Mixed_4c': tf.compat.v1.random_uniform([4, 14, 14, 576], dtype=tf.float32),
-        'Mixed_5c': tf.compat.v1.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
+        'Mixed_3c': tf.random_uniform([4, 28, 28, 256], dtype=tf.float32),
+        'Mixed_4c': tf.random_uniform([4, 14, 14, 576], dtype=tf.float32),
+        'Mixed_5c': tf.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
     }
     layout_copy = INCEPTION_V2_LAYOUT.copy()
     layout_copy['use_depthwise'] = True
@@ -159,9 +159,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
   def test_get_expected_feature_map_shapes_use_explicit_padding(
       self, use_keras):
     image_features = {
-        'Mixed_3c': tf.compat.v1.random_uniform([4, 28, 28, 256], dtype=tf.float32),
-        'Mixed_4c': tf.compat.v1.random_uniform([4, 14, 14, 576], dtype=tf.float32),
-        'Mixed_5c': tf.compat.v1.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
+        'Mixed_3c': tf.random_uniform([4, 28, 28, 256], dtype=tf.float32),
+        'Mixed_4c': tf.random_uniform([4, 14, 14, 576], dtype=tf.float32),
+        'Mixed_5c': tf.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
     }
     layout_copy = INCEPTION_V2_LAYOUT.copy()
     layout_copy['use_explicit_padding'] = True
@@ -189,9 +189,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
 
   def test_get_expected_feature_map_shapes_with_inception_v3(self, use_keras):
     image_features = {
-        'Mixed_5d': tf.compat.v1.random_uniform([4, 35, 35, 256], dtype=tf.float32),
-        'Mixed_6e': tf.compat.v1.random_uniform([4, 17, 17, 576], dtype=tf.float32),
-        'Mixed_7c': tf.compat.v1.random_uniform([4, 8, 8, 1024], dtype=tf.float32)
+        'Mixed_5d': tf.random_uniform([4, 35, 35, 256], dtype=tf.float32),
+        'Mixed_6e': tf.random_uniform([4, 17, 17, 576], dtype=tf.float32),
+        'Mixed_7c': tf.random_uniform([4, 8, 8, 1024], dtype=tf.float32)
     }
 
     feature_map_generator = self._build_feature_map_generator(
@@ -219,9 +219,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
   def test_get_expected_feature_map_shapes_with_embedded_ssd_mobilenet_v1(
       self, use_keras):
     image_features = {
-        'Conv2d_11_pointwise': tf.compat.v1.random_uniform([4, 16, 16, 512],
+        'Conv2d_11_pointwise': tf.random_uniform([4, 16, 16, 512],
                                                  dtype=tf.float32),
-        'Conv2d_13_pointwise': tf.compat.v1.random_uniform([4, 8, 8, 1024],
+        'Conv2d_13_pointwise': tf.random_uniform([4, 8, 8, 1024],
                                                  dtype=tf.float32),
     }
 
@@ -249,7 +249,7 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
   def test_feature_map_shapes_with_pool_residual_ssd_mobilenet_v1(
       self, use_keras):
     image_features = {
-        'Conv2d_13_pointwise': tf.compat.v1.random_uniform([4, 8, 8, 1024],
+        'Conv2d_13_pointwise': tf.random_uniform([4, 8, 8, 1024],
                                                  dtype=tf.float32),
     }
 
@@ -276,9 +276,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
 
   def test_get_expected_variable_names_with_inception_v2(self, use_keras):
     image_features = {
-        'Mixed_3c': tf.compat.v1.random_uniform([4, 28, 28, 256], dtype=tf.float32),
-        'Mixed_4c': tf.compat.v1.random_uniform([4, 14, 14, 576], dtype=tf.float32),
-        'Mixed_5c': tf.compat.v1.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
+        'Mixed_3c': tf.random_uniform([4, 28, 28, 256], dtype=tf.float32),
+        'Mixed_4c': tf.random_uniform([4, 14, 14, 576], dtype=tf.float32),
+        'Mixed_5c': tf.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
     }
     feature_map_generator = self._build_feature_map_generator(
         feature_map_layout=INCEPTION_V2_LAYOUT,
@@ -321,7 +321,7 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
       sess.run(init_op)
       sess.run(feature_maps)
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       if use_keras:
         self.assertSetEqual(expected_keras_variables, actual_variable_set)
       else:
@@ -331,9 +331,9 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
       self,
       use_keras):
     image_features = {
-        'Mixed_3c': tf.compat.v1.random_uniform([4, 28, 28, 256], dtype=tf.float32),
-        'Mixed_4c': tf.compat.v1.random_uniform([4, 14, 14, 576], dtype=tf.float32),
-        'Mixed_5c': tf.compat.v1.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
+        'Mixed_3c': tf.random_uniform([4, 28, 28, 256], dtype=tf.float32),
+        'Mixed_4c': tf.random_uniform([4, 14, 14, 576], dtype=tf.float32),
+        'Mixed_5c': tf.random_uniform([4, 7, 7, 1024], dtype=tf.float32)
     }
     layout_copy = INCEPTION_V2_LAYOUT.copy()
     layout_copy['use_depthwise'] = True
@@ -396,7 +396,7 @@ class MultiResolutionFeatureMapGeneratorTest(tf.test.TestCase):
       sess.run(init_op)
       sess.run(feature_maps)
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       if use_keras:
         self.assertSetEqual(expected_keras_variables, actual_variable_set)
       else:
@@ -456,10 +456,10 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
   def test_get_expected_feature_map_shapes(
       self, use_native_resize_op, use_keras):
     image_features = [
-        ('block2', tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
-        ('block3', tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
-        ('block4', tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
-        ('block5', tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))
+        ('block2', tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+        ('block3', tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+        ('block4', tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+        ('block5', tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))
     ]
     feature_map_generator = self._build_feature_map_generator(
         image_features=image_features,
@@ -486,10 +486,10 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
   def test_get_expected_feature_map_shapes_with_explicit_padding(
       self, use_native_resize_op, use_keras):
     image_features = [
-        ('block2', tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
-        ('block3', tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
-        ('block4', tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
-        ('block5', tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))
+        ('block2', tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+        ('block3', tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+        ('block4', tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+        ('block5', tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))
     ]
     feature_map_generator = self._build_feature_map_generator(
         image_features=image_features,
@@ -519,13 +519,13 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
     tf_graph = tf.Graph()
     with tf_graph.as_default():
       image_features = [('block2',
-                         tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+                         tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
                         ('block3',
-                         tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+                         tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
                         ('block4',
-                         tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+                         tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
                         ('block5',
-                         tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))]
+                         tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))]
       feature_map_generator = self._build_feature_map_generator(
           image_features=image_features,
           depth=128,
@@ -633,10 +633,10 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
   def test_get_expected_feature_map_shapes_with_depthwise(
       self, use_native_resize_op, use_keras):
     image_features = [
-        ('block2', tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
-        ('block3', tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
-        ('block4', tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
-        ('block5', tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))
+        ('block2', tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+        ('block3', tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+        ('block4', tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+        ('block5', tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))
     ]
     feature_map_generator = self._build_feature_map_generator(
         image_features=image_features,
@@ -664,10 +664,10 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
   def test_get_expected_variable_names(
       self, use_native_resize_op, use_keras):
     image_features = [
-        ('block2', tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
-        ('block3', tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
-        ('block4', tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
-        ('block5', tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))
+        ('block2', tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+        ('block3', tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+        ('block4', tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+        ('block5', tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))
     ]
     feature_map_generator = self._build_feature_map_generator(
         image_features=image_features,
@@ -714,7 +714,7 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
       sess.run(init_op)
       sess.run(feature_maps)
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       if use_keras:
         self.assertSetEqual(expected_keras_variables, actual_variable_set)
       else:
@@ -723,10 +723,10 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
   def test_get_expected_variable_names_with_depthwise(
       self, use_native_resize_op, use_keras):
     image_features = [
-        ('block2', tf.compat.v1.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
-        ('block3', tf.compat.v1.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
-        ('block4', tf.compat.v1.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
-        ('block5', tf.compat.v1.random_uniform([4, 1, 1, 256], dtype=tf.float32))
+        ('block2', tf.random_uniform([4, 8, 8, 256], dtype=tf.float32)),
+        ('block3', tf.random_uniform([4, 4, 4, 256], dtype=tf.float32)),
+        ('block4', tf.random_uniform([4, 2, 2, 256], dtype=tf.float32)),
+        ('block5', tf.random_uniform([4, 1, 1, 256], dtype=tf.float32))
     ]
     feature_map_generator = self._build_feature_map_generator(
         image_features=image_features,
@@ -780,7 +780,7 @@ class FPNFeatureMapGeneratorTest(tf.test.TestCase, parameterized.TestCase):
       sess.run(init_op)
       sess.run(feature_maps)
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       if use_keras:
         self.assertSetEqual(expected_keras_variables, actual_variable_set)
       else:
@@ -808,7 +808,7 @@ class PoolingPyramidFeatureMapGeneratorTest(tf.test.TestCase):
 
   def test_get_expected_feature_map_shapes(self, replace_pool_with_conv):
     image_features = {
-        'image_features': tf.compat.v1.random_uniform([4, 19, 19, 1024])
+        'image_features': tf.random_uniform([4, 19, 19, 1024])
     }
     feature_maps = feature_map_generators.pooling_pyramid_feature_maps(
         base_feature_map_depth=1024,
@@ -849,7 +849,7 @@ class PoolingPyramidFeatureMapGeneratorTest(tf.test.TestCase):
 
   def test_get_expected_variable_names(self, replace_pool_with_conv):
     image_features = {
-        'image_features': tf.compat.v1.random_uniform([4, 19, 19, 1024])
+        'image_features': tf.random_uniform([4, 19, 19, 1024])
     }
     feature_maps = feature_map_generators.pooling_pyramid_feature_maps(
         base_feature_map_depth=1024,
@@ -882,7 +882,7 @@ class PoolingPyramidFeatureMapGeneratorTest(tf.test.TestCase):
       sess.run(init_op)
       sess.run(feature_maps)
       actual_variable_set = set(
-          [var.op.name for var in tf.compat.v1.trainable_variables()])
+          [var.op.name for var in tf.trainable_variables()])
       if replace_pool_with_conv:
         self.assertSetEqual(expected_conv_variables, actual_variable_set)
       else:

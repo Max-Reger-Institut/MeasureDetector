@@ -27,7 +27,7 @@ These modules are separated from the main model since the same
 few box predictor architectures are shared across many models.
 """
 from abc import abstractmethod
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 BOX_ENCODINGS = 'box_encodings'
 CLASS_PREDICTIONS_WITH_BACKGROUND = 'class_predictions_with_background'
@@ -98,7 +98,7 @@ class BoxPredictor(object):
                        format(len(image_features),
                               len(num_predictions_per_location)))
     if scope is not None:
-      with tf.compat.v1.variable_scope(scope):
+      with tf.variable_scope(scope):
         return self._predict(image_features, num_predictions_per_location,
                              **params)
     return self._predict(image_features, num_predictions_per_location,
@@ -153,7 +153,7 @@ class KerasBoxPredictor(tf.keras.Model):
         params.
       inplace_batchnorm_update: Whether to update batch norm moving average
         values inplace. When this is false train op must add a control
-        dependency on tf.compat.v1.GraphKeys.UPDATE_OPS collection in order to update
+        dependency on tf.GraphKeys.UPDATE_OPS collection in order to update
         batch norm statistics.
       name: A string name scope to assign to the model. If `None`, Keras
         will auto-generate one from the class name.

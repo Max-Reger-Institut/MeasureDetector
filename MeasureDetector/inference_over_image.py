@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import argparse
 
 from PIL import Image
@@ -59,7 +59,7 @@ def load_detection_graph(path_to_checkpoint):
     detection_graph = tf.Graph()
     with detection_graph.as_default():
         od_graph_def = tf.GraphDef()
-        with tf.compat.v1.gfile.GFile(path_to_checkpoint, 'rb') as fid:
+        with tf.gfile.GFile(path_to_checkpoint, 'rb') as fid:
             serialized_graph = fid.read()
             od_graph_def.ParseFromString(serialized_graph)
             tf.import_graph_def(od_graph_def, name='')

@@ -22,7 +22,7 @@ import contextlib
 import copy
 import os
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 import tf_slim
@@ -305,8 +305,8 @@ def mobilenet_base(  # pylint: disable=invalid-name
 
 @contextlib.contextmanager
 def _scope_all(scope, default_scope=None):
-  with tf.compat.v1.variable_scope(scope, default_name=default_scope) as s,\
-       tf.compat.v1.name_scope(s.original_name_scope):
+  with tf.variable_scope(scope, default_name=default_scope) as s,\
+       tf.name_scope(s.original_name_scope):
     yield s
 
 
@@ -362,7 +362,7 @@ def mobilenet(inputs,
   if len(input_shape) != 4:
     raise ValueError('Expected rank 4 input, was: %d' % len(input_shape))
 
-  with tf.compat.v1.variable_scope(scope, 'Mobilenet', reuse=reuse) as scope:
+  with tf.variable_scope(scope, 'Mobilenet', reuse=reuse) as scope:
     inputs = tf.identity(inputs, 'input')
     net, end_points = mobilenet_base(inputs, scope=scope, **mobilenet_args)
     if base_only:
@@ -370,7 +370,7 @@ def mobilenet(inputs,
 
     net = tf.identity(net, name='embedding')
 
-    with tf.compat.v1.variable_scope('Logits'):
+    with tf.variable_scope('Logits'):
       net = global_pool(net)
       end_points['global_pool'] = net
       if not num_classes:
@@ -459,7 +459,7 @@ def training_scope(is_training=True,
   if stddev < 0:
     weight_intitializer = slim.initializers.xavier_initializer()
   else:
-    weight_intitializer = tf.compat.v1.truncated_normal_initializer(stddev=stddev)
+    weight_intitializer = tf.truncated_normal_initializer(stddev=stddev)
 
   # Set weight_decay for weights in Conv and FC layers.
   with slim.arg_scope(

@@ -22,7 +22,7 @@ from __future__ import division
 from __future__ import print_function
 
 from six.moves import zip
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import data_decoder
 from object_detection.core import standard_fields as fields
@@ -180,47 +180,47 @@ class TfExampleDecoder(data_decoder.DataDecoder):
     del use_display_name
     self.keys_to_features = {
         'image/encoded':
-            tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
+            tf.FixedLenFeature((), tf.string, default_value=''),
         'image/format':
-            tf.compat.v1.FixedLenFeature((), tf.string, default_value='jpeg'),
+            tf.FixedLenFeature((), tf.string, default_value='jpeg'),
         'image/filename':
-            tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
+            tf.FixedLenFeature((), tf.string, default_value=''),
         'image/key/sha256':
-            tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
+            tf.FixedLenFeature((), tf.string, default_value=''),
         'image/source_id':
-            tf.compat.v1.FixedLenFeature((), tf.string, default_value=''),
+            tf.FixedLenFeature((), tf.string, default_value=''),
         'image/height':
-            tf.compat.v1.FixedLenFeature((), tf.int64, default_value=1),
+            tf.FixedLenFeature((), tf.int64, default_value=1),
         'image/width':
-            tf.compat.v1.FixedLenFeature((), tf.int64, default_value=1),
+            tf.FixedLenFeature((), tf.int64, default_value=1),
         # Image-level labels.
         'image/class/text':
-            tf.compat.v1.VarLenFeature(tf.string),
+            tf.VarLenFeature(tf.string),
         'image/class/label':
-            tf.compat.v1.VarLenFeature(tf.int64),
+            tf.VarLenFeature(tf.int64),
         # Object boxes and classes.
         'image/object/bbox/xmin':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
         'image/object/bbox/xmax':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
         'image/object/bbox/ymin':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
         'image/object/bbox/ymax':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
         'image/object/class/label':
-            tf.compat.v1.VarLenFeature(tf.int64),
+            tf.VarLenFeature(tf.int64),
         'image/object/class/text':
-            tf.compat.v1.VarLenFeature(tf.string),
+            tf.VarLenFeature(tf.string),
         'image/object/area':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
         'image/object/is_crowd':
-            tf.compat.v1.VarLenFeature(tf.int64),
+            tf.VarLenFeature(tf.int64),
         'image/object/difficult':
-            tf.compat.v1.VarLenFeature(tf.int64),
+            tf.VarLenFeature(tf.int64),
         'image/object/group_of':
-            tf.compat.v1.VarLenFeature(tf.int64),
+            tf.VarLenFeature(tf.int64),
         'image/object/weight':
-            tf.compat.v1.VarLenFeature(tf.float32),
+            tf.VarLenFeature(tf.float32),
 
     }
     # We are checking `dct_method` instead of passing it directly in order to
@@ -272,12 +272,12 @@ class TfExampleDecoder(data_decoder.DataDecoder):
     }
     if load_multiclass_scores:
       self.keys_to_features[
-          'image/object/class/multiclass_scores'] = tf.compat.v1.VarLenFeature(tf.float32)
+          'image/object/class/multiclass_scores'] = tf.VarLenFeature(tf.float32)
       self.items_to_handlers[fields.InputDataFields.multiclass_scores] = (
           slim_example_decoder.Tensor('image/object/class/multiclass_scores'))
     if num_additional_channels > 0:
       self.keys_to_features[
-          'image/additional_channels/encoded'] = tf.compat.v1.FixedLenFeature(
+          'image/additional_channels/encoded'] = tf.FixedLenFeature(
               (num_additional_channels,), tf.string)
       self.items_to_handlers[
           fields.InputDataFields.
@@ -285,9 +285,9 @@ class TfExampleDecoder(data_decoder.DataDecoder):
     self._num_keypoints = num_keypoints
     if num_keypoints > 0:
       self.keys_to_features['image/object/keypoint/x'] = (
-          tf.compat.v1.VarLenFeature(tf.float32))
+          tf.VarLenFeature(tf.float32))
       self.keys_to_features['image/object/keypoint/y'] = (
-          tf.compat.v1.VarLenFeature(tf.float32))
+          tf.VarLenFeature(tf.float32))
       self.items_to_handlers[fields.InputDataFields.groundtruth_keypoints] = (
           slim_example_decoder.ItemHandlerCallback(
               ['image/object/keypoint/y', 'image/object/keypoint/x'],
@@ -296,14 +296,14 @@ class TfExampleDecoder(data_decoder.DataDecoder):
       if instance_mask_type in (input_reader_pb2.DEFAULT,
                                 input_reader_pb2.NUMERICAL_MASKS):
         self.keys_to_features['image/object/mask'] = (
-            tf.compat.v1.VarLenFeature(tf.float32))
+            tf.VarLenFeature(tf.float32))
         self.items_to_handlers[
             fields.InputDataFields.groundtruth_instance_masks] = (
                 slim_example_decoder.ItemHandlerCallback(
                     ['image/object/mask', 'image/height', 'image/width'],
                     self._reshape_instance_masks))
       elif instance_mask_type == input_reader_pb2.PNG_MASKS:
-        self.keys_to_features['image/object/mask'] = tf.compat.v1.VarLenFeature(tf.string)
+        self.keys_to_features['image/object/mask'] = tf.VarLenFeature(tf.string)
         self.items_to_handlers[
             fields.InputDataFields.groundtruth_instance_masks] = (
                 slim_example_decoder.ItemHandlerCallback(

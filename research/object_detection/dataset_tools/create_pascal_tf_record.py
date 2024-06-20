@@ -32,13 +32,13 @@ import os
 
 from lxml import etree
 import PIL.Image
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 
 
-flags = tf.compat.v1.app.flags
+flags = tf.app.flags
 flags.DEFINE_string('data_dir', '', 'Root directory to raw PASCAL VOC dataset.')
 flags.DEFINE_string('set', 'train', 'Convert training set, validation set or '
                     'merged set.')
@@ -84,7 +84,7 @@ def dict_to_tf_example(data,
   """
   img_path = os.path.join(data['folder'], image_subdirectory, data['filename'])
   full_path = os.path.join(dataset_directory, img_path)
-  with tf.compat.v1.gfile.GFile(full_path, 'rb') as fid:
+  with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
   encoded_jpg_io = io.BytesIO(encoded_jpg)
   image = PIL.Image.open(encoded_jpg_io)
@@ -121,7 +121,7 @@ def dict_to_tf_example(data,
       truncated.append(int(obj['truncated']))
       poses.append(obj['pose'].encode('utf8'))
 
-  example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
+  example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': dataset_util.int64_feature(height),
       'image/width': dataset_util.int64_feature(width),
       'image/filename': dataset_util.bytes_feature(
@@ -169,7 +169,7 @@ def main(_):
       if idx % 100 == 0:
         logging.info('On image %d of %d', idx, len(examples_list))
       path = os.path.join(annotations_dir, example + '.xml')
-      with tf.compat.v1.gfile.GFile(path, 'r') as fid:
+      with tf.gfile.GFile(path, 'r') as fid:
         xml_str = fid.read()
       xml = etree.fromstring(xml_str)
       data = dataset_util.recursive_parse_xml_to_dict(xml)['annotation']
@@ -182,4 +182,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run()
+  tf.app.run()
