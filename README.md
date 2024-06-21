@@ -245,7 +245,7 @@ To start the validation:
 
 ```bash
 # From MeasureDetector/
-python research/object_detection/eval.py \
+python research/object_detection/legacy/eval.py \
   --pipeline_config_path="MeasureDetector/configurations/faster_rcnn_inception_v2_all_datasets.config" \
   --checkpoint_dir="data/faster_rcnn_inception_v2_all_datasets" \
   --eval_dir="data/faster_rcnn_inception_v2_all_datasets/eval"

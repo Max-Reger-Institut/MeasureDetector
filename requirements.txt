@@ -13,7 +13,7 @@ scikit-learn
 scikit-image==0.17.2
 scipy==1.10.0
 sympy
-muscima==0.10.0
+# muscima==0.10.0 Implicitly installed when installing omrdatasettools
 numpy==1.22.0
 lxml
 pydot
@@ -23,6 +23,7 @@ mung
 contextlib2
 tf_slim
 tensorflow-addons
+tensorflow-metal # if you want to use the GPU; CPU might be faster though
 
 # For the inference server
 hug
